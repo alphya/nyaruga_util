@@ -1,2 +1,2 @@
 # nyaruga_util
-utility of c++
+utility of c++2a
