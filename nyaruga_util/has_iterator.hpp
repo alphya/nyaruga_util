@@ -5,27 +5,28 @@
 namespace nyaruga_util
 {
 
-struct has_iterator_impl 
-{
-	template <class T>
-	static std::true_type check(typename T::iterator*);
+	template <class, class = void>
+	struct has_iterator
+		: std::false_type {};
 
 	template <class T>
-	static std::false_type check(...);
-};
-
-struct has_iterator_2_impl 
-{
-	template <class T>
-	static std::true_type check(typename T::iterator*);
-};
-
-template <class T>
-class has_iterator :  // std::true_type or std::false_type
-	public decltype(has_iterator_impl::check<T>(nullptr)) {};
-
-template <class T>
-class has_iterator_2 :  // itertor‚È‚¢‚ÆƒCƒ“ƒXƒ^ƒ“ƒX‰»¸”s
-	public decltype(has_iterator_2_impl::check<T>(nullptr)) {};
+	struct has_iterator<T, std::void_t<typename T::iterator>>
+		: std::true_type {};
 
 }
+
+/*
+
+#include <vector>
+int main()
+{
+	static_assert(
+		has_iterator<std::vector<int>>::value,
+		"vector‚ÍiteratorŒ^‚ğ‚Á‚Ä‚¢‚é");
+
+	static_assert(
+		!has_iterator<int>::value,
+		"int‚ÍiteratorŒ^‚ğ‚Á‚Ä‚¢‚È‚¢");
+}
+
+*/
