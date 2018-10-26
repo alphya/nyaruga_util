@@ -1,8 +1,8 @@
+#pragma once
 
-#include <functional>
 #include <type_traits>
 
-namespace
+namespace nyaruga_util
 {
 	// operator >> のオーバーロード()
 	template<typename T, typename F>
