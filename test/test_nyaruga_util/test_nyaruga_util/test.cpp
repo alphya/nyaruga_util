@@ -1,9 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "vector_unpac.hpp"
-
-namespace nyaruga_util {}
+#include "../../../nyaruga_util/runtime_unpac.hpp"
 
 int main() {
 	using namespace nyaruga_util;

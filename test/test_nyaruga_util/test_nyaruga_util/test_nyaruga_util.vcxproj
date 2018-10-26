@@ -20,10 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="vector_unpac.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="has_iterator.hpp" />
     <ClInclude Include="new.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
