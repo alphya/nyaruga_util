@@ -33,6 +33,8 @@ auto runtime_unpack(F&& func, const T& container) -> std::function<decltype(func
     return runtime_unpack_impl<sentinel, 1, decltype(func(*std::begin(container)))>(std::forward<F>(func), std::begin(container), std::end(container));
 }
 
+/*
+
 int main()
 {
     std::vector<int> v{10, 20, 30};
@@ -44,3 +46,5 @@ int main()
 
     std::cout << runtime_unpack<10>(lambda, v)();
 }
+
+*/
