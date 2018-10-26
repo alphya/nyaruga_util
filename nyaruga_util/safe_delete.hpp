@@ -6,7 +6,7 @@ namespace nyaruga_util
 {
 
 	template <class T>
-	inline void safe_delete(T*& p) {
+	inline constexpr void safe_delete(T*& p) {
 		//  不完全な型のポインタをdeleteしようとした時にコンパイルエラーにする
 		typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
 		(void)sizeof(type_must_be_complete);
@@ -15,7 +15,7 @@ namespace nyaruga_util
 	}
     
 	template <class T>
-	inline void safe_delete_array(T*& p) {
+	inline constexpr void safe_delete_array(T*& p) {
 		typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
 		(void)sizeof(type_must_be_complete);
 		if (p) delete[] p;

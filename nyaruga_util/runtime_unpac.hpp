@@ -9,7 +9,7 @@ namespace nyaruga_util
 
 template<std::size_t sentinel, std::size_t count, typename R, 
 typename F, typename Itr>
-std::function<R()> runtime_unpack_impl(F&& f, Itr && current_itr, Itr && end_itr)
+constexpr std::function<R()> runtime_unpack_impl(F&& f, Itr && current_itr, Itr && end_itr)
 {
     if(current_itr == end_itr)
         return [f = std::forward<F>(f)]{return f();};
@@ -30,7 +30,7 @@ std::function<R()> runtime_unpack_impl(F&& f, Itr && current_itr, Itr && end_itr
 }
 
 template<std::size_t sentinel, typename F, typename Container>
-decltype(auto) runtime_unpack(F&& f, const Container& v) 
+constexpr decltype(auto) runtime_unpack(F&& f, const Container& v) 
 //-> decltype(std::enable_if_t<std::is_invocable_v<F, decltype(*std::begin(v))>>(), 
 //	std::function<decltype(f(*std::begin(v)))()>())
 {
