@@ -30,22 +30,26 @@ Initializer<Tag, p> Initializer<Tag, p>::instance;
 }  // nyaruga_util
 
 #define NYARUGA_PRIVATE_ACCESSOR_INIT(tag, class_t, mem_t, mem_name) \
-namespace nyaruga_util::private_accessor_impl{\
-struct tag { typedef mem_t class_t::* type; };\
-template struct nyaruga_util::private_accessor_impl::Initializer<tag, &class_t::mem_name>;\
-}
+namespace nyaruga_util::private_accessor_impl{ \
+namespace user_defined_tags { \
+struct tag { typedef mem_t class_t::* type; }; } \
+template struct nyaruga_util::private_accessor_impl::Initializer \
+<user_defined_tags::tag, &class_t::mem_name>; }
 
 #define NYARUGA_PRIVATE_ACCESSOR_INIT_FOR_STATIC(tag, class_t, mem_t, mem_name) \
-namespace nyaruga_util::private_accessor_impl{\
-struct tag { typedef mem_t * type; };\
-template struct nyaruga_util::private_accessor_impl::Initializer<tag, &class_t::mem_name>;\
-}
+namespace nyaruga_util::private_accessor_impl{ \
+namespace user_defined_tags { \
+struct tag { typedef mem_t * type; }; } \
+template struct nyaruga_util::private_accessor_impl::Initializer \
+<user_defined_tags::tag, &class_t::mem_name>; }
 
-#define NYARUGA_PRIVATE_ACCESS(obj, tag) obj.*nyaruga_util::private_accessor_impl::\
-Accessor<nyaruga_util::private_accessor_impl::tag>::value
+#define NYARUGA_PRIVATE_ACCESS(obj, tag) \
+obj.*nyaruga_util::private_accessor_impl:: \
+Accessor<nyaruga_util::private_accessor_impl::user_defined_tags::tag>::value
 
-#define NYARUGA_PRIVATE_ACCESS_FOR_STATIC(tag) *nyaruga_util::private_accessor_impl::\
-Accessor<nyaruga_util::private_accessor_impl::tag>::value
+#define NYARUGA_PRIVATE_ACCESS_FOR_STATIC(tag) \
+*nyaruga_util::private_accessor_impl:: \
+Accessor<nyaruga_util::private_accessor_impl::user_defined_tags::tag>::value
 
 
 /* how to use 
@@ -67,6 +71,7 @@ private:
 // 1. initialize accessor
 // please use this macro in groval scope or namespace scope
 // グローバルスコープまたは、名前空間内で使用してください
+// 名前空間を使用するためです。現在のスコープは汚しません
 NYARUGA_PRIVATE_ACCESSOR_INIT(A_mem1, A, int, mem1)  // arg : 任意のタグ、クラス型、メンバの型、メンバの名前
 NYARUGA_PRIVATE_ACCESSOR_INIT_FOR_STATIC(A_smem, A, int, smem)  // static membar ver
 
@@ -74,6 +79,7 @@ int main() {
 	A a(1);
 
 	// 2. access private member
+	// accessor init が見えるところで使用してください
 	std::cout << NYARUGA_PRIVATE_ACCESS_FOR_STATIC(A_smem) << std::endl; // static
 	std::cout << NYARUGA_PRIVATE_ACCESS(a, A_mem1) << std::endl;
 	NYARUGA_PRIVATE_ACCESS_FOR_STATIC(A_smem) = 38; // static  arg: タグ名
