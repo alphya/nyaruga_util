@@ -1,16 +1,18 @@
 #include <iostream>
 
 
-namespace nyaruga_util
+
+int main()
 {
 
 }
 
-int main() 
-{
-	using namespace nyaruga_util;
 
 
-}
+
+
+
+
+
 
 
