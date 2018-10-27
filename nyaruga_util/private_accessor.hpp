@@ -65,6 +65,8 @@ private:
 };
 
 // 1. initialize accessor
+// please use this macro in groval scope or namespace scope
+// グローバルスコープまたは、名前空間内で使用してください
 NYARUGA_PRIVATE_ACCESSOR_INIT(A_mem1, A, int, mem1)  // arg : 任意のタグ、クラス型、メンバの型、メンバの名前
 NYARUGA_PRIVATE_ACCESSOR_INIT_FOR_STATIC(A_smem, A, int, smem)  // static membar ver
 

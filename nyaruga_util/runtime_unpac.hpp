@@ -45,7 +45,7 @@ int main()
 {
     std::vector<int> v{10, 20, 30};
 
-    const auto lambda = [](char**, auto && ... args)
+    const auto lambda = [](auto && ... args)
     {
         return (0 + ... + std::forward<decltype(args)>(args));
     };
