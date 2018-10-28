@@ -6,6 +6,9 @@
 
 namespace nyaruga_util {
 
+namespace nyaruga_util_impl
+{
+
 //テンプレートパラメータの指定した位置の型を取得
 template<int N, typename... T>
 struct get_template_param {
@@ -19,6 +22,8 @@ struct get_template_param<N, First, Rest...> {
 		typename get_template_param<N - 1, Rest...>::type>;
 };
 
+}  // nyaruga_util_impl
+
 //関数の引数の型を得る
 template<typename Func, int N>
 struct get_function_argument_type {
@@ -26,12 +31,12 @@ struct get_function_argument_type {
 //メンバ関数用特殊化
 template<class C, typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret(C::*)(Args...), N> {
-	using type = typename get_template_param<N, Args...>::type;
+	using type = typename nyaruga_util_impl::get_template_param<N-1, Args...>::type;
 };
 //通常関数用特殊化
 template<typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret(*)(Args...), N> {
-	using type = typename get_template_param<N, Args...>::type;
+	using type = typename nyaruga_util_impl::get_template_param<N-1, Args...>::type;
 };
 
 //get_function_argument_typeのエイリアステンプレート版
@@ -50,10 +55,10 @@ public:
 void func(bool,int,double,std::string);
 
 int main() {
-	std::cout << typeid(get_function_argument_type_t<decltype(&Test::memfunc),0>).name() << std::endl;
-	std::cout << typeid(get_function_argument_type_t<decltype(&func),1>).name() << std::endl;
+	std::cout << typeid(get_function_argument_type_t<decltype(&Test::memfunc),1>).name() << std::endl;
+	std::cout << typeid(get_function_argument_type_t<decltype(&func),2>).name() << std::endl;
 	std::cout << typeid(get_function_argument_type_t<decltype(&Test::memfunc),3>).name() << std::endl;
-	std::cout << typeid(get_function_argument_type_t<decltype(&func),4>).name() << std::endl;
+	std::cout << typeid(get_function_argument_type_t<decltype(&func),5>).name() << std::endl;
 	return 0;
 }
 
