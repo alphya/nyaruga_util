@@ -4,13 +4,15 @@ namespace nyaruga_util {
 
 //’ÊíŠÖ”—p
 template<typename Ret, typename... Args>
-static constexpr decltype(auto) get_function_argument_num(Ret(*)(Args...)) {
+constexpr decltype(auto) get_function_argument_num(Ret(*)(Args...)) noexcept 
+{
 	return sizeof...(Args);
 };
 
 //ƒƒ“ƒoŠÖ”—p
 template<typename Ret, typename C, typename... Args>
-static constexpr decltype(auto) get_function_argument_num(Ret(C::*)(Args...)) {
+constexpr decltype(auto) get_function_argument_num(Ret(C::*)(Args...)) noexcept 
+{
 	return sizeof...(Args);
 };
 

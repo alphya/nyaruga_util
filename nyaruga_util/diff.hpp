@@ -50,8 +50,6 @@ decltype(auto) diff_5(F && f, Arg&& x)
 		std::forward<T>(y3)) / (12 * std::forward<T>(h)));
 }
 
-// •Î”÷•ª@Partial differential
-
 }  // nyaruga_util
 
 /*
