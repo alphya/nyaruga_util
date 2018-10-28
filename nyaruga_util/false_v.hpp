@@ -1,10 +1,12 @@
 #pragma once
 
 namespace nyaruga_util {
+	
 	// static_assert の評価を、テンプレートの
 	// インスタンス化まで遅らせるために使う
 	template <class T>
 	constexpr bool false_v = false;
+
 }
 
 /*
