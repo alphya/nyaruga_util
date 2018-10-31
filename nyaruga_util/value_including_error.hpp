@@ -13,6 +13,7 @@ struct value_including_error
 {
 	num_t value;  // 値
 	num_t error;  // 誤差
+	operator num_t() { return value; }
 	operator num_t() const { return value; }
 };
 
@@ -54,34 +55,33 @@ decltype(auto) generate_error(F && f, Args && ... args)
 
 /*
 
+#include <iostream>
 #include "value_including_error.hpp"
 
-#include <iostream>
-
-using namespace nyaruga_util;
-using val = nyaruga_util::value_including_error;
-
-
-decltype(auto) f(num_t i, num_t j)
+auto main() -> int
 {
-	return static_cast<num_t>(i * j);
-};
+	// 誤差を含む値の定義 { 値, 誤差 }
+	auto && x = nyaruga_util::value_including_error{ 20, 0.5 };
+	auto && y = nyaruga_util::value_including_error{ 50, 0.8 };
 
-int main()
-{
+	// 誤差を含む値の関数定義　これは単純な掛け算
+	decltype(auto) f = [](nyaruga_util::num_t x, nyaruga_util::num_t y) {
+		return static_cast<nyaruga_util::num_t>(x * y);
+	};
 
-	auto i = val{ 20, 0.5 };
-	auto j = val{ 50, 0.8 };
+	// 普通に関数を実行した値
+	auto && v = f(x, y);
 
-	auto r = generate_error(f, i, j);
+	// 誤差を計算
+	auto && e = nyaruga_util::generate_error(f, x, y);
 
-	std::cout << std::setprecision(18) << r << "\n";
-
-	std::cout << std::setprecision(std::numeric_limits<num_t>::digits10 + 1) << r;
-
-	std::cout << "\n期待される値 : " << std::pow(20*20*0.8*0.8+50*50*0.5*0.5, 0.5);
+	// だいたいあってる程度の値です
+	// 単純な掛け算で、有効数字17桁くらいでした
+	std::cout << std::setprecision(18)
+		<< "値は：" << v << "\n誤差は：" << e << "\n";
 
 }
+
 
 */
 
