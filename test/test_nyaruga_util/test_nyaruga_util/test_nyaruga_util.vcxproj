@@ -21,9 +21,6 @@
   <ItemGroup>
     <ClCompile Include="test.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="value_including_error.hpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{3C34836C-B185-40AE-B7B9-1AAC0C72B4BB}</ProjectGuid>
