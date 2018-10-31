@@ -1,12 +1,9 @@
 #pragma once
 
-#include "../../../nyaruga_util/diff.hpp"
-//#include "../../../nyaruga_util/bind_other_than_any_pos_arg.hpp"
-#include "../../../nyaruga_util/pac_select_pos_replace.hpp"
-#include "../../../nyaruga_util/get_arg_num.hpp"
-#include "../../../nyaruga_util/pac_select_pos_obj.hpp"
-
-// #include <cmath>
+#include "diff.hpp"
+#include "bind_select_arg_replace.hpp"
+#include "get_arg_num.hpp"
+#include "pac_select_pos_obj.hpp"
 
 namespace nyaruga_util
 {
@@ -30,7 +27,7 @@ decltype(auto) generate_error_impl(F && f, Args && ... args)
 	{
 		auto && current_val_obj = pac_select_pos_obj<count>(args...);
 		auto && current_val_error = current_val_obj.error;
-		auto && partial_diff = diff(pac_select_pos_replace<count>(f, args...),
+		auto && partial_diff = diff(bind_select_arg_replace<count>(f, args...),
 			current_val_obj.value);
 		auto && result = boost::multiprecision::pow(partial_diff, 2) *
 			boost::multiprecision::pow(current_val_error, 2);
