@@ -2,19 +2,31 @@
 
 namespace nyaruga_util {
 
-//’ÊíŠÖ”—p
+//é€šå¸¸é–¢æ•°ç”¨
 template<typename Ret, typename... Args>
 constexpr decltype(auto) get_function_argument_num(Ret(*)(Args...)) noexcept 
 {
 	return sizeof...(Args);
 };
 
-//ƒƒ“ƒoŠÖ”—p
+//ãƒ¡ãƒ³ãƒé–¢æ•°ç”¨
 template<typename Ret, typename C, typename... Args>
 constexpr decltype(auto) get_function_argument_num(Ret(C::*)(Args...)) noexcept 
 {
 	return sizeof...(Args);
 };
+	
+	/*
+	//é€šå¸¸é–¢æ•°ç”¨
+template<typename Ret, typename... Args>
+struct get_function_argument_num
+{
+    static const std::size_t value = sizeof...(Args);
+};
+
+template<typename Ret, typename... Args>
+constexpr std::size_t get_function_argument_num_v = get_function_argument_num<Ret,Args ...>::value;
+	*/
 
 }
 
