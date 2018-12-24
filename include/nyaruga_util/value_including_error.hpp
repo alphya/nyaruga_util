@@ -13,10 +13,10 @@
 # pragma once
 #endif
 
-#include "diff.hpp"
-#include "bind_select_arg_replace.hpp"
-#include "get_arg_num.hpp"
-#include "pac_select_pos_obj.hpp"
+#include <nyaruga_util/diff.hpp>
+#include <nyaruga_util/bind_select_arg_replace.hpp>
+#include <nyaruga_util/get_arg_num.hpp>
+#include <nyaruga_util/pac_select_pos_obj.hpp>
 
 namespace nyaruga_util
 {

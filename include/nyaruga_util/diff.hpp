@@ -17,7 +17,7 @@
 #include <limits>
 #include <cmath>
 #include <type_traits>
-#include "get_arg_type.hpp"
+#include <nyaruga_util/get_arg_type.hpp>
 
 namespace nyaruga_util {
 
