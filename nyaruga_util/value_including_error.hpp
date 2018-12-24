@@ -1,4 +1,17 @@
-#pragma once
+
+//              Copyright (c) 2018 alphya
+// Distributed under the Boost Software License, Version 1.0.
+//   (See accompanying file ../LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+#ifndef NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
+#define NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
+
+// MS compatible compilers support #pragma once
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
 
 #include "diff.hpp"
 #include "bind_select_arg_replace.hpp"
@@ -37,7 +50,7 @@ decltype(auto) generate_error_impl(F && f, Args && ... args)
 	}
 }
 
-}  // nyaruga_util_impl
+} // namespace nyaruga_util_impl
 
 // Œë·‚Ì“`”dŽ®‚æ‚èAŒvŽZBŒë·‚ð•Ô‚·
 // Args ‚É‚ÍAvalue_including_error‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢
@@ -50,7 +63,7 @@ decltype(auto) generate_error(F && f, Args && ... args)
 }
 
 
-}  // nyaruga_util
+} // namespace nyaruga_util
 
 
 /*
@@ -85,3 +98,4 @@ auto main() -> int
 
 */
 
+#endif // #ifndef NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP

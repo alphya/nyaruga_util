@@ -1,8 +1,20 @@
-#pragma once
+
+//              Copyright (c) 2018 alphya
+// Distributed under the Boost Software License, Version 1.0.
+//   (See accompanying file ../LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+#ifndef NYARUGA_UTIL_GET_ARG_TYPE_HPP
+#define NYARUGA_UTIL_GET_ARG_TYPE_HPP
+
+// MS compatible compilers support #pragma once
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
 
 // このコードは、https://cdecrement.blog.fc2.com/blog-entry-234.html
 // からいただいてきたたものです。
-// ありがたく使わせてもらっています。ありがとうございます。
 
 namespace nyaruga_util {
 
@@ -22,7 +34,7 @@ struct get_template_param<N, First, Rest...> {
 		typename get_template_param<N - 1, Rest...>::type>;
 };
 
-}  // nyaruga_util_impl
+} // namespace nyaruga_util_impl
 
 //関数の引数の型を得る
 template<typename Func, int N>
@@ -43,7 +55,7 @@ struct get_function_argument_type<Ret(*)(Args...), N> {
 template<typename Func, int N>
 using get_function_argument_type_t = typename get_function_argument_type<Func, N>::type;
 
-}  // nyaruga_util
+} // namespace nyaruga_util
 
 /*
 
@@ -63,3 +75,5 @@ int main() {
 }
 
 */
+
+#endif // #ifndef NYARUGA_UTIL_GET_ARG_TYPE_HPP

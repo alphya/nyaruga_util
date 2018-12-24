@@ -1,4 +1,17 @@
-#pragma once
+
+//              Copyright (c) 2018 alphya
+// Distributed under the Boost Software License, Version 1.0.
+//   (See accompanying file ../LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+#ifndef NYARUGA_UTIL_DIFF_HPP
+#define NYARUGA_UTIL_DIFF_HPP
+
+// MS compatible compilers support #pragma once
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
 
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <limits>
@@ -13,27 +26,6 @@ using num_t = boost::multiprecision::number<boost::multiprecision::cpp_dec_float
 
 // 微分します
 // 7点近似 5点より精度高い
-/*
-template <typename T = num_t, typename F, typename Arg>
-decltype(auto) diff(F && f, Arg && x)
-{
-	using result_type = std::invoke_result_t<F, Arg>;
-	using arg_type = get_function_argument_type_t<F, 1>;
-
-    T&& h = DBL_EPSILON;
-	T&& y1 = f(static_cast<arg_type>(static_cast<T>(x + h)));
-	T&& y2 = f(static_cast<arg_type>(static_cast<T>(x - h)));
-	T&& y3 = f(static_cast<arg_type>(static_cast<T>(x + 2 * h)));
-	T&& y4 = f(static_cast<arg_type>(static_cast<T>(x - 2 * h)));
-	T&& y5 = f(static_cast<arg_type>(static_cast<T>(x + 3 * h)));
-	T&& y6 = f(static_cast<arg_type>(static_cast<T>(x - 3 * h)));
-
-	return static_cast<result_type>(static_cast<T>((std::forward<T>(y5) - 9 * std::forward<T>(y3)
-		+ 45 * std::forward<T>(y1) - 45 * std::forward<T>(y2) + 9 *
-		std::forward<T>(y4) - std::forward<T>(y6)) / (60 * std::forward<T>(h))));
-}
-*/
-
 template <typename F, typename Arg>
 decltype(auto) diff(F && f, Arg && x)
 {
@@ -50,29 +42,21 @@ decltype(auto) diff(F && f, Arg && x)
 		std::forward<num_t>(y4) - std::forward<num_t>(y6)) / (60 * std::forward<num_t>(h)));
 }
 
-/*
-
 // 5点近似
-template <typename T = num_t, typename F, typename Arg>
-decltype(auto) diff_5(F && f, Arg&& x)
+template <typename F, typename Arg>
+decltype(auto) diff_fast(F && f, Arg&& x)
 {
-	using result_type = std::invoke_result_t<F, Arg>;
-	using arg_type = get_function_argument_type_t<decltype(&f), 1>;
-
-	T&& h = DBL_EPSILON;
-	T&& y1 = f(static_cast<arg_type>(static_cast<T>(x) + h));
-	T&& y2 = f(static_cast<arg_type>(static_cast<T>(x) - h));
-	T&& y3 = f(static_cast<arg_type>(static_cast<T>(x) + 2 * h));
-	T&& y4 = f(static_cast<arg_type>(static_cast<T>(x) - 2 * h));
-
-	return static_cast<result_type>((std::forward<T>(y4) - 8 *
-		std::forward<T>(y2) + 8 * std::forward<T>(y1) -
-		std::forward<T>(y3)) / (12 * std::forward<T>(h)));
+	auto && h = DBL_EPSILON;
+	auto && y1 = f(x + h);
+	auto && y2 = f(x - h);
+	auto && y3 = f(x + 2 * h);
+	auto && y4 = f(x - 2 * h);
+	return (y4 - 8 * y2 + 8 * y1 - y3) / (12 * h);
 }
 
-*/
 
-}  // nyaruga_util
+
+}  // namespace nyaruga_util
 
 /*
 
@@ -98,3 +82,5 @@ int main()
 
 
 */
+
+#endif // #ifndef NYARUGA_UTIL_DIFF_HPP

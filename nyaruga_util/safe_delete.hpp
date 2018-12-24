@@ -1,42 +1,67 @@
-#pragma	once
 
-#include "false_v.hpp"
+//              Copyright (c) 2018 alphya
+// Distributed under the Boost Software License, Version 1.0.
+//   (See accompanying file ../LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
-namespace nyaruga_util
+#ifndef NYARUGA_UTIL_SAFE_DELETE_HPP
+#define NYARUGA_UTIL_SAFE_DELETE_HPP
+
+// MS compatible compilers support #pragma once
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
+
+namespace nyaruga_util {
+
+template <class T>
+inline constexpr void safe_delete(T*& p) noexcept
 {
-
-	template <class T>
-	inline constexpr void safe_delete(T*& p) noexcept
-	{
-		//  不完全な型のポインタをdeleteしようとした時にコンパイルエラーにする
-		typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-		(void)sizeof(type_must_be_complete);
-		if (p) delete p;
-		p = nullptr;
-	}
-    
-	template <class T>
-	inline constexpr void safe_delete_array(T*& p) noexcept
-	{
-		typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-		(void)sizeof(type_must_be_complete);
-		if (p) delete[] p;
-		p = nullptr;
-	}
-
-	template<typename T = void>
-	inline constexpr void safe_delete(...) noexcept
-	{
-		static_assert(false, "This arg can not delete.");
-	}
-
-	template<typename T = void>
-	inline constexpr void safe_delete_array(...) noexcept
-	{
-		static_assert(false, "This arg can not delete.");
-	}
-
+	//  不完全な型のポインタをdeleteしようとした時にコンパイルエラーにする
+	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+	(void)sizeof(type_must_be_complete);
+	if (p) delete p;
+	p = nullptr;
 }
+    
+template <class T>
+inline constexpr void safe_delete_array(T*& p) noexcept
+{
+	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+	(void)sizeof(type_must_be_complete);
+	if (p) delete[] p;
+	p = nullptr;
+}
+
+template <class T>
+inline constexpr void safe_Release(T*& p) noexcept
+{
+	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+	(void)sizeof(type_must_be_complete);
+	if (p) p->Release();
+	// p = nullptr;
+}
+
+template<typename T = void>
+inline constexpr void safe_delete(...) noexcept
+{
+	static_assert(false, "This arg can not delete.");
+}
+
+template<typename T = void>
+inline constexpr void safe_delete_array(...) noexcept
+{
+	static_assert(false, "This arg can not delete.");
+}
+
+template<typename T = void>
+inline constexpr void safe_Release(...) noexcept
+{
+	static_assert(false, "This arg has not Release.");
+}
+
+} // namespace nyaruga_util
 
 /* 使い方
 コピペして任意のメンバ関数を呼びたいときとかに使う。適宜改造して
@@ -47,3 +72,5 @@ namespace nyaruga_util
 型安全な解放とか
 
 */
+
+#endif // #ifndef NYARUGA_UTIL_SAFE_DELETE_HPP
