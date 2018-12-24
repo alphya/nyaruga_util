@@ -14,6 +14,7 @@
 #endif
 
 #include <type_traits>
+#include <functional>
 
 namespace nyaruga_util {
 
@@ -21,8 +22,7 @@ namespace nyaruga_util_impl {
 
 template<size_t current_pos, size_t target_pos, typename F, typename Head, typename ... Pack>
 constexpr decltype(auto)
-bind_select_arg_replace_impl(F && func, Head && head, Pack && ... pack) noexcept
-{
+bind_select_arg_replace_impl(F && func, Head && head, Pack && ... pack) noexcept {
 	if constexpr (current_pos == target_pos)
 		return std::bind(std::forward<F>(func), std::placeholders::_1, std::forward<Pack>(pack)...);
 	else if constexpr (current_pos < target_pos)
@@ -34,7 +34,7 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack && ... pack) noexcept
 			std::forward<Pack>(pack)...
 		);
 	else
-		static_assert(std::bool_constant<false>, "pos is out of pac");
+		static_assert(std::bool_constant<false>::value, "pos is out of pac");
 }
 
 } // namespace nyaruga_util_impl
@@ -43,8 +43,8 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack && ... pack) noexcept
 // ÇΩä÷êîÇï‘Ç∑çÇäKä÷êî
 // bind_other_than_any_pos_argÇ…ÇÊÇ≠éóÇƒÇ¢ÇÈ
 template<size_t pos, typename F, typename ... Pack>
-constexpr decltype(auto) bind_select_arg_replace(F && func, Pack && ... pack) noexcept
-{
+constexpr decltype(auto) 
+bind_select_arg_replace(F && func, Pack && ... pack) noexcept {
 	return nyaruga_util_impl::bind_select_arg_replace_impl<1, pos>(
 		std::forward<F>(func), std::forward<Pack>(pack)...);
 }
@@ -52,6 +52,10 @@ constexpr decltype(auto) bind_select_arg_replace(F && func, Pack && ... pack) no
 } // namespace nyaruga_util
 
 /*
+
+using namespace nyaruga_util;
+
+#include <iostream>
 
 int main()
 {
@@ -65,6 +69,7 @@ int main()
 	fn(22); // 9, 22, 11
 
 }
+
 */
 
 #endif // #ifndef NYARUGA_UTIL_BIND_SELECT_ARG_REPLACE_HPP

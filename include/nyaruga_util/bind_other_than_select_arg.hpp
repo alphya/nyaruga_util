@@ -14,37 +14,55 @@
 #endif
 
 #include <type_traits>
+#include <functional>
 
 namespace nyaruga_util {
 
 namespace nyaruga_util_impl {
 
+template<std::size_t current_pos, std::size_t arg_pos, typename F>
+constexpr decltype(auto) 
+bind_other_than_select_arg_impl(F && f) noexcept 
+{
+	return 
+    [](auto && f) {
+	return std::bind(std::forward<decltype(f)>(f),
+		std::placeholders::_1);
+	} (std::forward<decltype(f)>(f));
+}
+
 template<std::size_t current_pos, std::size_t arg_pos, typename F, typename H, typename ... Arg>
-decltype(auto) bind_other_than_select_arg_impl(F && f, H && head, Arg && ... arg)
+constexpr decltype(auto) 
+bind_other_than_select_arg_impl(F && f, H && head, Arg && ... arg) noexcept 
 {
 	if constexpr (current_pos < arg_pos)
-		return bind_other_than_select_arg_impl<current_pos + 1, arg_pos>(
+		return 
+		    bind_other_than_select_arg_impl<current_pos + 1, arg_pos>(
 			[f = std::forward<decltype(f)>(f), head = std::forward<decltype(head)>(head)]
-        	(auto && ... args) {
+        	(auto && ... args) 
+			{
 		        return f(head, std::forward<decltype(args)>(args)...);
-			}, std::forward<decltype(arg)>(arg)...);
-
+			}, 
+			std::forward<decltype(arg)>(arg)...);
 	else if constexpr (current_pos == arg_pos)
-		return [](auto && f, auto && head, auto && ... args) {
+		return 
+		    [](auto && f, auto && head, auto && ... args) 
+	        {
 			return std::bind(std::forward<decltype(f)>(f),
 				std::placeholders::_1, std::forward<decltype(head)>(head),
 				std::forward<decltype(args)>(args)...);
 			} (std::forward<decltype(f)>(f), std::forward<decltype(head)>(head),
 				std::forward<decltype(arg)>(arg)...);
-			else
-				static_assert(std::bool_constant<false>, "This function does not has requests argument.");
+	else
+		static_assert(std::bool_constant<false>::value, "This function does not has requests argument.");
 }
 
 }  // namespace nyaruga_util_impl
 
 	// 指定した引数以外を適用した関数を返す高階関数 f(arg_pos = 1, 2, 3, 4...)
 template<std::size_t arg_pos, typename F, typename ... Arg>
-decltype(auto) bind_other_than_select_arg(F && f, Arg && ... arg) {
+constexpr decltype(auto) 
+bind_other_than_select_arg(F && f, Arg && ... arg) noexcept {
 	return nyaruga_util_impl::bind_other_than_select_arg_impl<1, arg_pos>
 		(std::forward<F>(f), std::forward<Arg>(arg)...);
 }

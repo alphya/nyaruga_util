@@ -27,7 +27,7 @@ using num_t = boost::multiprecision::number<boost::multiprecision::cpp_dec_float
 // 微分します
 // 7点近似 5点より精度高い
 template <typename F, typename Arg>
-decltype(auto) diff(F && f, Arg && x)
+decltype(auto) diff(F && f, Arg && x) noexcept(noexcept(f(x)))
 {
 	num_t&& h = DBL_EPSILON;
 	num_t&& y1 = f(static_cast<num_t>(x + h));
@@ -44,7 +44,7 @@ decltype(auto) diff(F && f, Arg && x)
 
 // 5点近似
 template <typename F, typename Arg>
-decltype(auto) diff_fast(F && f, Arg&& x)
+decltype(auto) diff_fast(F && f, Arg&& x) noexcept(noexcept(f(x)))
 {
 	auto && h = DBL_EPSILON;
 	auto && y1 = f(x + h);

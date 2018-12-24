@@ -13,23 +13,23 @@
 # pragma once
 #endif
 
+#include <boost/noncopyable.hpp>
+#include <nyaruga_util/nonmovable.hpp>
+
 namespace nyaruga_util {
 
 // public 継承、　private コンストラクタ、　friend 指定　して使う
 
 template<class Derived>
-class singleton
+class singleton : 
+	// コピー／ムーブ禁止
+	private boost::noncopyable, private nyaruga_util::nonmovable
 {
 	static Derived& m_instance ;
 	static void use(Derived const&) {}
 protected:
 	singleton() = default;
 public:
-	// コピー／ムーブ禁止
-	singleton(singleton const&) = delete;
-	singleton& operator=(singleton const&) = delete;
-	singleton(singleton&&) = delete;
-	singleton& operator=(singleton&&) = delete;
 	static Derived& get_instance()
 	{
 		static Derived instance;

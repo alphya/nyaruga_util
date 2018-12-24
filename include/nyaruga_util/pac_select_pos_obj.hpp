@@ -14,14 +14,15 @@ namespace nyaruga_util {
 namespace nyaruga_util_impl {
 
 template<size_t current_pos, size_t target_pos, typename Head, typename ... Pack>
-constexpr decltype(auto) pac_select_pos_obj_impl(Head && head, Pack && ... pack) noexcept
+constexpr decltype(auto) 
+pac_select_pos_obj_impl(Head && head, Pack && ... pack) noexcept
 {
 	if constexpr (current_pos == target_pos)
 		return head;
 	else if constexpr (current_pos < target_pos)
 		return pac_select_pos_obj_impl<current_pos + 1, target_pos>(std::forward<Pack>(pack)...);
 	else
-		static_assert(std::bool_constant<false>, "pos is out of pac");
+		static_assert(std::bool_constant<false>::value, "pos is out of pac");
 }
 
 } // namespace nyaruga_util_impl
@@ -29,7 +30,8 @@ constexpr decltype(auto) pac_select_pos_obj_impl(Head && head, Pack && ... pack)
 // pac select pos expansion
 // パラメーターパックの任意の位置のオブジェクトを返す関数
 template<size_t pos, typename ... Pack>
-constexpr decltype(auto) pac_select_pos_obj(Pack && ... pack) noexcept
+constexpr decltype(auto) 
+pac_select_pos_obj(Pack && ... pack) noexcept
 {
 	return nyaruga_util_impl::pac_select_pos_obj_impl<1, pos>(std::forward<Pack>(pack)...);
 }

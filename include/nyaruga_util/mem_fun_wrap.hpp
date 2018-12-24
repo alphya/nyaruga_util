@@ -24,7 +24,8 @@ template
 	typename Obj,
 	typename ... Args
 >
-auto mem_fun_wrap(Ret(C::* && f)(Args...), Obj * && obj)
+constexpr auto 
+mem_fun_wrap(Ret(C::* && f)(Args...), Obj * && obj) noexcept
 {
 	return
 		[
@@ -44,7 +45,8 @@ template
 	typename Obj,
 	typename ... Args
 >
-auto mem_fun_wrap(Ret(C::* && f)(Args...), Obj && obj)
+constexpr auto 
+mem_fun_wrap(Ret(C::* && f)(Args...), Obj && obj) noexcept
 {
 	return
 		[

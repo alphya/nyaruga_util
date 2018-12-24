@@ -17,14 +17,16 @@ namespace nyaruga_util {
 
 //通常関数用
 template<typename Ret, typename... Args>
-constexpr decltype(auto) get_function_argument_num(Ret(*)(Args...)) noexcept 
+constexpr decltype(auto) 
+get_function_argument_num(Ret(*)(Args...)) noexcept 
 {
 	return sizeof...(Args);
 };
 
 //メンバ関数用
 template<typename Ret, typename C, typename... Args>
-constexpr decltype(auto) get_function_argument_num(Ret(C::*)(Args...)) noexcept 
+constexpr decltype(auto) 
+get_function_argument_num(Ret(C::*)(Args...)) noexcept 
 {
 	return sizeof...(Args);
 };

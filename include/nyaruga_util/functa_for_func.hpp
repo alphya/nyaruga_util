@@ -16,7 +16,7 @@
 #include <type_traits>
 
 namespace nyaruga_util {
-    auto _1 = [](auto && f) { return std::forward<decltype(f)>(f)(); };
+    constexpr auto _1 = [](auto && f) { return std::forward<decltype(f)>(f)(); };
 } // nyaruga_util
 
 #endif // #ifndef NYARUGA_UTIL_FUNCTA_FOR_FUNC_HPP

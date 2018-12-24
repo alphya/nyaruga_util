@@ -31,7 +31,7 @@ struct get_template_param {
 template<int N, typename First, typename... Rest>
 struct get_template_param<N, First, Rest...> {
 	using type = std::conditional_t<N == 0, First, 
-		typename get_template_param<N - 1, Rest...>::type>;
+	    typename get_template_param<N - 1, Rest...>::type>;
 };
 
 } // namespace nyaruga_util_impl
