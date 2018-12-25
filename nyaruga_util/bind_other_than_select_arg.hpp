@@ -15,6 +15,7 @@
 
 #include <type_traits>
 #include <functional>
+#include <nyaruga_util/make_compile_error.hpp>
 
 namespace nyaruga_util {
 
@@ -54,7 +55,7 @@ bind_other_than_select_arg_impl(F && f, H && head, Arg && ... arg) noexcept
 			} (std::forward<decltype(f)>(f), std::forward<decltype(head)>(head),
 				std::forward<decltype(arg)>(arg)...);
 	else
-		static_assert(std::bool_constant<false>::value, "This function does not has requests argument.");
+		NYARUGA_MAKE_COMPILE_ERROR("This function does not has requests argument.");
 }
 
 }  // namespace nyaruga_util_impl

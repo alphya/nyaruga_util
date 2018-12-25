@@ -8,6 +8,7 @@
 #define NYARUGA_UTIL_PAC_SELECT_POS_OBJ_HPP
 
 #include <type_traits>
+#include <nyaruga_util/make_compile_error.hpp>
 
 namespace nyaruga_util {
 
@@ -22,7 +23,7 @@ pac_select_pos_obj_impl(Head && head, Pack && ... pack) noexcept
 	else if constexpr (current_pos < target_pos)
 		return pac_select_pos_obj_impl<current_pos + 1, target_pos>(std::forward<Pack>(pack)...);
 	else
-		static_assert(std::bool_constant<false>::value, "pos is out of pac");
+		NYARUGA_MAKE_COMPILE_ERROR("pos is out of pac");
 }
 
 } // namespace nyaruga_util_impl

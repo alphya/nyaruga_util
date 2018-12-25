@@ -15,6 +15,7 @@
 
 #include <type_traits>
 #include <functional>
+#include <nyaruga_util/make_compile_error.hpp>
 
 namespace nyaruga_util {
 
@@ -34,7 +35,7 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack && ... pack) noexcept
 			std::forward<Pack>(pack)...
 		);
 	else
-		static_assert(std::bool_constant<false>::value, "pos is out of pac");
+		NYARUGA_MAKE_COMPILE_ERROR("pos is out of pac");
 }
 
 } // namespace nyaruga_util_impl

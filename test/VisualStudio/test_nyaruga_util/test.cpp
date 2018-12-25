@@ -15,6 +15,8 @@ using namespace nyaruga_util;
 #define BOOST_TEST_MODULE Mytest
 #include <boost/test/unit_test.hpp>
 
+#include <boost/static_assert.hpp>
+
 BOOST_AUTO_TEST_CASE(test1)
 {
 	const int x = 1;
