@@ -8,5 +8,8 @@ set(sources
 )
 
 add_executable(${target} ${sources})
+target_link_libraries(${target} ${Boost_LIBRARIES})
+# target_link_libraries(${target} boost_unit_test_framework-mgw63-mt-d-x32-1_69)
+# target_link_libraries(${target} libboost_unit_test_framework-vc141-mt-gd-x64-1_69.lib)
 add_test(singleton "${EXECUTABLE_OUTPUT_PATH}/${target}")
 set_tests_properties(singleton PROPERTIES LABELS "all;singleton")

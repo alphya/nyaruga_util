@@ -1,13 +1,44 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(nyaruga_util CXX)
+enable_language(CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_definitions(-std=c++17 -O3 -Wall -Wextra -pedantic)
+project(nyaruga_util)
+enable_testing()
 
-include_directories(./)
+# build type
+if( NOT DEFINED CMAKE_BUILD_TYPE )
+  set(CMAKE_BUILD_TYPE Debug)
+endif( NOT DEFINED CMAKE_BUILD_TYPE )
+
+option( BUILD_TESTS "If true nyaruga_util's tests will be built" TRUE)
+
+#set(CMAKE_CXX_FLAGS_DEBUG "-W -Wall -Wextra -Wno-unused-parameter -Werror -std=c++17 -O0 -g")
+#set(CMAKE_C_FLAGS_DEBUG "-W -Wall -Wextra -Wno-unused-parameter -Werror -O0 -g")
+#set(CMAKE_CXX_FLAGS_RELEASE "-W -Wall -Wextra -Wno-unused-parameter -Werror -std=c++17 -O2")
+#set(CMAKE_C_FLAGS_RELEASE "-W -Wall -Wextra -Wno-unused-parameter -Werror -O2")
+
+#if you don't want the full compiler output, remove the following line
+if( NOT DEFINED CMAKE_VERBOSE_MAKEFILE )
+  set(CMAKE_VERBOSE_MAKEFILE OFF)
+endif( NOT DEFINED CMAKE_VERBOSE_MAKEFILE )
+
+if( NOT DEFINED Boost_USE_MULTITHREADED )
+  set(Boost_USE_MULTITHREADED ON)
+endif( NOT DEFINED Boost_USE_MULTITHREADED )
+
+find_package( Boost 1.69.0 REQUIRED )
+if( NOT Boost_FOUND )
+  message( SEND_ERROR "Required package Boost was not detected." )
+endif (NOT Boost_FOUND)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-add_subdirectory(test)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS} )
+link_directories( ${Boost_LIBRARY_DIRS} )
 
-enable_testing()
+if( ${BUILD_TESTS} )
+  subdirs(test)
+endif( ${BUILD_TESTS} )
