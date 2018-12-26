@@ -15,10 +15,21 @@ endif( NOT DEFINED CMAKE_BUILD_TYPE )
 
 option( BUILD_TESTS "If true nyaruga_util's tests will be built" TRUE)
 
-#set(CMAKE_CXX_FLAGS_DEBUG "-W -Wall -Wextra -Wno-unused-parameter -Werror -std=c++17 -O0 -g")
-#set(CMAKE_C_FLAGS_DEBUG "-W -Wall -Wextra -Wno-unused-parameter -Werror -O0 -g")
-#set(CMAKE_CXX_FLAGS_RELEASE "-W -Wall -Wextra -Wno-unused-parameter -Werror -std=c++17 -O2")
-#set(CMAKE_C_FLAGS_RELEASE "-W -Wall -Wextra -Wno-unused-parameter -Werror -O2")
+if(MSVC)
+  # Force to always compile with W4
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  # Update if necessary
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter -Werror -pedantic")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
+  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
+  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
+endif()
 
 #if you don't want the full compiler output, remove the following line
 if( NOT DEFINED CMAKE_VERBOSE_MAKEFILE )
