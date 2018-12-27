@@ -18,6 +18,8 @@
 
 namespace nyaruga_util {
 
+namespace singleton_ { // protection from unintended ADL
+
 // public 継承、　private コンストラクタ、　friend 指定　して使う
 
 template<class Derived>
@@ -41,6 +43,10 @@ public:
 // テンプレートのODR例外により、これをヘッダに書いてもOK
 template<class Derived>
 Derived& singleton<Derived>::m_instance = singleton<Derived>::get_instance();
+
+}
+
+using namespace singleton_;
 
 } // namespace nyaruga_util
 

@@ -15,6 +15,8 @@
 
 namespace nyaruga_util {
 
+namespace nonmovable_  { // protection from unintended ADL
+
 class nonmovable
 {
 protected:
@@ -27,6 +29,10 @@ protected:
 	nonmovable &
 		operator=(nonmovable &&) noexcept = delete;
 };
+
+}
+
+using nonmovable = nonmovable_::nonmovable;
 
 } // namespace nyaruga_util
 

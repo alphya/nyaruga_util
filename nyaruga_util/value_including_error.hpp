@@ -21,6 +21,8 @@
 namespace nyaruga_util
 {
 
+namespace value_including_error_ { // protection from unintended ADL
+
 // åÎç∑Çä‹Çﬁíl
 struct value_including_error
 {
@@ -29,6 +31,10 @@ struct value_including_error
 	operator num_t() { return value; }
 	operator num_t() const { return value; }
 };
+
+}
+
+using value_including_error = value_including_error_::value_including_error;
 
 namespace nyaruga_util_impl {
 
@@ -61,7 +67,6 @@ decltype(auto) generate_error(F && f, Args && ... args)
 		nyaruga_util_impl::generate_error_impl<1, sizeof...(args)>
 		(std::forward<F>(f), std::forward<decltype(args)>(args)... ), 0.5l));
 }
-
 
 } // namespace nyaruga_util
 
