@@ -16,9 +16,7 @@
 #include <boost/preprocessor/stringize.hpp>
 
 #define MAKE_COMPILE_ERROR( ... ) \
-static_assert([](auto && a) { \
-return std::remove_reference<decltype(a)>::type::value; \
-} (std::is_void<int>{}), \
+static_assert([]{return false;}(), \
 "\n\n\nMAKED COMPILE ERROR!\n" \
 "file: " BOOST_PP_STRINGIZE(__FILE__) "\n" \
 "line: " BOOST_PP_STRINGIZE(__LINE__) "\n" \
