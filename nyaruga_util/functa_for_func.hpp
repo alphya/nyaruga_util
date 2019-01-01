@@ -15,7 +15,7 @@
 
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga_util::arg_is_func_for_for_each {
     constexpr auto _1 = [](auto && f) { return std::forward<decltype(f)>(f)(); };
 } // nyaruga_util
 

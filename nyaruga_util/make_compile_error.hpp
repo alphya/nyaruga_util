@@ -15,7 +15,7 @@
 
 #include <boost/preprocessor/stringize.hpp>
 
-#define MAKE_COMPILE_ERROR( ... ) \
+#define NYARUGA_MAKE_COMPILE_ERROR( ... ) \
 static_assert([]{return false;}(), \
 "\n\n\nMAKED COMPILE ERROR!\n" \
 "file: " BOOST_PP_STRINGIZE(__FILE__) "\n" \
