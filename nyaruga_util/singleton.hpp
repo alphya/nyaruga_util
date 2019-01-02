@@ -121,6 +121,7 @@ end of main()
 ~MassSingletonA()
 
 */
+
 namespace singleton_impl_2 { // protection from unintended ADL
 
 // static inline 変数はc++17の機能なので、
@@ -166,6 +167,8 @@ public:
 };
 
 }  // namespace impl
+
+// すでに存在するクラスを、シングルトンに取得したい場合に用いる
 
 class get_as_singleton final {
 	get_as_singleton() = delete;
