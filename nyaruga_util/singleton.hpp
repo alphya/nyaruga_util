@@ -4,6 +4,11 @@
 //   (See accompanying file ../LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
+// このクラスは、
+// https://theolizer.com/cpp-school2/cpp-school2-19/
+// からもらってきたものです
+// ありがとうございます。
+
 #ifndef NYARUGA_UTIL_SINGLETON_HPP
 #define NYARUGA_UTIL_SINGLETON_HPP
 
