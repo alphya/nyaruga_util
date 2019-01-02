@@ -17,7 +17,6 @@
 
 #include <boost/noncopyable.hpp>
 #include <nyaruga_util/nonmovable.hpp>
-#include <boost/polymorphic_cast.hpp>
 #include <mutex>
 #include <utility>
 #include <memory>
@@ -34,7 +33,9 @@ namespace singleton_impl_1 { // protection from unintended ADL
 // https://theolizer.com/cpp-school2/cpp-school2-19/
 // からもらってきたものです
 // ありがとうございます。
+
 // public 継承、　private コンストラクタ、　friend 指定　して使う
+// castには、#include <boost/polymorphic_cast.hpp>　をつかう
 
 template<class Derived>
 class singleton : 
