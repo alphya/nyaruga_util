@@ -80,7 +80,6 @@ int main()
 
 }
 
-
 */
 
 #endif // #ifndef NYARUGA_UTIL_DIFF_HPP
