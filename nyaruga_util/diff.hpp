@@ -60,7 +60,6 @@ decltype(auto) diff_fast(F && f, Arg&& x) noexcept(noexcept(f(x)))
 
 /*
 
-
 using namespace nyaruga_util;
 
 // ”÷•ª‚·‚éŠÖ”’è‹`B
