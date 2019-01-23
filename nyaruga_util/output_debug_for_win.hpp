@@ -20,9 +20,11 @@ namespace nyaruga_util {
 
 void print_dbg(std::string msg)
 {
+#ifdef _DEBUG
 	char buf[128];
 	wsprintf(buf, msg.c_str());
 	OutputDebugString(buf);
+#endif
 }
 
 } // namespace nyaruga_util

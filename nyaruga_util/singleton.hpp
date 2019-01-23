@@ -121,11 +121,11 @@ end of main()
 ~MassSingletonA()
 
 */
+/* static inline がMSVCで不安定なので、封印してます
+   STL のコンテナ使うと、何故かメモリリークします
 
 namespace singleton_impl_2 { // protection from unintended ADL
 
-// static inline 変数はc++17の機能なので、
-// c++11 の環境の場合、適宜staticに読みかえて、クラス外で初期化してください！
 namespace impl
 {
 
@@ -224,11 +224,12 @@ int main() {
 	singletonNS::singleton::clear();
 }
 
-*/
 
 } // namespace singleton_impl_2
 
 using singleton_impl_2::get_as_singleton;
+
+*/
 
 } // namespace nyaruga_util
 

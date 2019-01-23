@@ -46,19 +46,19 @@ inline constexpr void safe_Release(T*& p) noexcept
 template<typename T = void>
 inline constexpr void safe_delete(...) noexcept
 {
-	static_assert(false, "This arg can not delete.");
+	static_assert([] {return false; }(), "This arg can not delete.");
 }
 
 template<typename T = void>
 inline constexpr void safe_delete_array(...) noexcept
 {
-	static_assert(false, "This arg can not delete.");
+	static_assert([] {return false; }(), "This arg can not delete.");
 }
 
 template<typename T = void>
 inline constexpr void safe_Release(...) noexcept
 {
-	static_assert(false, "This arg has not Release.");
+	static_assert([] {return false; }(), "This arg has not Release.");
 }
 
 } // namespace nyaruga_util
