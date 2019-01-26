@@ -10,7 +10,7 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#   pragma once
 #endif
 
 #include <Windows.h>
@@ -21,9 +21,9 @@ namespace nyaruga_util {
 void print_dbg(std::string msg)
 {
 #ifdef _DEBUG
-	char buf[128];
-	wsprintf(buf, msg.c_str());
-	OutputDebugString(buf);
+   char buf[128];
+   wsprintf(buf, msg.c_str());
+   OutputDebugString(buf);
 #endif
 }
 

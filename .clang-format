@@ -1,0 +1,21 @@
+BasedOnStyle: LLVM
+BreakBeforeBraces: Stroustrup
+IndentWidth: 3
+Standard: Cpp11
+UseTab: Never
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine : true
+AlwaysBreakAfterDefinitionReturnType : None
+IndentPPDirectives: AfterHash
+ConstructorInitializerIndentWidth: 3
+ContinuationIndentWidth: 3
+IndentCaseLabels: false
+BreakConstructorInitializers: BeforeColon
+BreakBeforeInheritanceComma: false
+AccessModifierOffset: -3
+Cpp11BracedListStyle: false
+ColumnLimit: 0
+PointerAlignment: Middle
+BreakConstructorInitializersBeforeComma: false
+AlignEscapedNewlines: DontAlign
+ConstructorInitializerAllOnOneLineOrOnePerLine: false

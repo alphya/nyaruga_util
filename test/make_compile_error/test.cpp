@@ -7,18 +7,14 @@
 
 using namespace nyaruga_util;
 
-
 BOOST_AUTO_TEST_CASE(make_compile_error_test_1)
 {
+   auto ll = [](auto &&... hh) {
+      return nyaruga_util::pac_select_pos_obj<0>(hh...);
+   };
 
-	auto ll = [](auto && ... hh)
-	{
-		return nyaruga_util::pac_select_pos_obj<0>(hh...);
-	};
-
-	// BOOST_CHECK(ll(9, 10, 11) == 10);
-	BOOST_CHECK(true);
-
+   // BOOST_CHECK(ll(9, 10, 11) == 10);
+   BOOST_CHECK(true);
 }
 
 /* コメントアウトを外した時のコンパイル時出力

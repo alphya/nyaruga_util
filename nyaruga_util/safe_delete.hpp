@@ -10,55 +10,58 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#   pragma once
 #endif
 
 namespace nyaruga_util {
 
 template <class T>
-inline constexpr void safe_delete(T*& p) noexcept
+inline constexpr void safe_delete(T *& p) noexcept
 {
-	//  不完全な型のポインタをdeleteしようとした時にコンパイルエラーにする
-	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-	(void)sizeof(type_must_be_complete);
-	if (p) delete p;
-	p = nullptr;
-}
-    
-template <class T>
-inline constexpr void safe_delete_array(T*& p) noexcept
-{
-	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-	(void)sizeof(type_must_be_complete);
-	if (p) delete[] p;
-	p = nullptr;
+   //  不完全な型のポインタをdeleteしようとした時にコンパイルエラーにする
+   typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+   (void)sizeof(type_must_be_complete);
+   if (p)
+      delete p;
+   p = nullptr;
 }
 
 template <class T>
-inline constexpr void safe_Release(T*& p) noexcept
+inline constexpr void safe_delete_array(T *& p) noexcept
 {
-	typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-	(void)sizeof(type_must_be_complete);
-	if (p) p->Release();
-	// p = nullptr;
+   typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+   (void)sizeof(type_must_be_complete);
+   if (p)
+      delete[] p;
+   p = nullptr;
 }
 
-template<typename T = void>
+template <class T>
+inline constexpr void safe_Release(T *& p) noexcept
+{
+   typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+   (void)sizeof(type_must_be_complete);
+   if (p)
+      p->Release();
+   // p = nullptr;
+}
+
+template <typename T = void>
 inline constexpr void safe_delete(...) noexcept
 {
-	static_assert([] {return false; }(), "This arg can not delete.");
+   static_assert([] { return false; }(), "This arg can not delete.");
 }
 
-template<typename T = void>
+template <typename T = void>
 inline constexpr void safe_delete_array(...) noexcept
 {
-	static_assert([] {return false; }(), "This arg can not delete.");
+   static_assert([] { return false; }(), "This arg can not delete.");
 }
 
-template<typename T = void>
+template <typename T = void>
 inline constexpr void safe_Release(...) noexcept
 {
-	static_assert([] {return false; }(), "This arg has not Release.");
+   static_assert([] { return false; }(), "This arg has not Release.");
 }
 
 } // namespace nyaruga_util

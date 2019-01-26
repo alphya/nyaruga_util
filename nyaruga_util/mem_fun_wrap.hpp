@@ -10,53 +10,27 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#   pragma once
 #endif
 
 #include <type_traits>
 
 namespace nyaruga_util {
 
-template
-<
-	typename Ret,
-	typename C,
-	typename Obj,
-	typename ... Args
->
-constexpr auto 
-mem_fun_wrap(Ret(C::* && f)(Args...), Obj * && obj) noexcept
+template <typename Ret, typename C, typename Obj, typename... Args>
+constexpr auto mem_fun_wrap(Ret (C::*&& f)(Args...), Obj *&& obj) noexcept
 {
-	return
-		[
-			f = std::forward<decltype(f)>(f),
-			obj = std::forward<decltype(obj)>(obj)
-		]
-	(auto && ... args) mutable
-	{
-		return (obj->*f)(std::forward<decltype(args)>(args)...);
-	};
+   return [f = std::forward<decltype(f)>(f), obj = std::forward<decltype(obj)>(obj)](auto &&... args) mutable {
+      return (obj->*f)(std::forward<decltype(args)>(args)...);
+   };
 }
 
-template
-<
-	typename Ret,
-	typename C,
-	typename Obj,
-	typename ... Args
->
-constexpr auto 
-mem_fun_wrap(Ret(C::* && f)(Args...), Obj && obj) noexcept
+template <typename Ret, typename C, typename Obj, typename... Args>
+constexpr auto mem_fun_wrap(Ret (C::*&& f)(Args...), Obj && obj) noexcept
 {
-	return
-		[
-			f = std::forward<decltype(f)>(f),
-			obj = std::forward<decltype(obj)>(obj)
-		]
-	(auto && ... args) mutable
-	{
-		return (obj.*f)(std::forward<decltype(args)>(args)...);
-	};
+   return [f = std::forward<decltype(f)>(f), obj = std::forward<decltype(obj)>(obj)](auto &&... args) mutable {
+      return (obj.*f)(std::forward<decltype(args)>(args)...);
+   };
 }
 
 } // namespace nyaruga_util

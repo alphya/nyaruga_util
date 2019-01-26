@@ -10,27 +10,23 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#   pragma once
 #endif
 
 namespace nyaruga_util {
 
-namespace nonmovable_  { // protection from unintended ADL
+namespace nonmovable_ { // protection from unintended ADL
 
-class nonmovable
-{
+class nonmovable {
 protected:
-	constexpr nonmovable() noexcept = default;
-	~nonmovable() = default;
-	constexpr nonmovable(nonmovable const &) noexcept = default;
-	constexpr nonmovable(nonmovable &&) noexcept = delete;
-	nonmovable &
-		operator=(nonmovable const &) noexcept = default;
-	nonmovable &
-		operator=(nonmovable &&) noexcept = delete;
+   constexpr nonmovable() noexcept = default;
+   ~nonmovable() = default;
+   constexpr nonmovable(nonmovable const &) noexcept = default;
+   constexpr nonmovable(nonmovable &&) noexcept = delete;
+   nonmovable & operator=(nonmovable const &) noexcept = default;
+   nonmovable & operator=(nonmovable &&) noexcept = delete;
 };
-
-}
+} // namespace nonmovable_
 
 using nonmovable = nonmovable_::nonmovable;
 

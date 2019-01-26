@@ -10,64 +10,64 @@
 // MS compatible compilers support #pragma once
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#   pragma once
 #endif
 
 namespace nyaruga_util {
 
 //通常関数用
-template<typename Ret, typename... Args>
-constexpr decltype(auto) 
-get_function_argument_num(Ret(*)(Args...)) noexcept 
+template <typename Ret, typename... Args>
+constexpr decltype(auto) get_function_argument_num(Ret (*)(Args...)) noexcept
 {
-	return sizeof...(Args);
+   return sizeof...(Args);
 };
 
 //メンバ関数用
-template<typename Ret, typename C, typename... Args>
-constexpr decltype(auto) 
-get_function_argument_num(Ret(C::*)(Args...)) noexcept 
+template <typename Ret, typename C, typename... Args>
+constexpr decltype(auto)
+   get_function_argument_num(Ret (C::*)(Args...)) noexcept
 {
-	return sizeof...(Args);
+   return sizeof...(Args);
 };
-	
-	/*
-	//通常関数用
+
+/*
+//通常関数用
 template<typename Ret, typename... Args>
 struct get_function_argument_num
 {
-    static const std::size_t value = sizeof...(Args);
+static const std::size_t value = sizeof...(Args);
 };
 
 template<typename Ret, typename... Args>
-constexpr std::size_t get_function_argument_num_v = get_function_argument_num<Ret,Args ...>::value;
-	*/
+constexpr std::size_t get_function_argument_num_v =
+get_function_argument_num<Ret,Args ...>::value;
+*/
 
 } // namespace nyaruga_util
 
 /*
 
 struct bbb {
-	auto fn(int i, double d)
-	{
-		std::cout << i << " " << d;
-	};
+        auto fn(int i, double d)
+        {
+                std::cout << i << " " << d;
+        };
 };
 
 auto fn(int i, double d, float f, int h, double p)
 {
-	std::cout << i << " " << d << " " << f << " " << h << " " << p;
+        std::cout << i << " " << d << " " << f << " " << h << " " << p;
 };
 
 int main()
 {
-	bbb kkk();
+        bbb kkk();
 
-	auto && aaa = get_function_argument_num(&bbb::fn);
+        auto && aaa = get_function_argument_num(&bbb::fn);
 
-	auto && www = get_function_argument_num(fn);
+        auto && www = get_function_argument_num(fn);
 
-	std::cout << aaa << " " << www;
+        std::cout << aaa << " " << www;
 
 }
 
