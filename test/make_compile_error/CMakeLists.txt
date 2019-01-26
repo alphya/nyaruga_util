@@ -13,3 +13,6 @@ target_link_libraries(${target} ${Boost_LIBRARIES})
 # target_link_libraries(${target} libboost_unit_test_framework-vc141-mt-gd-x64-1_69.lib)
 add_test(make_compile_error "${EXECUTABLE_OUTPUT_PATH}/${target}")
 set_tests_properties(make_compile_error PROPERTIES LABELS "all;singleton")
+
+clang_format(${target})
+clang_tidy(${target})

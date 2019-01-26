@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.6)
+
+include(cmake/DoClangTidy.cmake)
+include(cmake/FormatFilesWithClangFormat.cmake)
 
 enable_language(CXX)
-set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -16,6 +19,7 @@ endif( NOT DEFINED CMAKE_BUILD_TYPE )
 option( BUILD_TESTS "If true nyaruga_util's tests will be built" TRUE)
 
 if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
   # Force to always compile with W4
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
     string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -24,7 +28,7 @@ if(MSVC)
   endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   # Update if necessary
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter -Werror -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -W -Wall -Wextra -Wno-unused-parameter -Werror -pedantic")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
@@ -45,9 +49,11 @@ if( NOT Boost_FOUND )
   message( SEND_ERROR "Required package Boost was not detected." )
 endif (NOT Boost_FOUND)
 
+
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS} )
+
 link_directories( ${Boost_LIBRARY_DIRS} )
 
 if( ${BUILD_TESTS} )
