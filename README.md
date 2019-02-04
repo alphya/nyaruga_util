@@ -1,4 +1,4 @@
-# nyaruga_util
+#nyaruga_util
 
 It is utility of c++17.
 
