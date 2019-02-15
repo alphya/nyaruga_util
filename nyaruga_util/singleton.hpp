@@ -27,17 +27,17 @@ namespace nyaruga_util {
 
 namespace singleton_impl_1 { // protection from unintended ADL
 
-// ‚±‚ÌƒNƒ‰ƒX‚ÍA
+// ï¿½ï¿½ï¿½ÌƒNï¿½ï¿½ï¿½Xï¿½ÍA
 // https://theolizer.com/cpp-school2/cpp-school2-19/
-// ‚©‚ç‚à‚ç‚Á‚Ä‚«‚½‚à‚Ì‚Å‚·
-// ‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·B
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Å‚ï¿½
+// ï¿½ï¿½ï¿½è‚ªï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
-// public Œp³A@private ƒRƒ“ƒXƒgƒ‰ƒNƒ^A@friend w’è@‚µ‚Äg‚¤
-// cast‚É‚ÍA#include <boost/polymorphic_cast.hpp>@‚ğ‚Â‚©‚¤
+// public ï¿½pï¿½ï¿½ï¿½Aï¿½@private ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ï¿½Aï¿½@friend ï¿½wï¿½ï¿½@ï¿½ï¿½ï¿½Ägï¿½ï¿½
+// castï¿½É‚ÍA#include <boost/polymorphic_cast.hpp>ï¿½@ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
 
 template <class Derived>
 class singleton :
-   // ƒRƒs[^ƒ€[ƒu‹Ö~
+   // ï¿½Rï¿½sï¿½[ï¿½^ï¿½ï¿½ï¿½[ï¿½uï¿½Ö~
    private boost::noncopyable,
    private nyaruga_util::nonmovable {
    static Derived & m_instance;
@@ -55,7 +55,7 @@ public:
    }
 };
 
-// ƒeƒ“ƒvƒŒ[ƒg‚ÌODR—áŠO‚É‚æ‚èA‚±‚ê‚ğƒwƒbƒ_‚É‘‚¢‚Ä‚àOK
+// ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ODRï¿½ï¿½Oï¿½É‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½wï¿½bï¿½_ï¿½Éï¿½ï¿½ï¿½ï¿½Ä‚ï¿½OK
 template <class Derived>
 Derived & singleton<Derived>::m_instance = singleton<Derived>::get_instance();
 } // namespace singleton_impl_1
@@ -64,7 +64,7 @@ using namespace singleton_impl_1;
 
 /*
 
-// —ÊYƒVƒ“ƒOƒ‹ƒgƒ“A
+// ï¿½ÊYï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½gï¿½ï¿½A
 class MassSingletonA : public singleton<MassSingletonA>
 {
         friend class singleton<MassSingletonA>;
@@ -78,7 +78,7 @@ public:
         }
 };
 
-// —ÊYƒVƒ“ƒOƒ‹ƒgƒ“B
+// ï¿½ÊYï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½gï¿½ï¿½B
 class MassSingletonB : public singleton<MassSingletonB>
 {
         friend class singleton<MassSingletonB>;
@@ -122,8 +122,8 @@ end of main()
 ~MassSingletonA()
 
 */
-/* static inline ‚ªMSVC‚Å•sˆÀ’è‚È‚Ì‚ÅA••ˆó‚µ‚Ä‚Ü‚·
-   STL ‚ÌƒRƒ“ƒeƒig‚¤‚ÆA‰½ŒÌ‚©ƒƒ‚ƒŠƒŠ[ƒN‚µ‚Ü‚·
+/* static inline ï¿½ï¿½MSVCï¿½Å•sï¿½ï¿½ï¿½ï¿½È‚Ì‚ÅAï¿½ï¿½ï¿½ó‚µ‚Ä‚Ü‚ï¿½
+   STL ï¿½ÌƒRï¿½ï¿½ï¿½eï¿½iï¿½gï¿½ï¿½ï¿½ÆAï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Nï¿½ï¿½ï¿½Ü‚ï¿½
 
 namespace singleton_impl_2 { // protection from unintended ADL
 
@@ -172,7 +172,7 @@ singleton object."); }();
 
 }  // namespace impl
 
-// ‚·‚Å‚É‘¶İ‚·‚éƒNƒ‰ƒX‚ğAƒVƒ“ƒOƒ‹ƒgƒ“‚Éæ“¾‚µ‚½‚¢ê‡‚É—p‚¢‚é
+// ï¿½ï¿½ï¿½Å‚É‘ï¿½ï¿½İ‚ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½Aï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Éæ“¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½É—pï¿½ï¿½ï¿½ï¿½
 
 class get_as_singleton final {
         get_as_singleton() = delete;
@@ -190,7 +190,7 @@ impl::singleton_impl<T>::has_singleton(); }
         static void clear() noexcept { impl::singleton_finalizer::clear(); }
 };
 
-/*
+
 #include <iostream>
 #include <string>
 
@@ -198,7 +198,7 @@ class A {
 public:
         A(){ ++i; };
         explicit A(std::string j) : k(j) { ++i; }
-        ~A(){ std::cout << "ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÌŒÄ‚Î‚ê‚½‰ñ”: " << i << "‰ñ" <<
+        ~A(){ std::cout << "ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ï¿½ÌŒÄ‚Î‚ê‚½ï¿½ï¿½: " << i << "ï¿½ï¿½" <<
 "\n"; }
         std::string k;
         void a(int i) { std::cout << i  << "   " << k << "\n"; }
@@ -206,31 +206,31 @@ public:
 };
 
 int main() {
-        // ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚É"hello"‚ğ“n‚µ‚Ä‚¢‚Ü‚·BA::A(std::string)
+        // ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ï¿½ï¿½"hello"ï¿½ï¿½nï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½BA::A(std::string)
         A& x = singletonNS::singleton::get_singleton<A>("hello");
         x.a(1);  // 1   hello
 
         //
-ƒVƒ“ƒOƒ‹ƒgƒ“‚È‚Ì‚ÅAmake_singleton‚ğ‰½‰ñŒÄ‚ñ‚Å‚àA“¯‚¶ƒIƒuƒWƒFƒNƒg‚ª‹A‚Á‚Ä‚­‚é‚æ‚¤‚É‚µ‚Ä‚Ü‚·
+ï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½gï¿½ï¿½ï¿½È‚Ì‚ÅAmake_singletonï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½Å‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚Ü‚ï¿½
         //
-‚±‚Ìê‡‚ÉAˆø”‚Í‚Ì’l‚Í–³‹‚µ‚Ä‚Ü‚·B‚Å‚·‚ªAˆø”‚ÌŒ^‚É‡‚¤ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ª•K—v‚Å‚·
+ï¿½ï¿½ï¿½Ìê‡ï¿½ÉAï¿½ï¿½ï¿½ï¿½ï¿½Í‚Ì’lï¿½Í–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚Ü‚ï¿½ï¿½Bï¿½Å‚ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ÌŒ^ï¿½Éï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ï¿½ï¿½ï¿½Kï¿½vï¿½Å‚ï¿½
         A& z = singletonNS::singleton::get_singleton<A>("world");
         z.a(2);  // 2   hello
-        A& w = singletonNS::singleton::get_singleton<A>();  // A::A() ‚ª•K—v‚Å‚·
+        A& w = singletonNS::singleton::get_singleton<A>();  // A::A() ï¿½ï¿½ï¿½Kï¿½vï¿½Å‚ï¿½
         w.a(3);  // 3   hello
 
-        // —LŒø‚È’l‚ğ•Û‚µ‚Ä‚¢‚é‚©‚ğ”»’è‚µ‚Ü‚·
+        // ï¿½Lï¿½ï¿½ï¿½È’lï¿½ï¿½Ûï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½ğ”»’è‚µï¿½Ü‚ï¿½
         if (singletonNS::singleton::has_singleton<A>()) {
 
-                // ‚±‚ñ‚ÈŒ`‚ÅƒIƒuƒWƒFƒNƒg‚ğ‚à‚ç‚¦‚Ü‚·
-                // ƒIƒuƒWƒFƒNƒg‚ğì‚Á‚Ä‚¢‚È‚¢‚Ì‚É‚ÉŒÄ‚Ô‚ÆAstd::logic_error
-—áŠO‚ğ“Š‚°‚Ü‚·
+                // ï¿½ï¿½ï¿½ï¿½ÈŒ`ï¿½ÅƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ç‚¦ï¿½Ü‚ï¿½
+                // ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½Ì‚É‚ÉŒÄ‚Ô‚ÆAstd::logic_error
+ï¿½ï¿½Oï¿½ğ“Š‚ï¿½ï¿½Ü‚ï¿½
                 A& y = singletonNS::singleton::get<A>();
                 y.a(4);  // 4   hello
         }
 
-        // ‰ğ•úˆ—iˆê‰ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^g‚Á‚Ä‚¢‚é‚Ì‚ÅA‚È‚­‚Ä‚à‚¢‚¢‚©‚àHj
-        // ‰ğ•ú‚·‚é‡˜‚ªd—v‚È‚Í‚«‚¿‚ñ‚ÆŒÄ‚ñ‚Å‚­‚¾‚³‚¢I
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ê‰ï¿½Xï¿½}ï¿½[ï¿½gï¿½|ï¿½Cï¿½ï¿½ï¿½^ï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ÅAï¿½È‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Hï¿½j
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‡ï¿½ï¿½ï¿½ï¿½ï¿½dï¿½vï¿½Èï¿½ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ÆŒÄ‚ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½I
         singletonNS::singleton::clear();
 }
 

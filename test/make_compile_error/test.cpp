@@ -9,7 +9,7 @@ using namespace nyaruga_util;
 
 BOOST_AUTO_TEST_CASE(make_compile_error_test_1)
 {
-   auto ll = [](auto &&... hh) {
+   [[maybe_unused]] auto ll = [](auto &&... hh) {
       return nyaruga_util::pac_select_pos_obj<0>(hh...);
    };
 
