@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_HAS_ITERATOR_HPP
 #define NYARUGA_UTIL_HAS_ITERATOR_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <type_traits>
 
@@ -34,11 +30,11 @@ int main()
 {
         static_assert(
                 has_iterator<std::vector<int>>::value,
-                "vector‚ÍiteratorŒ^‚ğ‚Á‚Ä‚¢‚é");
+                "vectorï¿½ï¿½iteratorï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½");
 
         static_assert(
                 !has_iterator<int>::value,
-                "int‚ÍiteratorŒ^‚ğ‚Á‚Ä‚¢‚È‚¢");
+                "intï¿½ï¿½iteratorï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½");
 }
 
 */

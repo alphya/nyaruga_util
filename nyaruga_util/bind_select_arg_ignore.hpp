@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_BIND_SELECT_ARG_IGNORE_HPP
 #define NYARUGA_UTIL_BIND_SELECT_ARG_IGNORE_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <functional>
 #include <nyaruga_util/make_compile_error.hpp>
@@ -42,8 +38,8 @@ constexpr decltype(auto) bind_select_arg_ignore_impl(F && func, Head && head,
 
 } // namespace nyaruga_util_impl
 
-// ƒpƒ‰ƒ[ƒ^[ƒpƒbƒN‚Ì”CˆÓ‚ÌˆÊ’u‚Ìˆø”‚ğ–³‹‚µ‚ÄA
-// ‚»‚ÌˆÊ’u‚ÌŒ^‚Ìˆø”‚ğ‚Æ‚éŠÖ”‚ğ•Ô‚·‚ŠKŠÖ”
+// ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½pï¿½bï¿½Nï¿½Ì”Cï¿½Ó‚ÌˆÊ’uï¿½Ìˆï¿½ï¿½ï¿½ï¿½ğ–³ï¿½ï¿½ï¿½ï¿½ÄA
+// ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ÌŒ^ï¿½Ìˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½Öï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½Kï¿½Öï¿½
 template <size_t pos, typename F, typename... Pack>
 constexpr decltype(auto) bind_select_arg_ignore(F && func,
                                                 Pack &&... pack) noexcept
@@ -67,7 +63,7 @@ int main()
                 (std::cout << ... << std::forward<decltype(hh)>(hh));
         };
 
-        // Œ»İA‰Â•Ï’·ˆø”ŠÖ”‚É‚µ‚©‘Î‰‚µ‚Ä‚È‚¢‚Å‚·@«@‚±‚ê‚É‚Í‚Â‚©‚¦‚Ü‚¹‚ñ
+        // ï¿½ï¿½ï¿½İAï¿½Â•Ï’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½Î‰ï¿½ï¿½ï¿½ï¿½Ä‚È‚ï¿½ï¿½Å‚ï¿½ï¿½@ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½É‚Í‚Â‚ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
         // auto fn = [](int i, double d, float f, int h)
         // {
         //	   std::cout << i << " " << d << " " << f << " " << h;

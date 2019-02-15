@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_PRIVATE_ACCESSOR_HPP
 #define NYARUGA_UTIL_PRIVATE_ACCESSOR_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 // 元となるコード
 // https://gist.github.com/1528856

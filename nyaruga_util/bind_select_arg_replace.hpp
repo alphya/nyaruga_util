@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_BIND_SELECT_ARG_REPLACE_HPP
 #define NYARUGA_UTIL_BIND_SELECT_ARG_REPLACE_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <functional>
 #include <nyaruga_util/make_compile_error.hpp>
@@ -45,9 +41,9 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack &&... pack) noexcept
 
 } // namespace nyaruga_util_impl
 
-// ƒpƒ‰ƒ[ƒ^[ƒpƒbƒN‚Ì”CˆÓ‚ÌˆÊ’u‚Ìˆø”‚ğƒpƒ‰ƒ[ƒ^[ƒpƒbƒN‚É’u‚«Š·‚¦‚é
-// ‚½ŠÖ”‚ğ•Ô‚·‚ŠKŠÖ”
-// bind_other_than_any_pos_arg‚É‚æ‚­—‚Ä‚¢‚é
+// ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½pï¿½bï¿½Nï¿½Ì”Cï¿½Ó‚ÌˆÊ’uï¿½Ìˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½pï¿½bï¿½Nï¿½É’uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½Kï¿½Öï¿½
+// bind_other_than_any_pos_argï¿½É‚æ‚­ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 template <size_t pos, typename F, typename... Pack>
 constexpr decltype(auto) bind_select_arg_replace(F && func,
                                                  Pack &&... pack) noexcept

@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_OUTPUT_DEBUG_FOR_WIN_HPP
 #define NYARUGA_UTIL_OUTPUT_DEBUG_FOR_WIN_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <Windows.h>
 #include <string>

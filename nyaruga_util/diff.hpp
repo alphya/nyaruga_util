@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_DIFF_HPP
 #define NYARUGA_UTIL_DIFF_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <cmath>
@@ -21,12 +17,12 @@
 
 namespace nyaruga_util {
 
-// ‰¼”•”1,000ƒrƒbƒg‚ğ‚Â•‚“®¬”“_”‚Ì’è‹`B‚©‚È‚è‚·‚²‚¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1,000ï¿½rï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Â•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Ì’ï¿½`ï¿½Bï¿½ï¿½ï¿½È‚è‚·ï¿½ï¿½ï¿½ï¿½
 using num_t =
    boost::multiprecision::number<boost::multiprecision::cpp_dec_float<1000>>;
 
-// ”÷•ª‚µ‚Ü‚·
-// 7“_‹ß— 5“_‚æ‚è¸“x‚‚¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+// 7ï¿½_ï¿½ßï¿½ 5ï¿½_ï¿½ï¿½è¸ï¿½xï¿½ï¿½ï¿½ï¿½
 template <typename F, typename Arg>
 decltype(auto) diff(F && f, Arg && x) noexcept(noexcept(f(x)))
 {
@@ -45,7 +41,7 @@ decltype(auto) diff(F && f, Arg && x) noexcept(noexcept(f(x)))
       (60 * std::forward<num_t>(h)));
 }
 
-// 5“_‹ß—
+// 5ï¿½_ï¿½ßï¿½
 template <typename F, typename Arg>
 decltype(auto) diff_fast(F && f, Arg && x) noexcept(noexcept(f(x)))
 {
@@ -63,8 +59,8 @@ decltype(auto) diff_fast(F && f, Arg && x) noexcept(noexcept(f(x)))
 
 using namespace nyaruga_util;
 
-// ”÷•ª‚·‚éŠÖ”’è‹`B
-// ¸“x‚Ì‚½‚ßAdouble‚È‚Ç‚Å‚Í‚È‚­nyaruga_util::num_t‚ğg‚Á‚Ä‚­‚¾‚³‚¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½`ï¿½B
+// ï¿½ï¿½ï¿½xï¿½Ì‚ï¿½ï¿½ßAdoubleï¿½È‚Ç‚Å‚Í‚È‚ï¿½nyaruga_util::num_tï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 num_t fn(num_t && x)
 {
         return (x*x*x);
@@ -76,7 +72,7 @@ int main()
         num_t d = diff(fn, 3.f);
 
         std::cout << std::setprecision(std::numeric_limits<num_t>::digits10 + 1)
-                << "Šú‘Ò‚³‚ê‚é’lF27" << "\ndiff : " << d << "\ndelta: " <<
+                << "ï¿½ï¿½ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½lï¿½F27" << "\ndiff : " << d << "\ndelta: " <<
 DBL_EPSILON;
 
 }

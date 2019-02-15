@@ -7,6 +7,8 @@
 #ifndef NYARUGA_UTIL_PAC_SELECT_POS_OBJ_HPP
 #define NYARUGA_UTIL_PAC_SELECT_POS_OBJ_HPP
 
+#pragma once
+
 #include <nyaruga_util/make_compile_error.hpp>
 #include <type_traits>
 
@@ -31,7 +33,7 @@ constexpr decltype(auto) pac_select_pos_obj_impl(Head && head,
 } // namespace nyaruga_util_impl
 
 // pac select pos expansion
-// ƒpƒ‰ƒ[ƒ^[ƒpƒbƒN‚Ì”CˆÓ‚ÌˆÊ’u‚ÌƒIƒuƒWƒFƒNƒg‚ğ•Ô‚·ŠÖ”
+// ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½pï¿½bï¿½Nï¿½Ì”Cï¿½Ó‚ÌˆÊ’uï¿½ÌƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½Ô‚ï¿½ï¿½Öï¿½
 template <size_t pos, typename... Pack>
 constexpr decltype(auto) pac_select_pos_obj(Pack &&... pack) noexcept
 {
@@ -39,7 +41,7 @@ constexpr decltype(auto) pac_select_pos_obj(Pack &&... pack) noexcept
       std::forward<Pack>(pack)...);
 }
 
-/* Œã‚ÅÀ‘•
+/* ï¿½ï¿½Åï¿½ï¿½ï¿½
 template<size_t pos, typename ... Pack>
 struct pac_select_pos_type(Pack && ... pack)
 {

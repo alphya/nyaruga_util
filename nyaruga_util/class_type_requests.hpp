@@ -11,14 +11,12 @@
 
 namespace nyaruga_util {
 
-template<class Trait>
+template <class Trait>
 struct this_class {
    static_assert(Trait::value == true, "The class type is not requested class.");
 };
 
 } // namespace nyaruga_util
-
-#endif // #ifndef NYARUGA_UTIL_CLASS_TYPE_REQUESTS_HPP
 
 /*  クラスがある要件(type_traits)を満たすことを、static_assert によって保証します。
 
@@ -36,5 +34,6 @@ class my_class
    : this_class<negation<is_class<my_class>>> { // ill-formd
 };
 
-
 */
+
+#endif // #ifndef NYARUGA_UTIL_CLASS_TYPE_REQUESTS_HPP

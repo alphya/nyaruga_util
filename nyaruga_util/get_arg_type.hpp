@@ -7,26 +7,22 @@
 #ifndef NYARUGA_UTIL_GET_ARG_TYPE_HPP
 #define NYARUGA_UTIL_GET_ARG_TYPE_HPP
 
-// MS compatible compilers support #pragma once
+#pragma once
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
-
-// ‚±‚ÌƒR[ƒh‚ÍAhttps://cdecrement.blog.fc2.com/blog-entry-234.html
-// ‚©‚ç‚¢‚½‚¾‚¢‚Ä‚«‚½‚½‚à‚Ì‚Å‚·B
+// ï¿½ï¿½ï¿½ÌƒRï¿½[ï¿½hï¿½ÍAhttps://cdecrement.blog.fc2.com/blog-entry-234.html
+// ï¿½ï¿½ï¿½ç‚¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Å‚ï¿½ï¿½B
 
 namespace nyaruga_util {
 
 namespace nyaruga_util_impl {
 
-//ƒeƒ“ƒvƒŒ[ƒgƒpƒ‰ƒ[ƒ^‚Ìw’è‚µ‚½ˆÊ’u‚ÌŒ^‚ğæ“¾
+//ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Ìwï¿½è‚µï¿½ï¿½ï¿½Ê’uï¿½ÌŒ^ï¿½ï¿½ï¿½æ“¾
 template <int N, typename... T>
 struct get_template_param {
-   //ˆø”‚Ì”‚ª‘«‚è‚È‚¢
+   //ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
    using type = void;
 };
-//ƒeƒ“ƒvƒŒ[ƒgƒpƒ‰ƒ[ƒ^‚ªˆê‚ÂˆÈã‚Ì‚Ì•”•ª“Áê‰»
+//ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ÂˆÈï¿½Ìï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‰»
 template <int N, typename First, typename... Rest>
 struct get_template_param<N, First, Rest...> {
    using type =
@@ -36,24 +32,24 @@ struct get_template_param<N, First, Rest...> {
 
 } // namespace nyaruga_util_impl
 
-//ŠÖ”‚Ìˆø”‚ÌŒ^‚ğ“¾‚é
+//ï¿½Öï¿½ï¿½Ìˆï¿½ï¿½ï¿½ï¿½ÌŒ^ï¿½ğ“¾‚ï¿½
 template <typename Func, int N>
 struct get_function_argument_type {
 };
-//ƒƒ“ƒoŠÖ”—p“Áê‰»
+//ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Öï¿½ï¿½pï¿½ï¿½ï¿½ê‰»
 template <class C, typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret (C::*)(Args...), N> {
    using type =
       typename nyaruga_util_impl::get_template_param<N - 1, Args...>::type;
 };
-//’ÊíŠÖ”—p“Áê‰»
+//ï¿½Êï¿½Öï¿½ï¿½pï¿½ï¿½ï¿½ê‰»
 template <typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret (*)(Args...), N> {
    using type =
       typename nyaruga_util_impl::get_template_param<N - 1, Args...>::type;
 };
 
-// get_function_argument_type‚ÌƒGƒCƒŠƒAƒXƒeƒ“ƒvƒŒ[ƒg”Å
+// get_function_argument_typeï¿½ÌƒGï¿½Cï¿½ï¿½ï¿½Aï¿½Xï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½
 template <typename Func, int N>
 using get_function_argument_type_t =
    typename get_function_argument_type<Func, N>::type;

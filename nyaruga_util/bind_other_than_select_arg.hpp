@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_BIND_OTHER_THAN_SELECT_ARG_HPP
 #define NYARUGA_UTIL_BIND_OTHER_THAN_SELECT_ARG_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <functional>
 #include <nyaruga_util/make_compile_error.hpp>
@@ -55,7 +51,7 @@ bind_other_than_select_arg_impl(F && f, H && head, Arg &&... arg) noexcept
 
 } // namespace nyaruga_util_impl
 
-// w’è‚µ‚½ˆø”ˆÈŠO‚ğ“K—p‚µ‚½ŠÖ”‚ğ•Ô‚·‚ŠKŠÖ” f(arg_pos = 1, 2, 3, 4...)
+// ï¿½wï¿½è‚µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÈŠOï¿½ï¿½Kï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½Kï¿½Öï¿½ f(arg_pos = 1, 2, 3, 4...)
 template <std::size_t arg_pos, typename F, typename... Arg>
 constexpr decltype(auto)
 bind_other_than_select_arg(F && f, Arg &&... arg) noexcept
@@ -81,7 +77,7 @@ int main()
 
         // fn(66.f, <placeholder>, 89.f, 47)
         //    1     2              3     4   <- template arg
-        //          ª
+        //          ï¿½ï¿½
         auto && aaa = nyaruga_util::bind_other_than_select_arg<2>(fn, 66.f,
 89.f, 47);
 

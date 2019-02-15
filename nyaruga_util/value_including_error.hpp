@@ -7,11 +7,7 @@
 #ifndef NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 #define NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#   pragma once
-#endif
+#pragma once
 
 #include <nyaruga_util/bind_select_arg_replace.hpp>
 #include <nyaruga_util/diff.hpp>
@@ -22,10 +18,10 @@ namespace nyaruga_util {
 
 namespace value_including_error_ { // protection from unintended ADL
 
-// Œë·‚ğŠÜ‚Ş’l
+// ï¿½ë·ï¿½ï¿½ï¿½Ü‚Ş’l
 struct value_including_error {
-   num_t value; // ’l
-   num_t error; // Œë·
+   num_t value; // ï¿½l
+   num_t error; // ï¿½ë·
    operator num_t() { return value; }
    operator num_t() const { return value; }
 };
@@ -35,7 +31,7 @@ using value_including_error = value_including_error_::value_including_error;
 
 namespace nyaruga_util_impl {
 
-// •Î”÷•ª^2 * Œë·^2 ‚ğAˆê•Ï”•ª‚¾‚¯ŒvZ‚µ‚ÄAÄ‹A
+// ï¿½Î”ï¿½ï¿½ï¿½^2 * ï¿½ë·^2 ï¿½ï¿½ï¿½Aï¿½ï¿½Ïï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ÄAï¿½Ä‹A
 template <std::size_t count, std::size_t max, typename F, typename... Args>
 decltype(auto) generate_error_impl(F && f, Args &&... args)
 {
@@ -56,8 +52,8 @@ decltype(auto) generate_error_impl(F && f, Args &&... args)
 
 } // namespace nyaruga_util_impl
 
-// Œë·‚Ì“`”d®‚æ‚èAŒvZBŒë·‚ğ•Ô‚·
-// Args ‚É‚ÍAvalue_including_error‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢
+// ï¿½ë·ï¿½Ì“`ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½vï¿½Zï¿½Bï¿½ë·ï¿½ï¿½Ô‚ï¿½
+// Args ï¿½É‚ÍAvalue_including_errorï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 template <typename F, typename... Args>
 decltype(auto) generate_error(F && f, Args &&... args)
 {
@@ -76,25 +72,25 @@ decltype(auto) generate_error(F && f, Args &&... args)
 
 auto main() -> int
 {
-        // Œë·‚ğŠÜ‚Ş’l‚Ì’è‹` { ’l, Œë· }
+        // ï¿½ë·ï¿½ï¿½ï¿½Ü‚Ş’lï¿½Ì’ï¿½` { ï¿½l, ï¿½ë· }
         auto && x = nyaruga_util::value_including_error{ 20, 0.5 };
         auto && y = nyaruga_util::value_including_error{ 50, 0.8 };
 
-        // Œë·‚ğŠÜ‚Ş’l‚ÌŠÖ”’è‹`@‚±‚ê‚Í’Pƒ‚ÈŠ|‚¯Z
+        // ï¿½ë·ï¿½ï¿½ï¿½Ü‚Ş’lï¿½ÌŠÖï¿½ï¿½ï¿½`ï¿½@ï¿½ï¿½ï¿½ï¿½Í’Pï¿½ï¿½ï¿½ÈŠ|ï¿½ï¿½ï¿½Z
         decltype(auto) f = [](nyaruga_util::num_t x, nyaruga_util::num_t y) {
                 return static_cast<nyaruga_util::num_t>(x * y);
         };
 
-        // •’Ê‚ÉŠÖ”‚ğÀs‚µ‚½’l
+        // ï¿½ï¿½ï¿½Ê‚ÉŠÖï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½l
         auto && v = f(x, y);
 
-        // Œë·‚ğŒvZ
+        // ï¿½ë·ï¿½ï¿½ï¿½vï¿½Z
         auto && e = nyaruga_util::generate_error(f, x, y);
 
-        // ‚¾‚¢‚½‚¢‚ ‚Á‚Ä‚é’ö“x‚Ì’l‚Å‚·
-        // ’Pƒ‚ÈŠ|‚¯Z‚ÅA—LŒø”š17Œ…‚­‚ç‚¢‚Å‚µ‚½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½xï¿½Ì’lï¿½Å‚ï¿½
+        // ï¿½Pï¿½ï¿½ï¿½ÈŠ|ï¿½ï¿½ï¿½Zï¿½ÅAï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½17ï¿½ï¿½ï¿½ï¿½ï¿½ç‚¢ï¿½Å‚ï¿½ï¿½ï¿½
         std::cout << std::setprecision(18)
-                << "’l‚ÍF" << v << "\nŒë·‚ÍF" << e << "\n";
+                << "ï¿½lï¿½ÍF" << v << "\nï¿½ë·ï¿½ÍF" << e << "\n";
 
 }
 
