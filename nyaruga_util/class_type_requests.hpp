@@ -11,9 +11,9 @@
 
 namespace nyaruga_util {
 
-template <class Trait>
+template <class Trait, bool Cond = true>
 struct this_class {
-   static_assert(Trait::value == true, "The class type is not requested class.");
+   static_assert(Trait::value == Cond, "The class type is not requested class.");
 };
 
 } // namespace nyaruga_util
