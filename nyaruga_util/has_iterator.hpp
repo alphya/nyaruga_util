@@ -11,7 +11,9 @@
 
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 template <class, class = void>
 struct has_iterator : std::false_type {
@@ -21,7 +23,9 @@ template <class T>
 struct has_iterator<T, std::void_t<typename T::iterator>> : std::true_type {
 };
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 

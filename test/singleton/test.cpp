@@ -5,17 +5,17 @@
 #include <nyaruga_util/singleton.hpp>
 #include <string>
 
-using namespace nyaruga_util;
+using namespace nyaruga::util;
 
 // 量産シングルトンA
-struct mass_singleton_a : public singleton<mass_singleton_a> {
+struct mass_singleton_a : public nyaruga::util::singleton_impl_1::singleton<mass_singleton_a> {
    friend class singleton<mass_singleton_a>;
    int m_data;
    mass_singleton_a() : m_data(12345) {}
 };
 
 // 量産シングルトンB
-struct mass_singleton_b : public singleton<mass_singleton_b> {
+struct mass_singleton_b : public nyaruga::util::singleton_impl_1::singleton<mass_singleton_b> {
    friend class singleton<mass_singleton_b>;
    std::string m_data;
    mass_singleton_b() : m_data("default") {}

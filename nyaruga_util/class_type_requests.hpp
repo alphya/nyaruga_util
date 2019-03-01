@@ -9,21 +9,25 @@
 
 #pragma once
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 template <class Trait, bool Cond = true>
 struct this_class {
    static_assert(Trait::value == Cond, "The class type is not requested class.");
 };
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*  クラスがある要件(type_traits)を満たすことを、static_assert によって保証します。
 
-#include "../../nyaruga_util/class_type_requests.hpp"
+#include "../../nyaruga::util/class_type_requests.hpp"
 #include <type_traits>
 
-using namespace nyaruga_util;
+using namespace nyaruga::util;
 using namespace std;
 
 class my_class

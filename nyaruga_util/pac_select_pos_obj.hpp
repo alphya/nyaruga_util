@@ -12,9 +12,11 @@
 #include <nyaruga_util/make_compile_error.hpp>
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
 
-namespace nyaruga_util_impl {
+namespace util {
+
+namespace impl {
 
 template <size_t current_pos, size_t target_pos, typename Head,
           typename... Pack>
@@ -30,14 +32,14 @@ constexpr decltype(auto) pac_select_pos_obj_impl(Head && head,
       NYARUGA_MAKE_COMPILE_ERROR("pos is out of pac");
 }
 
-} // namespace nyaruga_util_impl
+} // namespace impl
 
 // pac select pos expansion
 // �p�����[�^�[�p�b�N�̔C�ӂ̈ʒu�̃I�u�W�F�N�g��Ԃ��֐�
 template <size_t pos, typename... Pack>
 constexpr decltype(auto) pac_select_pos_obj(Pack &&... pack) noexcept
 {
-   return nyaruga_util_impl::pac_select_pos_obj_impl<1, pos>(
+   return nyaruga::util::impl::pac_select_pos_obj_impl<1, pos>(
       std::forward<Pack>(pack)...);
 }
 
@@ -46,12 +48,14 @@ template<size_t pos, typename ... Pack>
 struct pac_select_pos_type(Pack && ... pack)
 {
         using type =
-        return nyaruga_util_impl::pac_select_pos_obj_impl<1,
+        return nyaruga::util_impl::pac_select_pos_obj_impl<1,
 pos>(std::forward<Pack>(pack)...);
 }
 */
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 
@@ -61,7 +65,7 @@ int main()
 {
         auto ll = [](auto && ... hh)
         {
-                std::cout << nyaruga_util::pac_select_pos_obj<2>(hh...);
+                std::cout << nyaruga::util::pac_select_pos_obj<2>(hh...);
         };
 
         ll(9, 10, 11); // 10

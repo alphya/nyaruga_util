@@ -11,7 +11,9 @@
 
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 // operator >> のオーバーロード
 template <typename T, typename F>
@@ -31,6 +33,8 @@ constexpr inline auto operator<<(F && func,
    return func(std::forward<T>(arg));
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 #endif // #ifndef NYARUGA_UTIL_DARK_OVERRODE_HPP

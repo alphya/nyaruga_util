@@ -11,7 +11,9 @@
 
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 template <typename Ret, typename C, typename Obj, typename... Args>
 constexpr auto mem_fun_wrap(Ret (C::*&& f)(Args...), Obj *&& obj) noexcept
@@ -29,6 +31,8 @@ constexpr auto mem_fun_wrap(Ret (C::*&& f)(Args...), Obj && obj) noexcept
    };
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 #endif // #ifndef NYARUGA_UTIL_MEM_FUN_WRAP_HPP

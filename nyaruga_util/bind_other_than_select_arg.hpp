@@ -13,9 +13,11 @@
 #include <nyaruga_util/make_compile_error.hpp>
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
 
-namespace nyaruga_util_impl {
+namespace util {
+
+namespace nyaruga::util_impl {
 
 template <std::size_t current_pos, std::size_t arg_pos, typename F>
 constexpr decltype(auto) bind_other_than_select_arg_impl(F && f) noexcept
@@ -49,18 +51,20 @@ bind_other_than_select_arg_impl(F && f, H && head, Arg &&... arg) noexcept
       NYARUGA_MAKE_COMPILE_ERROR("This function does not has requests argument.");
 }
 
-} // namespace nyaruga_util_impl
+} // namespace nyaruga::util_impl
 
 // �w�肵�������ȊO��K�p�����֐���Ԃ����K�֐� f(arg_pos = 1, 2, 3, 4...)
 template <std::size_t arg_pos, typename F, typename... Arg>
 constexpr decltype(auto)
 bind_other_than_select_arg(F && f, Arg &&... arg) noexcept
 {
-   return nyaruga_util_impl::bind_other_than_select_arg_impl<1, arg_pos>(
+   return nyaruga::util_impl::bind_other_than_select_arg_impl<1, arg_pos>(
       std::forward<F>(f), std::forward<Arg>(arg)...);
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 
@@ -78,7 +82,7 @@ int main()
         // fn(66.f, <placeholder>, 89.f, 47)
         //    1     2              3     4   <- template arg
         //          ��
-        auto && aaa = nyaruga_util::bind_other_than_select_arg<2>(fn, 66.f,
+        auto && aaa = nyaruga::util::bind_other_than_select_arg<2>(fn, 66.f,
 89.f, 47);
 
         // 66 999 89 47

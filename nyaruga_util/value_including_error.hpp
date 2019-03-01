@@ -14,7 +14,9 @@
 #include <nyaruga_util/get_arg_num.hpp>
 #include <nyaruga_util/pac_select_pos_obj.hpp>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 namespace value_including_error_ { // protection from unintended ADL
 
@@ -63,7 +65,9 @@ decltype(auto) generate_error(F && f, Args &&... args)
       0.5l));
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 

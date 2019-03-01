@@ -9,7 +9,9 @@
 
 #pragma once
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 template <class T>
 inline constexpr void safe_delete(T *& p) noexcept
@@ -60,7 +62,9 @@ inline constexpr void safe_Release(...) noexcept
    static_assert([] { return false; }(), "This arg has not Release.");
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /* 使い方
 コピペして任意のメンバ関数を呼びたいときとかに使う。適宜改造して

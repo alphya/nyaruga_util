@@ -12,7 +12,9 @@
 #include <Windows.h>
 #include <string>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 void print_dbg(std::string msg)
 {
@@ -23,6 +25,8 @@ void print_dbg(std::string msg)
 #endif
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 #endif // #ifndef NYARUGA_UTIL_OUTPUT_DEBUG_FOR_WIN_HPP

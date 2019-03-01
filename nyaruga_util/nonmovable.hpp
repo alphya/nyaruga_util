@@ -9,7 +9,9 @@
 
 #pragma once
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 namespace nonmovable_ { // protection from unintended ADL
 
@@ -26,6 +28,8 @@ protected:
 
 using nonmovable = nonmovable_::nonmovable;
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 #endif // #ifndef NYARUGA_UTIL_NONMOVABLE_HPP

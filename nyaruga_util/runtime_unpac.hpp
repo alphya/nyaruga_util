@@ -15,7 +15,9 @@
 #include <utility>
 #include <vector>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 template <std::size_t sentinel, std::size_t count, typename R, typename F,
           typename Itr>
@@ -49,7 +51,8 @@ constexpr decltype(auto) runtime_unpack(F && f, const Container & v) noexcept
       std::forward<F>(f), std::begin(v), std::end(v));
 }
 
-} // namespace nyaruga_util
+} // namespace util
+} // namespace nyaruga
 
 /*
 int main()

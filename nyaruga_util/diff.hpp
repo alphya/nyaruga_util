@@ -15,7 +15,9 @@
 #include <nyaruga_util/get_arg_type.hpp>
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 // ������1,000�r�b�g�������������_���̒�`�B���Ȃ肷����
 using num_t =
@@ -53,14 +55,16 @@ decltype(auto) diff_fast(F && f, Arg && x) noexcept(noexcept(f(x)))
    return (y4 - 8 * y2 + 8 * y1 - y3) / (12 * h);
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 
-using namespace nyaruga_util;
+using namespace nyaruga::util;
 
 // ��������֐���`�B
-// ���x�̂��߁Adouble�Ȃǂł͂Ȃ�nyaruga_util::num_t���g���Ă�������
+// ���x�̂��߁Adouble�Ȃǂł͂Ȃ�nyaruga::util::num_t���g���Ă�������
 num_t fn(num_t && x)
 {
         return (x*x*x);

@@ -13,9 +13,11 @@
 #include <nyaruga_util/make_compile_error.hpp>
 #include <type_traits>
 
-namespace nyaruga_util {
+namespace nyaruga {
 
-namespace nyaruga_util_impl {
+namespace util {
+
+namespace nyaruga::util_impl {
 
 template <size_t current_pos, size_t target_pos, typename F, typename Head,
           typename... Pack>
@@ -36,7 +38,7 @@ constexpr decltype(auto) bind_select_arg_ignore_impl(F && func, Head && head,
       NYARUGA_MAKE_COMPILE_ERROR("pos is out of pac");
 }
 
-} // namespace nyaruga_util_impl
+} // namespace nyaruga::util_impl
 
 // �p�����[�^�[�p�b�N�̔C�ӂ̈ʒu�̈����𖳎����āA
 // ���̈ʒu�̌^�̈������Ƃ�֐���Ԃ����K�֐�
@@ -44,15 +46,17 @@ template <size_t pos, typename F, typename... Pack>
 constexpr decltype(auto) bind_select_arg_ignore(F && func,
                                                 Pack &&... pack) noexcept
 {
-   return nyaruga_util_impl::bind_select_arg_ignore_impl<1, pos>(
+   return nyaruga::util_impl::bind_select_arg_ignore_impl<1, pos>(
       std::forward<F>(func), std::forward<Pack>(pack)...);
 }
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 
-using namespace nyaruga_util;
+using namespace nyaruga::util;
 
 #include <iostream>
 

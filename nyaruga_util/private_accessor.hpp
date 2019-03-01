@@ -16,7 +16,10 @@
 // http://bloglitb.blogspot.com/2010/07/access-to-private-members-thats-easy.html
 // c.f. http://d.hatena.ne.jp/redboltz/touch/20120111/1326292284
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
+
 namespace private_accessor_impl {
 
 template <class Tag>
@@ -37,11 +40,12 @@ template <class Tag, typename Tag::type p>
 Initializer<Tag, p> Initializer<Tag, p>::instance;
 
 } // namespace private_accessor_impl
-} // namespace nyaruga_util
+} // namespace util
+} // namespace nyaruga
 
 #define NYARUGA_PRIVATE_ACCESSOR_INIT(tag, class_t, mem_t, mem_name) \
 \
-   namespace nyaruga_util::private_accessor_impl { \
+   namespace nyaruga::util::private_accessor_impl { \
 \
    namespace user_defined_tags { \
 \
@@ -50,14 +54,14 @@ Initializer<Tag, p> Initializer<Tag, p>::instance;
    }; \
    } \
 \
-   template struct nyaruga_util::private_accessor_impl::Initializer<user_defined_tags::tag, \
-                                                                    &class_t::mem_name>; \
+   template struct nyaruga::util::private_accessor_impl::Initializer<user_defined_tags::tag, \
+                                                                     &class_t::mem_name>; \
    }
 
 #define NYARUGA_PRIVATE_ACCESSOR_INIT_FOR_STATIC(tag, class_t, mem_t, \
                                                  mem_name) \
 \
-   namespace nyaruga_util::private_accessor_impl { \
+   namespace nyaruga::util::private_accessor_impl { \
 \
    namespace user_defined_tags { \
 \
@@ -66,19 +70,19 @@ Initializer<Tag, p> Initializer<Tag, p>::instance;
    }; \
    } \
 \
-   template struct nyaruga_util::private_accessor_impl::Initializer<user_defined_tags::tag, \
-                                                                    &class_t::mem_name>; \
+   template struct nyaruga::util::private_accessor_impl::Initializer<user_defined_tags::tag, \
+                                                                     &class_t::mem_name>; \
    }
 
 #define NYARUGA_PRIVATE_ACCESS(obj, tag) \
 \
-   obj.*nyaruga_util::private_accessor_impl:: \
-           Accessor<nyaruga_util::private_accessor_impl::user_defined_tags::tag>::value
+   obj.*nyaruga::util::private_accessor_impl:: \
+           Accessor<nyaruga::util::private_accessor_impl::user_defined_tags::tag>::value
 
 #define NYARUGA_PRIVATE_ACCESS_FOR_STATIC(tag) \
 \
-   *nyaruga_util::private_accessor_impl:: \
-      Accessor<nyaruga_util::private_accessor_impl::user_defined_tags::tag>::value
+   *nyaruga::util::private_accessor_impl:: \
+      Accessor<nyaruga::util::private_accessor_impl::user_defined_tags::tag>::value
 
 /* how to use
 

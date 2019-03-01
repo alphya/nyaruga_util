@@ -5,12 +5,10 @@
 #include <nyaruga_util/pac_select_pos_obj.hpp>
 #include <string>
 
-using namespace nyaruga_util;
-
 BOOST_AUTO_TEST_CASE(make_compile_error_test_1)
 {
    [[maybe_unused]] auto ll = [](auto &&... hh) {
-      return nyaruga_util::pac_select_pos_obj<0>(hh...);
+      return nyaruga::util::pac_select_pos_obj<0>(hh...);
    };
 
    // BOOST_CHECK(ll(9, 10, 11) == 10);

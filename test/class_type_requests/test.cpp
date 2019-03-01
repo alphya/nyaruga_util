@@ -4,7 +4,7 @@
 #include "../../nyaruga_util/class_type_requests.hpp"
 #include <type_traits>
 
-using namespace nyaruga_util;
+using namespace nyaruga::util;
 using namespace std;
 
 class my_class

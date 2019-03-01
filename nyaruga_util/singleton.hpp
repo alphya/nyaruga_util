@@ -19,7 +19,9 @@
 #include <utility>
 #include <vector>
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 namespace singleton_impl_1 { // protection from unintended ADL
 
@@ -35,7 +37,7 @@ template <class Derived>
 class singleton :
    // �R�s�[�^���[�u�֎~
    private boost::noncopyable,
-   private nyaruga_util::nonmovable {
+   private nyaruga::util::nonmovable {
    static Derived & m_instance;
    static void use(Derived const &) {}
 
@@ -237,6 +239,7 @@ using singleton_impl_2::get_as_singleton;
 
 */
 
-} // namespace nyaruga_util
+} // namespace util
+} // namespace nyaruga
 
 #endif // #ifndef NYARUGA_UTIL_SINGLETON_HPP

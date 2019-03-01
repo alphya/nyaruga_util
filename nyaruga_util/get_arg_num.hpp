@@ -9,7 +9,9 @@
 
 #pragma once
 
-namespace nyaruga_util {
+namespace nyaruga {
+
+namespace util {
 
 //通常関数用
 template <typename Ret, typename... Args>
@@ -39,7 +41,9 @@ constexpr std::size_t get_function_argument_num_v =
 get_function_argument_num<Ret,Args ...>::value;
 */
 
-} // namespace nyaruga_util
+} // namespace util
+
+} // namespace nyaruga
 
 /*
 
