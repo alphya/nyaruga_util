@@ -16,7 +16,7 @@ namespace nyaruga {
 
 namespace util {
 
-namespace nyaruga::util_impl {
+namespace util_impl {
 
 //�e���v���[�g�p�����[�^�̎w�肵���ʒu�̌^���擾
 template <int N, typename... T>
@@ -32,7 +32,7 @@ struct get_template_param<N, First, Rest...> {
                          typename get_template_param<N - 1, Rest...>::type>;
 };
 
-} // namespace nyaruga::util_impl
+} // namespace util_impl
 
 //�֐��̈����̌^�𓾂�
 template <typename Func, int N>
