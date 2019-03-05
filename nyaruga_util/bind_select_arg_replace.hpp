@@ -17,7 +17,7 @@ namespace nyaruga {
 
 namespace util {
 
-namespace nyaruga::util_impl {
+namespace impl {
 
 template <size_t current_pos, size_t target_pos, typename F, typename Head,
           typename... Pack>
@@ -41,7 +41,7 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack &&... pack) noexcept
       NYARUGA_MAKE_COMPILE_ERROR("pos is out of pac");
 }
 
-} // namespace nyaruga::util_impl
+} // namespace impl
 
 // �p�����[�^�[�p�b�N�̔C�ӂ̈ʒu�̈������p�����[�^�[�p�b�N�ɒu��������
 // ���֐���Ԃ����K�֐�
@@ -50,7 +50,7 @@ template <size_t pos, typename F, typename... Pack>
 constexpr decltype(auto) bind_select_arg_replace(F && func,
                                                  Pack &&... pack) noexcept
 {
-   return nyaruga::util_impl::bind_select_arg_replace_impl<1, pos>(
+   return impl::bind_select_arg_replace_impl<1, pos>(
       std::forward<F>(func), std::forward<Pack>(pack)...);
 }
 

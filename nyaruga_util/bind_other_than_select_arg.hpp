@@ -17,7 +17,7 @@ namespace nyaruga {
 
 namespace util {
 
-namespace nyaruga::util_impl {
+namespace impl {
 
 template <std::size_t current_pos, std::size_t arg_pos, typename F>
 constexpr decltype(auto) bind_other_than_select_arg_impl(F && f) noexcept
@@ -51,14 +51,14 @@ bind_other_than_select_arg_impl(F && f, H && head, Arg &&... arg) noexcept
       NYARUGA_MAKE_COMPILE_ERROR("This function does not has requests argument.");
 }
 
-} // namespace nyaruga::util_impl
+} // namespace impl
 
 // �w�肵�������ȊO��K�p�����֐���Ԃ����K�֐� f(arg_pos = 1, 2, 3, 4...)
 template <std::size_t arg_pos, typename F, typename... Arg>
 constexpr decltype(auto)
 bind_other_than_select_arg(F && f, Arg &&... arg) noexcept
 {
-   return nyaruga::util_impl::bind_other_than_select_arg_impl<1, arg_pos>(
+   return impl::bind_other_than_select_arg_impl<1, arg_pos>(
       std::forward<F>(f), std::forward<Arg>(arg)...);
 }
 

@@ -31,7 +31,7 @@ struct value_including_error {
 
 using value_including_error = value_including_error_::value_including_error;
 
-namespace nyaruga_util_impl {
+namespace nyaruga_impl {
 
 // �Δ���^2 * �덷^2 ���A��ϐ��������v�Z���āA�ċA
 template <std::size_t count, std::size_t max, typename F, typename... Args>
@@ -52,7 +52,7 @@ decltype(auto) generate_error_impl(F && f, Args &&... args)
    }
 }
 
-} // namespace nyaruga_util_impl
+} // namespace nyaruga_impl
 
 // �덷�̓`�d�����A�v�Z�B�덷��Ԃ�
 // Args �ɂ́Avalue_including_error���g�p���Ă�������
@@ -60,7 +60,7 @@ template <typename F, typename... Args>
 decltype(auto) generate_error(F && f, Args &&... args)
 {
    return static_cast<num_t>(boost::multiprecision::pow(
-      nyaruga_util_impl::generate_error_impl<1, sizeof...(args)>(
+      nyaruga_impl::generate_error_impl<1, sizeof...(args)>(
          std::forward<F>(f), std::forward<decltype(args)>(args)...),
       0.5l));
 }

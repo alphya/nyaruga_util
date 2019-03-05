@@ -16,7 +16,7 @@ namespace nyaruga {
 
 namespace util {
 
-namespace util_impl {
+namespace impl {
 
 //�e���v���[�g�p�����[�^�̎w�肵���ʒu�̌^���擾
 template <int N, typename... T>
@@ -32,7 +32,7 @@ struct get_template_param<N, First, Rest...> {
                          typename get_template_param<N - 1, Rest...>::type>;
 };
 
-} // namespace util_impl
+} // namespace impl
 
 //�֐��̈����̌^�𓾂�
 template <typename Func, int N>
@@ -42,13 +42,13 @@ struct get_function_argument_type {
 template <class C, typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret (C::*)(Args...), N> {
    using type =
-      typename nyaruga::util_impl::get_template_param<N - 1, Args...>::type;
+      typename impl::get_template_param<N - 1, Args...>::type;
 };
 //�ʏ�֐��p���ꉻ
 template <typename Ret, typename... Args, int N>
 struct get_function_argument_type<Ret (*)(Args...), N> {
    using type =
-      typename nyaruga::util_impl::get_template_param<N - 1, Args...>::type;
+      typename impl::get_template_param<N - 1, Args...>::type;
 };
 
 // get_function_argument_type�̃G�C���A�X�e���v���[�g��
