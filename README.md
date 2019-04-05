@@ -1,9 +1,9 @@
 # nyaruga_util
 
-It is utility of c++17.
+It is utility of C++17.
 
 This library is header only.
 
-And it needs boost c++ library.
+And it needs boost C++ library.
 
-Please add boost c++ library to your include and library pass.
+Please add boost C++ library to your include and library pass.
