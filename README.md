@@ -6,4 +6,4 @@ This library is header only.
 
 And it needs boost C++ library.
 
-Please add boost C++ library to your include and library pass.
+Please add Boost C++ library to your include and library pass.
