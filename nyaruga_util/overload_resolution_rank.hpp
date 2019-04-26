@@ -15,11 +15,19 @@
 
 namespace nyaruga {
 namespace util {
+namespace overload_resolution_rank_ { // protection from unintended ADL
 
 // You can control the priority of overload resolution.
-template<int Rank> struct overload_resolution_rank : overload_resolution_rank<Rank - 1> {};
-template<> struct overload_resolution_rank<0> {};
+template <int Rank>
+struct overload_resolution_rank : overload_resolution_rank<Rank - 1> {
+};
+template <>
+struct overload_resolution_rank<0> {
+};
 
+using overload_resolution_rank = overload_resolution_rank_::overload_resolution_rank;
+
+} // namespace overload_resolution_rank_
 } // namespace util
 } // namespace nyaruga
 
