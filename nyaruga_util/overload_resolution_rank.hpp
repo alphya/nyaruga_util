@@ -25,9 +25,10 @@ template <>
 struct overload_resolution_rank<0> {
 };
 
+} // namespace overload_resolution_rank_
+
 using overload_resolution_rank = overload_resolution_rank_::overload_resolution_rank;
 
-} // namespace overload_resolution_rank_
 } // namespace util
 } // namespace nyaruga
 
