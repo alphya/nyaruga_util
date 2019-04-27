@@ -16,6 +16,8 @@ namespace nyaruga {
 
 namespace util {
 
+namespace weak_ptr_for_unique_ { // protection from unintended ADL
+
 // std::unique_ptr 版 の weak_ptr です
 // unique_ptr からポインタを get() してきたいけど、生のポインタは
 // 使いたくないな...って時に使えます
@@ -139,6 +141,10 @@ void swap(weak_ptr_for_unique<T> & left, weak_ptr_for_unique<T> & right) noexcep
 {
    left.swap(right);
 }
+
+} // namespace weak_ptr_for_unique_
+
+using namespace weak_ptr_for_unique_;
 
 } // namespace util
 
