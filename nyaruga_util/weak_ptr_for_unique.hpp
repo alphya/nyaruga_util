@@ -11,7 +11,6 @@
 
 #include <type_traits>
 #include <memory>
-#include <type_traits>
 
 namespace nyaruga {
 
