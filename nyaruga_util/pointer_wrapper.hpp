@@ -22,7 +22,7 @@ namespace pointer_wrapper_ { // protection from unintended ADL
 // delete したくないポインターに使えます
 template <typename T>
 class pointer_wrapper final {
-private:
+public:
    using pointer = std::add_pointer_t<std::remove_reference_t<T>>;
 public:
    constexpr pointer_wrapper() noexcept = default;
