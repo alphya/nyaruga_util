@@ -150,6 +150,11 @@ public:
       pointer_wrapper(p).swap(*this);
    }
 
+   void swap(pointer_wrapper& other) noexcept
+   {
+      std::swap(this->m_ptr, other.m_ptr);
+   }
+
    template <class T2, std::enable_if_t<std::is_convertible<T2, T>::value, int> = 0>
    void swap(pointer_wrapper<T2> & other) noexcept
    {
