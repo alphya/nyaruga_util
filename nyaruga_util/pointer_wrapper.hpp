@@ -118,7 +118,7 @@ public:
       return *this;
    }
 
-   [[nodiscard]] std::add_pointer_t<std::remove_reference_t<T>> get() const noexcept
+   [[nodiscard]] pointer get() const noexcept
    {
       return this->m_ptr;
    }
