@@ -15,6 +15,8 @@ namespace nyaruga {
 
 namespace util {
 
+namespace stream_op_overloaded {
+
 // operator >> のオーバーロード
 template <typename T, typename F>
 constexpr inline auto operator>>(T && arg,
@@ -32,6 +34,8 @@ constexpr inline auto operator<<(F && func,
 {
    return func(std::forward<T>(arg));
 }
+
+} // namespace stream_op_overloaded
 
 } // namespace util
 
