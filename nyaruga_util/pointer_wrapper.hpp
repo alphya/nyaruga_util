@@ -150,13 +150,6 @@ public:
       pointer_wrapper(p).swap(*this);
    }
 
-   pointer release() noexcept
-   {
-      pointer ans = get();
-      this->m_ptr = nullptr;
-      return ans;
-   }
-
    template <class T2, std::enable_if_t<std::is_convertible<T2, T>::value, int> = 0>
    void swap(pointer_wrapper<T2> & other) noexcept
    {
