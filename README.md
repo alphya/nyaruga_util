@@ -1,6 +1,6 @@
 # nyaruga_util
 
-It is utility of C++17.
+It is utility of C++17~.
 
 This library is header only.
 
