@@ -130,7 +130,7 @@ public:
 
    [[nodiscard]] pointer operator->() const noexcept
    {
-      return this->m_ptr();
+      return this->m_ptr;
    }
 
    explicit operator bool() const noexcept
