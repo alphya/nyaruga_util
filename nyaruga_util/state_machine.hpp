@@ -1,4 +1,4 @@
-//              Copyright (c) 2018 alphya
+//              Copyright (c) 2019 alphya
 // Distributed under the Boost Software License, Version 1.0.
 //   (See accompanying file ../LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -51,6 +51,8 @@ namespace detail {
    struct empty_data {};
 }
 
+namespace hide_name_from_adl {
+
 template <typename SharedData = detail::empty_data>
 class state
 {
@@ -69,8 +71,9 @@ public:
    auto& get_shared_data() noexcept { return *m_data_ptr; }
    void set_shared_data(const pointer_wrapper<SharedData>& shared_data) noexcept { m_data_ptr = shared_data; }
 
+   // Give each state a unique name
    [[nodiscard]]
-   virtual label_type get_label() const noexcept { return ""; }
+   virtual label_type get_label() const noexcept = 0;
 
    virtual void state_enter() {};
    virtual void state_exit() {};
@@ -145,6 +148,9 @@ public:
 
 };
 
+} // namespace hide_name_from_adl
+
+using namespace hide_name_from_adl;
 
 } // namespace nyaruga::util
 
@@ -173,7 +179,8 @@ public:
       change_state("my_state2");
    }
 
-   label_type get_label() const noexcept { return "my_state1"; }
+   [[nodiscard]]
+   label_type get_label() const noexcept override { return "my_state1"; }
 
 };
 
@@ -186,7 +193,8 @@ public:
       std::cout << "Hello! from my_state2";
    }
 
-   label_type get_label() const noexcept { return "my_state2"; }
+   [[nodiscard]]
+   label_type get_label() const noexcept override { return "my_state2"; }
 
 };
 
@@ -204,5 +212,6 @@ int main()
    std::cout << machine.getSharedData().data;
 
 }
+
 
 */
