@@ -34,28 +34,28 @@
  */
 
 #ifndef NYARUGA_UTIL_STATE_MACHINE_HPP
-#define NYARUGA_UTIL_STATE_MACHINE_HPP
+#   define NYARUGA_UTIL_STATE_MACHINE_HPP
 
-#pragma once
+#   pragma once
 
-#include <map>
-#include <memory>
-#include <string>
-#include <boost/signals2/signal.hpp>
-#include <boost/bind.hpp>
-#include <nyaruga_util/pointer_wrapper.hpp>
+#   include <boost/bind.hpp>
+#   include <boost/signals2/signal.hpp>
+#   include <map>
+#   include <memory>
+#   include <nyaruga_util/pointer_wrapper.hpp>
+#   include <string>
 
 namespace nyaruga::util {
 
 namespace detail {
-   struct empty_data {};
-}
+struct empty_data {
+};
+} // namespace detail
 
 namespace hide_name_from_adl {
 
 template <typename SharedData = detail::empty_data>
-class state
-{
+class state {
 public:
    using label_type = std::string;
 
@@ -63,30 +63,31 @@ private:
    pointer_wrapper<SharedData> m_data_ptr;
 
 public:
-
    boost::signals2::signal<void(std::string)> change_state;
 
    virtual ~state() noexcept = default;
 
-   auto& get_shared_data() noexcept { return *m_data_ptr; }
-   void set_shared_data(const pointer_wrapper<SharedData>& shared_data) noexcept { m_data_ptr = shared_data; }
+   auto & get_shared_data() noexcept { return *m_data_ptr; }
+   void set_shared_data(const pointer_wrapper<SharedData> & shared_data) noexcept { m_data_ptr = shared_data; }
 
    // Give each state a unique name
-   [[nodiscard]]
-   virtual label_type get_label() const noexcept = 0;
+   [[nodiscard]] virtual label_type get_label() const noexcept = 0;
 
-   virtual void state_enter() {};
-   virtual void state_exit() {};
-   virtual void initialize() {};
-   virtual void update() {};
-   virtual void finalize() {};
-
+   virtual void state_enter(){};
+   virtual void state_exit(){};
+   virtual void initialize(){};
+   virtual void update(){};
+   virtual void finalize(){};
 };
 
+namespace detail {
+// shared_ptr に渡すためのカスタムデリータ
+// MSVC のコンパイラでは直接渡せないようなので、ここで定義
+constexpr inline auto my_deleter = [](auto * s) { s->finalize(); delete s; };
+} // namespace detail
 
 template <typename SharedData = detail::empty_data>
-class state_machine
-{
+class state_machine {
 public:
    using state_ptr = std::shared_ptr<state<SharedData>>;
    using state_itr = typename std::map<std::string, state_ptr>::iterator;
@@ -97,11 +98,10 @@ private:
    std::map<std::string, state_ptr> m_states;
 
 public:
-
-   template<class T>
+   template <class T>
    state_ptr add_state()
    {
-      state_ptr state(new T, [](auto& s){ s->finalize(); delete s; });
+      state_ptr state(new T, detail::my_deleter);
       return add_state(state);
    }
 
@@ -114,7 +114,7 @@ public:
       return state;
    }
 
-   SharedData& getSharedData() noexcept
+   SharedData & getSharedData() noexcept
    {
       return m_data;
    }
@@ -124,28 +124,28 @@ public:
       return m_states;
    }
 
-   bool change_state(const std::string& label)
+   bool change_state(const std::string & label)
    {
       state_itr it = m_states.find(label);
 
-      if (it == m_states.end()) return false;
+      if (it == m_states.end())
+         return false;
 
-      else if (it->second != m_current_state)
-      {
+      else if (it->second != m_current_state) {
          if (m_current_state) m_current_state->state_exit();
          m_current_state = it->second;
          m_current_state->state_enter();
          return true;
       }
 
-      else return false;
+      else
+         return false;
    }
 
    void update()
    {
       if (m_current_state) m_current_state->update();
    }
-
 };
 
 } // namespace hide_name_from_adl
