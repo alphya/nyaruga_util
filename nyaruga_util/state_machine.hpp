@@ -34,123 +34,130 @@
  */
 
 #ifndef NYARUGA_UTIL_STATE_MACHINE_HPP
-#   define NYARUGA_UTIL_STATE_MACHINE_HPP
+#define NYARUGA_UTIL_STATE_MACHINE_HPP
 
-#   pragma once
+#pragma once
 
-#   include <boost/bind.hpp>
-#   include <boost/signals2/signal.hpp>
-#   include <map>
-#   include <memory>
-#   include <nyaruga_util/pointer_wrapper.hpp>
-#   include <string>
+#include <map>
+#include <memory>
+#include <string>
+#include <nyaruga_util/pointer_wrapper.hpp>
+#include <boost/signals2/signal.hpp>
+#include <boost/bind.hpp>
 
 namespace nyaruga::util {
 
-namespace detail {
-struct empty_data {
-};
-} // namespace detail
-
-namespace hide_name_from_adl {
-
-template <typename SharedData = detail::empty_data>
-class state {
-public:
-   using label_type = std::string;
-
-private:
-   pointer_wrapper<SharedData> m_data_ptr;
-
-public:
-   boost::signals2::signal<void(std::string)> change_state;
-
-   virtual ~state() noexcept = default;
-
-   auto & get_shared_data() noexcept { return *m_data_ptr; }
-   void set_shared_data(const pointer_wrapper<SharedData> & shared_data) noexcept { m_data_ptr = shared_data; }
-
-   // Give each state a unique name
-   [[nodiscard]] virtual label_type get_label() const noexcept = 0;
-
-   virtual void state_enter(){};
-   virtual void state_exit(){};
-   virtual void initialize(){};
-   virtual void update(){};
-   virtual void finalize(){};
-};
-
-namespace detail {
-// shared_ptr に渡すためのカスタムデリータ
-// MSVC のコンパイラでは直接渡せないようなので、ここで定義
-constexpr inline auto my_deleter = [](auto * s) { s->finalize(); delete s; };
-} // namespace detail
-
-template <typename SharedData = detail::empty_data>
-class state_machine {
-public:
-   using state_ptr = std::shared_ptr<state<SharedData>>;
-   using state_itr = typename std::map<std::string, state_ptr>::iterator;
-
-private:
-   SharedData m_data;
-   state_ptr m_current_state;
-   std::map<std::string, state_ptr> m_states;
-
-public:
-   template <class T>
-   state_ptr add_state()
-   {
-      state_ptr state(new T, detail::my_deleter);
-      return add_state(state);
+   namespace detail {
+      struct empty_data {};
    }
 
-   state_ptr add_state(state_ptr state)
-   {
-      state->set_shared_data(&m_data);
-      state->initialize();
-      state->change_state.connect(boost::bind(&state_machine::change_state, this, _1));
-      m_states.insert(std::make_pair(state->get_label(), state));
-      return state;
-   }
+   namespace hide_name_from_adl {
 
-   SharedData & getSharedData() noexcept
-   {
-      return m_data;
-   }
+      template <typename SharedData = detail::empty_data>
+      class state
+      {
+      public:
+         using label_type = std::string;
 
-   std::map<std::string, state_ptr> getStates() const noexcept
-   {
-      return m_states;
-   }
+      private:
+         pointer_wrapper<SharedData> m_data_ptr_;
 
-   bool change_state(const std::string & label)
-   {
-      state_itr it = m_states.find(label);
+      public:
 
-      if (it == m_states.end())
-         return false;
+         boost::signals2::signal<void(std::string)> change_state;
 
-      else if (it->second != m_current_state) {
-         if (m_current_state) m_current_state->state_exit();
-         m_current_state = it->second;
-         m_current_state->state_enter();
-         return true;
+         virtual ~state() noexcept = default;
+
+         auto& get_shared_data() noexcept { return *m_data_ptr_; }
+         void set_shared_data(const pointer_wrapper<SharedData>& shared_data) noexcept { m_data_ptr_ = shared_data; }
+
+         // Give each state a unique name
+         [[nodiscard]]
+         virtual label_type get_label() const noexcept = 0;
+
+         virtual void state_enter() {};
+         virtual void state_exit() {};
+         virtual void initialize() {};
+         virtual void update() {};
+         virtual void finalize() {};
+
+      };
+
+
+      namespace detail {
+         // shared_ptr 縺ｫ貂｡縺吶◆繧√�ｮ繧ｫ繧ｹ繧ｿ繝繝�繝ｪ繝ｼ繧ｿ
+         // MSVC 縺ｮ繧ｳ繝ｳ繝代う繝ｩ縺ｧ縺ｯ逶ｴ謗･貂｡縺帙↑縺�繧医≧縺ｪ縺ｮ縺ｧ縲√％縺薙〒螳夂ｾｩ
+         constexpr inline auto my_deleter = [](auto* s) { s->finalize(); delete s; };
       }
 
-      else
-         return false;
-   }
+      template <typename SharedData = detail::empty_data>
+      class state_machine
+      {
+      public:
+         using state_ptr = std::shared_ptr<state<SharedData>>;
+         using state_itr = typename std::map<std::string, state_ptr>::iterator;
 
-   void update()
-   {
-      if (m_current_state) m_current_state->update();
-   }
-};
+      private:
+         SharedData m_data_;
+         state_ptr m_current_state_;
+         std::map<std::string, state_ptr> m_states_;
 
-} // namespace hide_name_from_adl
+      public:
 
-using namespace hide_name_from_adl;
+         template<class T>
+         state_ptr add_state()
+         {
+            state_ptr state(new T, detail::my_deleter);
+            return add_state(state);
+         }
+
+         state_ptr add_state(state_ptr state)
+         {
+            state->set_shared_data(&m_data_);
+            state->initialize();
+            state->change_state.connect(boost::bind(&state_machine::change_state, this, _1));
+            m_states_.insert(std::make_pair(state->get_label(), state));
+            return state;
+         }
+
+         SharedData& getSharedData() noexcept
+         {
+            return m_data_;
+         }
+
+         [[nodiscard]]
+         std::map<std::string, state_ptr> getStates() const noexcept
+         {
+            return m_states_;
+         }
+
+         bool change_state(const std::string& label)
+         {
+            auto it = m_states_.find(label);
+
+            if (it == m_states_.end()) return false;
+
+            else if (it->second != m_current_state_)
+            {
+               if (m_current_state_) m_current_state_->state_exit();
+               m_current_state_ = it->second;
+               m_current_state_->state_enter();
+               return true;
+            }
+
+            else return false;
+         }
+
+         void update()
+         {
+            if (m_current_state_) m_current_state_->update();
+         }
+
+      };
+
+   } // namespace hide_name_from_adl
+
+   using namespace hide_name_from_adl;
 
 } // namespace nyaruga::util
 
