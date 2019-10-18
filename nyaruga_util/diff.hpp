@@ -19,68 +19,41 @@ namespace nyaruga {
 
 namespace util {
 
-// ������1,000�r�b�g�������������_���̒�`�B���Ȃ肷����
 using num_t =
    boost::multiprecision::number<boost::multiprecision::cpp_dec_float<1000>>;
 
-// �������܂�
-// 7�_�ߎ� 5�_��萸�x����
-template <typename F, typename Arg>
-decltype(auto) diff(F && f, Arg && x) noexcept(noexcept(f(x)))
+// 関数 f の、点 x での微分係数を返します
+// 7 点近似です
+template <typename F, typename Arg, typename Number = num_t>
+Number diff(F && f, Arg && x) noexcept(noexcept(f(x)))
 {
-   num_t && h = DBL_EPSILON;
-   num_t && y1 = f(static_cast<num_t>(x + h));
-   num_t && y2 = f(static_cast<num_t>(x - h));
-   num_t && y3 = f(static_cast<num_t>(x + 2 * h));
-   num_t && y4 = f(static_cast<num_t>(x - 2 * h));
-   num_t && y5 = f(static_cast<num_t>(x + 3 * h));
-   num_t && y6 = f(static_cast<num_t>(x - 3 * h));
+   auto h = DBL_EPSILON;
+   auto&& y1 = f(static_cast<Number>(x + h));
+   auto&& y2 = f(static_cast<Number>(x - h));
+   auto&& y3 = f(static_cast<Number>(x + 2 * h));
+   auto&& y4 = f(static_cast<Number>(x - 2 * h));
+   auto&& y5 = f(static_cast<Number>(x + 3 * h));
+   auto&& y6 = f(static_cast<Number>(x - 3 * h));
 
-   return static_cast<num_t>(
-      (std::forward<num_t>(y5) - 9 * std::forward<num_t>(y3) +
-       45 * std::forward<num_t>(y1) - 45 * std::forward<num_t>(y2) +
-       9 * std::forward<num_t>(y4) - std::forward<num_t>(y6)) /
-      (60 * std::forward<num_t>(h)));
+   return (y5 - 9 * y3 + 45 * y1 - 45 * y2 + 9 * y4 - y6) /
+                          (60 * h);
 }
 
-// 5�_�ߎ�
-template <typename F, typename Arg>
-decltype(auto) diff_fast(F && f, Arg && x) noexcept(noexcept(f(x)))
+// 5 点近似です
+template <typename F, typename Arg, typename Number = num_t>
+Number diff_fast(F && f, Arg && x) noexcept(noexcept(f(x)))
 {
    auto && h = DBL_EPSILON;
    auto && y1 = f(x + h);
    auto && y2 = f(x - h);
    auto && y3 = f(x + 2 * h);
    auto && y4 = f(x - 2 * h);
+
    return (y4 - 8 * y2 + 8 * y1 - y3) / (12 * h);
 }
 
 } // namespace util
 
 } // namespace nyaruga
-
-/*
-
-using namespace nyaruga::util;
-
-// ��������֐���`�B
-// ���x�̂��߁Adouble�Ȃǂł͂Ȃ�nyaruga::util::num_t���g���Ă�������
-num_t fn(num_t && x)
-{
-        return (x*x*x);
-}
-
-int main()
-{
-
-        num_t d = diff(fn, 3.f);
-
-        std::cout << std::setprecision(std::numeric_limits<num_t>::digits10 + 1)
-                << "���҂����l�F27" << "\ndiff : " << d << "\ndelta: " <<
-DBL_EPSILON;
-
-}
-
-*/
 
 #endif // #ifndef NYARUGA_UTIL_DIFF_HPP

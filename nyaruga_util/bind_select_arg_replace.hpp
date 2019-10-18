@@ -43,9 +43,8 @@ bind_select_arg_replace_impl(F && func, Head && head, Pack &&... pack) noexcept
 
 } // namespace impl
 
-// �p�����[�^�[�p�b�N�̔C�ӂ̈ʒu�̈������p�����[�^�[�p�b�N�ɒu��������
-// ���֐���Ԃ����K�֐�
-// bind_other_than_any_pos_arg�ɂ悭���Ă���
+// パラメーターパックの pos で指定した位置の引数をプレースホルダーに置き換えた関数を返す
+// pos = 1, 2, ... で指定する
 template <size_t pos, typename F, typename... Pack>
 constexpr decltype(auto) bind_select_arg_replace(F && func,
                                                  Pack &&... pack) noexcept
