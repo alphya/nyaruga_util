@@ -6,15 +6,12 @@
 #ifndef NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 #define NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 
-// MS compatible compilers support #pragma once
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
-#endif
 
-#include <nyaruga_util/bind_select_arg_replace.hpp>
+
+#include <nyaruga_util/partial_diff.hpp>
 #include <nyaruga_util/diff.hpp>
-#include <nyaruga_util/pac_select_pos_obj.hpp>
+#include <boost/hana/functional/arg.hpp>
 
 namespace nyaruga::util {
 
@@ -35,10 +32,9 @@ decltype(auto) generate_error_impl(F && f, Args &&... args)
    if constexpr (count > max)
       return num_t{ 0 };
    else {
-      auto && current_val_obj = pac_select_pos_obj<count>(args...);
+      auto && current_val_obj = boost::hana::arg<count>(args...);
       auto && current_val_error = current_val_obj.error;
-      auto && partial_diff = diff(bind_select_arg_replace<count>(f, args...),
-                                  current_val_obj.value);
+      auto && partial_diff = nyaruga::util::partial_diff<count>(f)(static_cast<num_t>(args)...);
       auto && result = boost::multiprecision::pow(partial_diff, 2) *
                        boost::multiprecision::pow(current_val_error, 2);
       return static_cast<num_t>(result + generate_error_impl<count + 1, max>(std::forward<F>(f), std::forward<Args>(args)...));
