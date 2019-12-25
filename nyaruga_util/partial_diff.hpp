@@ -10,7 +10,6 @@
 
 #include <concepts>
 #include <type_traits>
-#include <nyaruga_util/forward_wrap.hpp>
 #include <nyaruga_util/diff.hpp>
 #include <nyaruga_util/bind_select_arg_replace.hpp>
 #include <boost/hana/functional/arg.hpp>
@@ -25,8 +24,8 @@ constexpr auto partial_diff(F && f) noexcept
 {
    return [f](auto&& ... args) noexcept -> NumType
    {
-      return diff<NumType>(bind_select_arg_replace<count>(forward(f), args...))
-         (hana::arg<count>(forward(args)...));
+      return diff<NumType>(bind_select_arg_replace<count>(std::forward<decltype(f)>(f), args...))
+         (hana::arg<count>(std::forward<decltype(args)>(args)...));
    };
 }
 

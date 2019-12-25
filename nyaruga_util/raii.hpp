@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <nyaruga_util/forward_wrap.hpp>
 #include <boost/core/noncopyable.hpp>
 #include <utility>
 #include <type_traits>
@@ -43,7 +42,7 @@ namespace nyaruga::util {
       // please use std::move
       raii(T&& resource) : m_resource_(std::move(resource)) {};
       raii(T&& resource, Deleter) : m_resource_(std::move(resource)) {};
-      ~raii() { Deleter{}(forward(m_resource_)); }
+      ~raii() { Deleter{}(std::forward<decltype(m_resource_)>(m_resource_)); }
 
       T& get() { return m_resource_; }
    };
