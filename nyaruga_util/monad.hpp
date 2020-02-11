@@ -29,11 +29,11 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
     
    static inline constexpr auto mu = []<class U>(const monad<U>& m) -> U { return m.x; }; // μ
     
-   // g : X -> Y を用いて TX -> TY を合成し、引数の TX から TY を計算して返す。関手の役割をする
+   // g : X -> Y と引数の TX から TY を計算して返す。関手 g : X -> Y -> Tg : TX -> TY の役割をする
    // (Tg)(m) に対応。Tg : TX -> TY は (>> g) に対応
    template <typename Mor>
-   requires requires(Mor g, monad m) { { g(m.x) }; } 
-   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return eta(g(m.x)); }
+   requires requires(Mor g, monad m) { { g(mu(m)) }; } 
+   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return eta(g(mu(m))); }
 
    // Haskell のモナドの型クラスにおける >>=
    // | の引数は monad<X> とクライスリ圏における射 Mor: X -> TY で、これらから monad<Y> を出力する
@@ -52,8 +52,8 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
    constexpr decltype(auto) friend operator | (const monad& m, const Mor& g) { return mu(m >> g); };
 
    template<typename Y> requires requires(X x, Y y) { x == y; }
-   constexpr bool friend operator == (const monad& mx, const monad<Y>& my) { 
-      return std::is_same_v<Y, X> && (mx.x == my.x); 
+   constexpr bool friend operator == (const monad& lhs, const monad<Y>& rhs) { 
+      return std::is_same_v<Y, X> && (mu(lhs) == mu(rhs)); 
    };
 };
 
