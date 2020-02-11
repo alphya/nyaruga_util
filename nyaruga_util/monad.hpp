@@ -29,7 +29,7 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
     
    static inline constexpr auto mu = []<class U>(const monad<U>& m) -> U { return m.x; }; // μ
     
-   // g : X -> Y と引数の TX から TY を計算して返す。関手 g : X -> Y -> Tg : TX -> TY の役割をする
+   // g : X -> Y と引数の TX から TY を計算して返す。関手の g -> Tg の役割をする
    // (Tg)(m) に対応。Tg : TX -> TY は (>> g) に対応
    template <typename Mor>
    requires requires(Mor g, monad m) { { g(mu(m)) }; } 
