@@ -23,14 +23,17 @@ requires requires(X a, X b) { a == b; }
 struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, η, μ) における T
 {
    const X x;
-   static inline constexpr auto eta(const X& x) -> monad { return {x}; }; // η. Haskell のモナドの型クラスにおける return
-   static inline constexpr auto mu(const monad& m) -> X { return m.x; }; // μ
+    
+   static inline constexpr auto eta = [](const auto& x) -> monad<std::remove_cvref_t<decltype(x)>> 
+   { return {x}; }; // η. Haskell のモナドの型クラスにおける return
+    
+   static inline constexpr auto mu = []<class U>(const monad<U>& m) -> U { return m.x; }; // μ
     
    // g : X -> Y を用いて TX -> TY を合成し、引数の TX から TY を計算して返す。関手の役割をする
    // (Tg)(m) に対応。Tg : TX -> TY は (>> g) に対応
    template <typename Mor>
    requires requires(Mor g, monad m) { { g(m.x) }; } 
-   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return monad<decltype(g(m.x))>{g(m.x)}; }
+   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return eta(g(m.x)); }
 
    // Haskell のモナドの型クラスにおける >>=
    // | の引数は monad<X> とクライスリ圏における射 Mor: X -> TY で、これらから monad<Y> を出力する
@@ -46,7 +49,7 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
    // (| g) : TX -> TY そのものはクライスリ圏における射にならないことに注意
    template <typename Mor>
    requires requires(Mor g, X x) { { g(x) } -> std::same_as<monad<unwrap_helper_idx<0, decltype(g(x))>>>; } 
-   constexpr decltype(auto) friend operator | (const monad& m, const Mor& g) { return decltype(m >> g)::mu(m >> g); };
+   constexpr decltype(auto) friend operator | (const monad& m, const Mor& g) { return mu(m >> g); };
 
    template<typename Y> requires requires(X x, Y y) { x == y; }
    constexpr bool friend operator == (const monad& mx, const monad<Y>& my) { 
