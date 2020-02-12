@@ -14,9 +14,12 @@
 // 圏論的な型を集めました
 
 namespace nyaruga::util {
-
 namespace category {
 
+   // f : X -> Y
+   template <typename Mor, typename X>
+   using f = std::remove_cvref_t<decltype(std::declval<Mor>()(std::declval<X>()))>(*)(const X&);
+    
    // μ : TX -> X
    template <template<class> class T, typename X>
    using mu = std::remove_cvref_t<X>(*)(const T<std::remove_cvref_t<X>>&);
@@ -35,6 +38,10 @@ namespace category {
    requires requires (Mor f, X x) { f(x); }
    using functor = Tf<Mor, T, std::remove_cvref_t<X>>(*)(const Mor&);
     
+   // f : X -> TY
+   template <typename KleisliMor, template<class> class T, typename X>
+   using kleisli_f = T<std::remove_cvref_t<decltype(std::declval<KleisliMor>()(std::declval<X>()))>>(*)(const X&);
+   
    // (-)* : (f : X -> TY) -> (f* : TX -> TY)
    template <typename KleisliMor, template<class> class T, typename X>
    requires requires (KleisliMor f, X x) { { f(x) } -> std::same_as<T<unwrap_helper_idx<0, decltype(f(x))>>>;  }
@@ -44,7 +51,7 @@ namespace category {
    template <typename KleisliMor, template<class> class T, typename X>
    requires requires (KleisliMor f, T<std::remove_cvref_t<X>> x) { f(std::declval<mu<T, X>>()(x)); }
    using f_star = T<std::remove_cvref_t<unwrap_helper_idx<0, decltype(std::declval<KleisliMor>()(std::declval<X>()))>>> (*)(const T<std::remove_cvref_t<X>>&);
-    
+   
    // mu_T : (μ◦T(-))(-), in Haskell : >>=
    template <typename KleisliMor, template<class> class T, typename X>
    requires requires (KleisliMor f, T<std::remove_cvref_t<X>> x) { f(std::declval<mu<T, X>>()(x)); }
