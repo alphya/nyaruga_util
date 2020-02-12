@@ -2,7 +2,7 @@
 #define BOOST_TEST_MODULE singleton_test
 #include <boost/test/included/unit_test.hpp>
 
-#include <nyaruga_util/singleton.hpp>
+#include "../../nyaruga_util/singleton.hpp"
 #include <string>
 
 using namespace nyaruga::util;

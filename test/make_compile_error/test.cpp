@@ -2,7 +2,7 @@
 #define BOOST_TEST_MODULE make_compile_error_test
 #include <boost/test/included/unit_test.hpp>
 
-#include <nyaruga_util/pac_select_pos_obj.hpp>
+#include "../../nyaruga_util/pac_select_pos_obj.hpp"
 #include <string>
 
 BOOST_AUTO_TEST_CASE(make_compile_error_test_1)
