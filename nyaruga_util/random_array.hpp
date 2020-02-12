@@ -110,4 +110,4 @@ int main() {
 
 } // nyaruga :: util
 
-#endif // NYARUGA_UTIL_MONAD_HPP
+#endif // NYARUGA_UTIL_RANDOM_ARRAY_HPP
