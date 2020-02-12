@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE forward_wrap_test
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #include "../../nyaruga_util/forward_wrap.hpp"
 #include <type_traits>

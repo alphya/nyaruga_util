@@ -1,6 +1,6 @@
 
 #define BOOST_TEST_MODULE make_compile_error_test
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #include <nyaruga_util/pac_select_pos_obj.hpp>
 #include <string>
