@@ -62,7 +62,7 @@ static inline constexpr auto check_semantics = boost::hana::overload(
 
 } // namespace check_semantics_
 
-unisng namespace check_semantics_;
+using namespace check_semantics_;
 
 /* 使用方法
 
