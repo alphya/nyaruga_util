@@ -53,7 +53,7 @@ static inline constexpr auto check_semantics = boost::hana::overload(
 },
     
 []<std::size_t N, typename T, template <class, std::size_t> class Array>
-(T (&a)[N], auto&& f) requires requires() { { f(a[0]) } -> std::same_as<bool>; }
+(T (&&a)[N], auto&& f) requires requires() { { f(a[0]) } -> std::same_as<bool>; }
 {
     return detail::check_semantics_impl(std::forward<decltype(a)>(a), std::forward<decltype(f)>(f), std::make_index_sequence<N>{});
 }
