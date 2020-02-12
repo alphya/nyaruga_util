@@ -9,7 +9,8 @@
 #pragma once
 
 #include <concepts>
-#include <unwrap_helper_idx.hpp>
+#include <nyaruga_util/category.hpp>
+#include <nyaruga_util/unwrap_helper_idx.hpp>
 
 namespace nyaruga::util {
 
@@ -24,16 +25,16 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
 {
    const X x;
     
-   static inline constexpr auto eta = [](const auto& x) -> monad<std::remove_cvref_t<decltype(x)>> 
+   static inline constexpr category::eta<monad, X> eta = [](const X& x) -> monad<std::remove_cvref_t<decltype(x)>> 
    { return {x}; }; // η. Haskell のモナドの型クラスにおける return
     
-   static inline constexpr auto mu = []<class U>(const monad<U>& m) -> U { return m.x; }; // μ
+   static inline constexpr category::mu<monad, X> mu = [](const monad<X>& m) -> X { return m.x; }; // μ
     
    // g : X -> Y と引数の TX から TY を計算して返す。関手の g -> Tg の役割をする
    // (Tg)(m) に対応。Tg : TX -> TY は (>> g) に対応
    template <typename Mor>
    requires requires(Mor g, monad m) { { g(mu(m)) }; } 
-   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return eta(g(mu(m))); }
+   constexpr decltype(auto) friend operator >> (const monad& m, const Mor& g) { return monad<decltype(g(m.x))>::eta(g(mu(m))); }
 
    // Haskell のモナドの型クラスにおける >>=
    // | の引数は monad<X> とクライスリ圏における射 Mor: X -> TY で、これらから monad<Y> を出力する
@@ -49,11 +50,11 @@ struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, �
    // (| g) : TX -> TY そのものはクライスリ圏における射にならないことに注意
    template <typename Mor>
    requires requires(Mor g, X x) { { g(x) } -> std::same_as<monad<unwrap_helper_idx<0, decltype(g(x))>>>; } 
-   constexpr decltype(auto) friend operator | (const monad& m, const Mor& g) { return mu(m >> g); };
+   constexpr decltype(auto) friend operator | (const monad& m, const Mor& g) { return monad<decltype(g(m.x))>::mu(m >> g); };
 
    template<typename Y> requires requires(X x, Y y) { x == y; }
    constexpr bool friend operator == (const monad& lhs, const monad<Y>& rhs) { 
-      return std::is_same_v<Y, X> && (mu(lhs) == mu(rhs)); 
+      return std::is_same_v<Y, X> && (mu(lhs) == monad<Y>::mu(rhs)); 
    };
 };
 
