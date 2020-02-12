@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.6)
 
 include(cmake/DoClangTidy.cmake)
 include(cmake/FormatFilesWithClangFormat.cmake)
