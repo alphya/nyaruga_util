@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake
+      run: cmake .
     - name: ctest
-      run: ctest
+      run: ctest .
