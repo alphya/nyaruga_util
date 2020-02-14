@@ -8,11 +8,9 @@
 
 #pragma once
 
-#include <boost/type_index.hpp>
-
 namespace nyaruga::util {
 
-// unwrap_helper_idx
+// unwrap_template_idx
 template<unsigned int i, class U, class... Args>
 struct unwrap_helper_idx_getter: unwrap_helper_idx_getter<i-1, Args...>{};
 
@@ -23,10 +21,10 @@ template<unsigned int i, template<class...> class U, class... Args>
 auto unwrap_helper_idx_impl(const U<Args...>&) -> unwrap_helper_idx_getter<i, Args...>;
 
 template<unsigned int i, class... Args, class R>
-auto unwrap_helper_idx_impl( R(*fn)(Args...) ) -> typename unwrap_helper_idx_getter<i, Args...>::type;
+auto unwrap_template_idx_impl( R(*fn)(Args...) ) -> typename unwrap_helper_idx_getter<i, Args...>::type;
 
 template<unsigned int i, class U>
-using unwrap_helper_idx = typename decltype(unwrap_helper_idx_impl<i>(std::declval<U>()))::type;
+using unwrap_template_idx = typename decltype(unwrap_helper_idx_impl<i>(std::declval<U>()))::type;
 
 } // nyaruga :: util
 
