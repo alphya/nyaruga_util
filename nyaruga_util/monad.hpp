@@ -9,6 +9,7 @@
 #pragma once
 
 #include <concepts>
+#include <nyaruga_util/unwrap_template_idx.hpp>
 
 namespace nyaruga::util {
 
