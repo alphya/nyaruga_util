@@ -40,4 +40,13 @@ class my_class
 
 */
 
+/*
+template <typename T> 
+struct satisfy_Concept {
+   constexpr satisfy_Concept(){ static_assert( "Some Concept here" ); }
+};
+
+struct mohu : satisfy_Concept<mohu> {};
+*/
+
 #endif // #ifndef NYARUGA_UTIL_CLASS_TYPE_REQUESTS_HPP
