@@ -17,8 +17,6 @@ namespace nyaruga::util {
 
 namespace category {
    
-namespace category {
-   
    namespace detail {
       template <template<class> class T, typename X>
       constexpr unsigned int T_rank_impl()
