@@ -20,7 +20,7 @@ namespace monad_ {
 // T は対象が型、射が型 X から 型 Y への関数となるような圏を、
 // 対象が monad<型>、射が monad<X> 型から monad<Y> 型への関数になるような圏へと移す関手
 
-// CRTP でこれを継承して、エラーが出ないもので、下記のモナド測を満たすものがモナド
+// CRTP でこれを継承してエラーが出ないもので、下記のモナド則を満たすものがモナド
 // nyaruga_util/category では、(static) メンバ関数 ret : T -> monad<T>, fmap : (X -> Y) -> (monad<X> -> mondo<Y>),
 // operator >> : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
 template <template <class> class T, typename X, typename Y>
@@ -29,7 +29,7 @@ struct monad
    monad() { static_assert(category::monad<T, X, Y>, "The class is not a monad."); }
 };
 
-// モナド測
+// モナド則
 /*
 // f, g : X -> TY はクライスリ圏における射とすうとき、
 auto f = [](const T& x) -> M<T> { return {{},x+10}; };
