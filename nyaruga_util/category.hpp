@@ -28,7 +28,7 @@ namespace category {
    }
    
    // X が T< T< T< ... T<Y> ... > と再帰的に T が適用されているような型であるとき、
-   // T が南海適用されているかを返す
+   // T が何回適用されているかを返す
    template <template<class> class T, typename X>
    constexpr unsigned int T_rank = detail::T_rank_impl<T, X>();
    
