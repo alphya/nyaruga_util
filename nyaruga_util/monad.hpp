@@ -9,7 +9,7 @@
 #pragma once
 
 #include <concepts>
-#include <nyaruga_util/unwrap_template_idx.hpp>
+#include <nyaruga_util/category.hpp>
 
 namespace nyaruga::util {
 
@@ -22,73 +22,83 @@ namespace monad_ {
 // T は対象が型、射が型 X から 型 Y への関数となるような圏を、
 // 対象が monad<型>、射が monad<X> 型から monad<Y> 型への関数になるような圏へと移す関手
 
-template <typename X>
-requires requires(X a, X b) { a == b; }
-struct monad // monad は型 X から 型 monad<X> への関手。モナド(T, η, μ) における T
+// CRTP でこれを継承して、エラーが出ないもので、下記のモナド測を満たすものがモナド
+// nyaruga_util/category では、(static) メンバ関数 ret : T -> monad<T>, fmap : (X -> Y) -> (monad<X> -> mondo<Y>),
+// operator >> : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
+template <template <class> class T, typename X, typename Y>
+struct monad 
 {
+   monad() { static_assert(category::monad<T, X, Y>, "The class is not a monad."); }
+};
+
+// モナド測
+/*
+// f, g : X -> TY はクライスリ圏における射とすうとき、
+auto f = [](const T& x) -> M<T> { return {{},x+10}; };
+auto g = [](const T& x) -> M<U> { return {{},x*3.14}; };
+
+(M<T>::ret(x) >> f) == f(x); // 左単位元律
+M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
+(( M<T>::ret(x) >> f ) >> g) == (M<T>::ret(x) >> ( [f, g](T x){ return (f(x) >> g); } )); // 結合律
+*/
+
+// モナドの例。メソッドチェインができる
+template <typename X>
+struct chain : monad<chain, X, X> {
    const X x;
 
-   static inline constexpr auto eta = [](const X & x) { return monad{ x }; }; // η. Haskell のモナドの型クラスにおける return
+   static auto ret(X x) { return chain<X>{ {}, x }; }; // η. Haskell のモナドの型クラスにおける return
 
-   static inline constexpr auto mu = [](const monad<X> & m) -> X { return m.x; }; // μ
-
-   // g : X -> Y と引数の TX から TY を計算して返す。関手の g -> Tg の役割をする
-   // (Tg)(m) に対応。Tg : TX -> TY は (>> g) に対応
-   template <typename Mor>
-   requires requires(Mor g, monad m) { { g(mu(m)) }; }
-   constexpr decltype(auto) friend operator>>(const monad & m, const Mor & g) { return monad<decltype(g(m.x))>::eta(g(mu(m))); }
-
-   // Haskell のモナドの型クラスにおける >>=
-   // | の引数は monad<X> とクライスリ圏における射 Mor: X -> TY で、これらから monad<Y> を出力する
-   // | は (μ◦T(-))(-) : Mor × monad<X> -> monad<Y> に対応すると思われる
-   // g : X -> TY または X -> monad<Y>
-   // m : TX または monad<X>
-   // Tg : TX -> TTY または monad<X> -> monad<monad<Y>>, (>> g) でこれを作成している
-   // μ◦Tg : TX -> TY または monad<X> -> monad<Y> ; (| g) に対応。mu と (>> g) でこれを作成している
-   // (μ◦Tg)(m) : TY または monad<Y> ; (m | g)、または (μ◦Tg)(m) に対応。これは TY, または monad<Y> である
-   // 蛇足：クライスリ圏における射は、f : X -> TY という形で、射 g : Y -> TZ と合成すると
-   // μ◦Tg◦f : X -> TZ という射になる。μ◦T(次の射)◦(前の射) というように、前の射に μ◦T(次の射) を
-   // 合成することで行う。| は、クライスリ圏における対象 m を、その出発点が μ(m) な射 g を用いて送る関数だと考えられる。
-   // (| g) : TX -> TY そのものはクライスリ圏における射にならないことに注意
-   template <typename Mor>
-   requires requires(Mor g, X x)
+   template <category::morphism_from<X> Mor>
+   auto fmap(const Mor & f)
    {
-      {
-         g(x)
-      }
-      ->std::same_as<monad<unwrap_template_idx<0, decltype(g(x))>>>;
+      return [f, this](chain<X> c) { return chain<category::apply_morphism<X, Mor>>{ {}, f(c.x) }; };
    }
-   constexpr decltype(auto) friend operator|(const monad & m, const Mor & g) { return monad<decltype(g(m.x))>::mu(m >> g); };
 
-   template <typename Y>
-   requires requires(X x, Y y) { x == y; }
-   constexpr bool friend operator==(const monad & lhs, const monad<Y> & rhs)
+   constexpr bool operator==(const chain & other) const { return x == other.x; };
+
+   // >> は Haskell における >>=
+   template <category::morphism_from<X> KleisliMor>
+   requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>> constexpr auto friend operator>>(const chain<X> & m, const KleisliMor & g)
+      -> category::apply_kleisli_morph<chain, X, KleisliMor>
    {
-      return std::is_same_v<Y, X> && (mu(lhs) == monad<Y>::mu(rhs));
+      return category::apply_kleisli_morph<chain, X, KleisliMor>{ g(m.x) };
    };
+};
 
 /*
 
-// 適宜テスト用に書き換えてください
+#include <iostream>
+
+// chain がモナド測を満たすかどうかのテスト
+// 適宜自作モナドのテスト用に書き換えてください
+
 template <template <class> class M, typename T, typename U>
 requires requires(T x, U y) { {x + y} -> std::same_as<U>; } // この例では、この演算を使っているため
-constexpr bool monad_rule(const T& x, const U& y) // monad がモナドであることを確かめる。モナド則を満たしていることを確認する
+constexpr bool monad_rule(T x, U) // monad がモナドであることを確かめる。モナド則を満たしていることを確認する
 {
    // f, g : X -> TY はクライスリ圏における射
-   auto f = [](const T& x) -> M<T> { return {x}; };
-   auto g = [&y](const T& x) -> M<U> { return {x + y}; };
+   auto f = [](const T& x) -> M<T> { return {{},x}; };
+   auto g = [](const T& x) -> M<U> { return {{},x * 3.14}; };
 
-   bool hidari_id = (M<T>::eta(x) | f) == f(x); // 左単位元律
-   bool migi_id = (M<T>::eta(x) | M<T>::eta) == M<T>::eta(x); // 右単位元律
-   auto a = ( M<T>::eta(x) | f ) | g;
-   auto b = M<T>::eta(x) | ( [f, g](T x){ return (f(x) | g); } );
+   bool hidari_id = (M<T>::ret(x) >> f) == f(x); // 左単位元律
+   bool migi_id = (M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
+      std::cout << std::boolalpha << hidari_id << migi_id;
+   auto a = ( M<T>::ret(x) >> f ) >> g;
+   auto b = M<T>::ret(x) >> ( [f, g](T x){
+       return (f(x) >> g); } );
    bool ketugou = a == b;  // 結合律
    return hidari_id && migi_id && ketugou;
 }
 
-static_assert(monad_rule<monad>(10, 3.14), "");
-static_assert(monad_rule<monad>(float(14.33), 3.3), "");
-bool tmp1 = monad_rule<monad>(std::string("hello"), std::string("world"));
+int main()
+{
+   chain<int> c{{},6};
+   std::cout << (c >> [](int a){ return chain<int>{{},a+1}; }).x;
+   c.fmap([](int a){ return a;});
+   
+   std::cout << std::boolalpha << monad_rule<chain>(14, 3.15);
+}
 
 */
 
