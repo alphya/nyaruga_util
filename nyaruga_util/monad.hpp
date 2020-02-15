@@ -44,25 +44,31 @@ M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
 
 // モナドの例。メソッドチェインができる
 template <typename X>
-struct chain : monad<chain, X, X> {
+struct chain : monad<chain, X, X>
+{
    const X x;
-
-   static auto ret(X x) { return chain<X>{ {}, x }; }; // η. Haskell のモナドの型クラスにおける return
+   
+   static auto ret(X x){ return chain<X>{{},x}; } ; // η. Haskell のモナドの型クラスにおける return
 
    template <category::morphism_from<X> Mor>
-   auto fmap(const Mor & f)
+   auto fmap(const Mor& f) { return [f, this](chain<X> c){ return chain<category::apply_morphism<X, Mor>>{{},f(c.x)}; }; }
+   
+   constexpr bool operator == (const chain& other) const { return x == other.x; };
+   
+   template <category::morphism_from<X> Mor>
+      requires requires(Mor f, X x) { { f(x) } -> category::same_T_rank_with<chain, X>; }
+   constexpr auto friend operator | (const chain& m, const Mor& g)
    {
-      return [f, this](chain<X> c) { return chain<category::apply_morphism<X, Mor>>{ {}, f(c.x) }; };
+      return chain<category::apply_morphism<X, Mor>>{{}, g(m.x)};
    }
-
-   constexpr bool operator==(const chain & other) const { return x == other.x; };
-
-   // >> は Haskell における >>=
+   
+   // Haskell における >>=
    template <category::morphism_from<X> KleisliMor>
-   requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>> constexpr auto friend operator>>(const chain<X> & m, const KleisliMor & g)
+      requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>>
+   constexpr auto friend operator >> (const chain& m, const KleisliMor& g) 
       -> category::apply_kleisli_morph<chain, X, KleisliMor>
-   {
-      return category::apply_kleisli_morph<chain, X, KleisliMor>{ g(m.x) };
+   { 
+      return category::apply_kleisli_morph<chain, X, KleisliMor>{g(m.x)};
    };
 };
 
@@ -83,7 +89,6 @@ constexpr bool monad_rule(T x, U) // monad がモナドであることを確か�
 
    bool hidari_id = (M<T>::ret(x) >> f) == f(x); // 左単位元律
    bool migi_id = (M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
-      std::cout << std::boolalpha << hidari_id << migi_id;
    auto a = ( M<T>::ret(x) >> f ) >> g;
    auto b = M<T>::ret(x) >> ( [f, g](T x){
        return (f(x) >> g); } );
@@ -93,13 +98,14 @@ constexpr bool monad_rule(T x, U) // monad がモナドであることを確か�
 
 int main()
 {
+
    chain<int> c{{},6};
    std::cout << (c >> [](int a){ return chain<int>{{},a+1}; }).x;
    c.fmap([](int a){ return a;});
+   std::cout << (c | [](int a){ return a+1; }).x;
    
    std::cout << std::boolalpha << monad_rule<chain>(14, 3.15);
 }
-
 */
 
 } // namespace monad_

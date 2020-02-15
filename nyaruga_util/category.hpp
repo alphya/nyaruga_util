@@ -25,12 +25,15 @@ namespace category {
             return 1 + T_rank_impl<T, unwrap_template_idx<0, X>>();
          else return 0;
       }
-      
-      // X が T< T< T< ... T<Y> ... > と再帰的に T が適用されているような型であるとき、
-      // T が南海適用されているかを返す
-      template <template<class> class T, typename X>
-      constexpr unsigned int T_rank = detail::T_rank_impl<T, X>();
    }
+   
+   // X が T< T< T< ... T<Y> ... > と再帰的に T が適用されているような型であるとき、
+   // T が南海適用されているかを返す
+   template <template<class> class T, typename X>
+   constexpr unsigned int T_rank = detail::T_rank_impl<T, X>();
+   
+   template <typename Y, template <class> class T, typename X>
+   concept same_T_rank_with = (T_rank<T, X> == T_rank<T, Y>);
 
    // f : X -> Y
    template <typename Hom, typename Domain, typename Codomain>
@@ -57,7 +60,7 @@ namespace category {
    
    // μ : TX -> X
    template <typename Mor, typename X,  template<class> class T>
-   concept mu = morphism_from<Mor, X> && (detail::T_rank<T, X> == 1) && 
+   concept mu = morphism_from<Mor, X> && (T_rank<T, X> == 1) && 
       requires (Mor f, X x) { { f(x) } -> std::convertible_to<unwrap_template_idx<0, X>>; };
 
    template <template<class> class T, object X>
@@ -81,7 +84,7 @@ namespace category {
    
    // η : X -> TX, in Haskell : return
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
-   concept ret = morphism_between<Mor, Domain, Codomain> && (detail::T_rank<T, Domain> == 0) &&
+   concept ret = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 0) &&
       requires(Mor f, Domain x) { 
          { f(x) } -> std::convertible_to<T<Codomain>>;
          std::convertible_to<T<Domain>, Codomain>; };
@@ -104,11 +107,11 @@ namespace category {
 
    // f : X -> TY
    template <typename KleisliMor, template<class> class T, typename Domain, typename Codomain>
-   concept kleisli_morphism = morphism_between<KleisliMor, Domain, Codomain> && (detail::T_rank<T, Domain> == 0) &&
+   concept kleisli_morphism = morphism_between<KleisliMor, Domain, Codomain> && (T_rank<T, Domain> == 0) &&
        requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
    
    template <typename KleisliMor, template<class> class T, typename Domain>
-   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && (detail::T_rank<T, Domain> == 0) &&
+   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && (T_rank<T, Domain> == 0) &&
    requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, decltype(f(x))>>>; };
    
    template <template<class> class T, object X, object Y>
@@ -123,7 +126,7 @@ namespace category {
                                        
    // f* : TX -> TY, in Haskell : (>>= f)
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
-   concept f_star = morphism_between<Mor, Domain, Codomain> && (detail::T_rank<T, Domain> == 1) &&
+   concept f_star = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 1) &&
       requires (Mor fstar, T<apply_mu<T, Domain>> x) 
    { { fstar(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
 
@@ -132,11 +135,11 @@ namespace category {
    
    // mu_T : (μ◦T(-))(-), in Haskell : >>=
    template <template<class> class T, object X, object Y>
-      requires (detail::T_rank<T, X> == 0) && (detail::T_rank<T, Y> == 0)
+      requires (T_rank<T, X> == 0) && (T_rank<T, Y> == 0)
    using make_mu_T = T<Y>(*)(T<X>, make_morph<X, T<Y>>);
    
    template <template<class> class T, typename X, typename Y>
-   concept has_mu_T = (detail::T_rank<T, X> == 0) && (detail::T_rank<T, Y> == 0) &&
+   concept has_mu_T = (T_rank<T, X> == 0) && (T_rank<T, Y> == 0) &&
       requires (T<X> x, category::make_morph<X, T<Y>> f) { 
          { x >> f } -> std::convertible_to<T<Y>>; 
    };
@@ -156,7 +159,6 @@ namespace category {
    );
    
 } // namespare category
-
 
 } // nyaruga :: util
 
