@@ -9,6 +9,7 @@
 #pragma once
 
 #include <concepts>
+#include <functional>
 #include <nyaruga_util/unwrap_template.hpp>
 
 // 圏論的な型を集めました
@@ -44,7 +45,7 @@ namespace category {
    
    // (X, Y) to X -> Y
    template <typename X, typename Y>
-   using make_morph = Y(*)(X);
+   using make_morph = std::function<Y(X)>;
     
    template <typename Object>
    concept object = true;
