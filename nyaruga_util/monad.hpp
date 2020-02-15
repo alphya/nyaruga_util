@@ -116,6 +116,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    using self = meybe<Type>;
    
    self<X>(const X& x) : std::optional<X>(x) {}
+   self<X>(X&& x) : std::optional<X>(std::forward<X>(x)) {}
    self<X>(const std::nullopt_t& x) : std::optional<X>(x) {}
    
    // この部分と
