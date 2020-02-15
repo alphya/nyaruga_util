@@ -15,8 +15,6 @@ namespace nyaruga::util {
 
 namespace monad_ {
 
-// すごく単純な例です。コピペして新しいモナドを作ってください
-
 // 組(T, η, μ) をモナドとすると、
 
 // T は対象が型、射が型 X から 型 Y への関数となるような圏を、
@@ -76,7 +74,7 @@ struct chain : monad<chain, X, X>
 
 #include <iostream>
 
-// chain がモナド測を満たすかどうかのテスト
+// chain がモナド則を満たすかどうかのテスト
 // 適宜自作モナドのテスト用に書き換えてください
 
 template <template <class> class M, typename T, typename U>
