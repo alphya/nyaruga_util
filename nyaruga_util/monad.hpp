@@ -61,7 +61,7 @@ struct chain : monad<chain, X, X>
    }
    
    // Haskell における >>=
-   template <category::morphism_from<X> KleisliMor>
+   template <category::kleisli_morphism_from<chain, X> KleisliMor>
       requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>>
    constexpr auto friend operator >> (const chain& m, const KleisliMor& g) 
       -> category::apply_kleisli_morph<chain, X, KleisliMor>
