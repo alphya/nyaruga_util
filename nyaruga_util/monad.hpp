@@ -138,7 +138,10 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    }
    
    // この部分と
-   constexpr bool operator == (const self<X>& other) const { return static_cast<std::optional<X>>(*this) == static_cast<std::optional<X>>(other); };
+   constexpr bool friend operator == (const self<X>& m, const self<X>& other)
+   { 
+      return static_cast<std::optional<X>>(*this) == static_cast<std::optional<X>>(other);
+   };
    
    // これはあってもなくても良い
    template <category::morphism_from<X> Mor>
