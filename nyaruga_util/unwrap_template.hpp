@@ -3,12 +3,19 @@
 //   (See accompanying file ../LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef NYARUGA_UTIL_UNWRAP_HELPER_IDX_HPP
-#define NYARUGA_UTIL_UNWRAP_HELPER_IDX_HPP
+#ifndef NYARUGA_UTIL_UNWRAP_TEMPLATE_HPP
+#define NYARUGA_UTIL_UNWRAP_TEMPLATE_HPP
 
 #pragma once
 
 namespace nyaruga::util {
+
+// unwrap_template_and_apply
+template<template <class...> class To, template <class...> class From, typename ... Args>
+auto unwrap_template_and_apply_impl(const From<Args...>&) -> To<Args...>;
+
+template <typename From, template <class...> class To>
+using unwrap_template_and_apply = decltype(unwrap_template_and_apply_impl<To>(std::declval<From>()));
 
 // unwrap_template_idx
 template<unsigned int i, class U, class... Args>
@@ -21,11 +28,11 @@ template<unsigned int i, template<class...> class U, class... Args>
 auto unwrap_helper_idx_impl(const U<Args...>&) -> unwrap_helper_idx_getter<i, Args...>;
 
 template<unsigned int i, class... Args, class R>
-auto unwrap_template_idx_impl( R(*fn)(Args...) ) -> typename unwrap_helper_idx_getter<i, Args...>::type;
+auto unwrap_helper_idx_impl( R(*fn)(Args...) ) -> typename unwrap_helper_idx_getter<i, Args...>::type;
 
 template<unsigned int i, class U>
 using unwrap_template_idx = typename decltype(unwrap_helper_idx_impl<i>(std::declval<U>()))::type;
 
 } // nyaruga :: util
 
-#endif // NYARUGA_UTIL_UNWRAP_HELPER_IDX_HPP
+#endif // NYARUGA_UTIL_UNWRAP_TEMPLATE_HPP
