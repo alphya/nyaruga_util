@@ -115,16 +115,16 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    template <typename Type>
    using self = meybe<Type>;
    
-   self<X>(const X& x) : std::optional<X>(x) {}
-   self<X>(X&& x) : std::optional<X>(std::forward<X>(x)) {}
-   self<X>(const std::nullopt_t& x) : std::optional<X>(x) {}
+   self<X>(const X& x) noexcept : std::optional<X>(x) {}
+   self<X>(X&& x) noexcept : std::optional<X>(std::forward<X>(x)) {}
+   self<X>(const std::nullopt_t& x) noexcept : std::optional<X>(x) {}
    
    // この部分と
    static auto ret(X x){ return self<X>{x}; } ; // η. Haskell のモナドの型クラスにおける return
 
    template <category::morphism_from<X> Mor>
-   auto fmap(const Mor& f)
-   {  return [f, this](const self<X>& c)
+   auto fmap(const Mor& f) noexcept
+   {  return [f, this](const self<X>& c) noexcept
       {
          // この部分と
          return this->has_value() ?
@@ -139,7 +139,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    }
    
 
-   constexpr bool friend operator == (const self<X>& m, const self<X>& other)
+   constexpr bool friend operator == (const self<X>& m, const self<X>& other) noexcept
    {
       // この部分と
       return static_cast<std::optional<X>>(m) == static_cast<std::optional<X>>(other);
@@ -148,7 +148,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    // これはあってもなくても良い
    template <category::morphism_from<X> Mor>
       requires requires(Mor f, X x) { { f(x) } -> category::same_T_rank_with<self, X>; }
-   constexpr auto friend operator | (const self<X>& m, const Mor& g)
+   constexpr auto friend operator | (const self<X>& m, const Mor& g) noexcept
    {
       // この部分と
       return m.has_value() ? g(m.value()) :
@@ -160,7 +160,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    // Haskell における >>=
    template <category::kleisli_morphism_from<self, X> KleisliMor>
       requires category::functor<self, X, category::apply_mu<self, category::apply_kleisli_morph<self, X, KleisliMor>>>
-   constexpr auto friend operator >= (const self<X>& m, const KleisliMor& g)
+   constexpr auto friend operator >= (const self<X>& m, const KleisliMor& g) noexcept
       -> category::apply_kleisli_morph<self, X, KleisliMor>
    {
       // この部分を書き換える
