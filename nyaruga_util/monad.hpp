@@ -23,7 +23,7 @@ namespace monad_ {
 
 // CRTP でこれを継承してエラーが出ないもので、下記のモナド則を満たすものがモナド
 // nyaruga_util/category では、(static) メンバ関数 ret : T -> monad<T>, fmap : (X -> Y) -> (monad<X> -> mondo<Y>),
-// operator >> : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
+// operator >= : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
 template <template <class> class T, typename X, typename Y>
 struct monad 
 {
@@ -36,9 +36,9 @@ struct monad
 auto f = [](const T& x) -> M<T> { return {{},x+10}; };
 auto g = [](const T& x) -> M<U> { return {{},x*3.14}; };
 
-(M<T>::ret(x) >> f) == f(x); // 左単位元律
-M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
-(( M<T>::ret(x) >> f ) >> g) == (M<T>::ret(x) >> ( [f, g](T x){ return (f(x) >> g); } )); // 結合律
+(M<T>::ret(x) >= f) == f(x); // 左単位元律
+M<T>::ret(x) >= M<T>::ret) == M<T>::ret(x); // 右単位元律
+(( M<T>::ret(x) >= f ) >= g) == (M<T>::ret(x) >= ( [f, g](T x){ return (f(x) >= g); } )); // 結合律
 */
 
 // モナドの例。メソッドチェインができる
@@ -64,7 +64,7 @@ struct chain : monad<chain, X, X>
    // Haskell における >>=
    template <category::kleisli_morphism_from<chain, X> KleisliMor>
       requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>>
-   constexpr auto friend operator >> (const chain& m, const KleisliMor& g) 
+   constexpr auto friend operator >= (const chain& m, const KleisliMor& g) 
       -> category::apply_kleisli_morph<chain, X, KleisliMor>
    { 
       return category::apply_kleisli_morph<chain, X, KleisliMor>{g(m.x)};
@@ -86,11 +86,11 @@ constexpr bool monad_rule(T x, U) // monad がモナドであることを確か�
    auto f = [](const T& x) -> M<T> { return {{},x}; };
    auto g = [](const T& x) -> M<U> { return {{},x * 3.14}; };
 
-   bool hidari_id = (M<T>::ret(x) >> f) == f(x); // 左単位元律
-   bool migi_id = (M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
-   auto a = ( M<T>::ret(x) >> f ) >> g;
-   auto b = M<T>::ret(x) >> ( [f, g](T x){
-       return (f(x) >> g); } );
+   bool hidari_id = (M<T>::ret(x) >= f) == f(x); // 左単位元律
+   bool migi_id = (M<T>::ret(x) >= M<T>::ret) == M<T>::ret(x); // 右単位元律
+   auto a = ( M<T>::ret(x) >= f ) >= g;
+   auto b = M<T>::ret(x) >= ( [f, g](T x){
+       return (f(x) >= g); } );
    bool ketugou = a == b;  // 結合律
    return hidari_id && migi_id && ketugou;
 }
@@ -99,7 +99,7 @@ int main()
 {
 
    chain<int> c{{},6};
-   std::cout << (c >> [](int a){ return chain<int>{{},a+1}; }).x;
+   std::cout << (c >= [](int a){ return chain<int>{{},a+1}; }).x;
    c.fmap([](int a){ return a;});
    std::cout << (c | [](int a){ return a+1; }).x;
    
@@ -122,9 +122,9 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    static auto ret(X x){ return self<X>{x}; } ; // η. Haskell のモナドの型クラスにおける return
 
    template <category::morphism_from<X> Mor>
-   auto fmap(const Mor& f) 
-   {  return [f, this](const self<X>& c) 
-      { 
+   auto fmap(const Mor& f)
+   {  return [f, this](const self<X>& c)
+      {
          // この部分と
          return this->has_value() ?
             self<category::apply_morphism<X, Mor>>{
@@ -137,10 +137,11 @@ struct meybe : monad<meybe, X>, public std::optional<X>
       };
    }
    
-   // この部分と
+
    constexpr bool friend operator == (const self<X>& m, const self<X>& other)
-   { 
-      return static_cast<std::optional<X>>(*this) == static_cast<std::optional<X>>(other);
+   {
+      // この部分と
+      return static_cast<std::optional<X>>(m) == static_cast<std::optional<X>>(other);
    };
    
    // これはあってもなくても良い
@@ -158,11 +159,11 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    // Haskell における >>=
    template <category::kleisli_morphism_from<self, X> KleisliMor>
       requires category::functor<self, X, category::apply_mu<self, category::apply_kleisli_morph<self, X, KleisliMor>>>
-   constexpr auto friend operator >> (const self<X>& m, const KleisliMor& g) 
+   constexpr auto friend operator >= (const self<X>& m, const KleisliMor& g)
       -> category::apply_kleisli_morph<self, X, KleisliMor>
-   {  
+   {
       // この部分を書き換える
-      return m.value() ? 
+      return m.value() ?
          category::apply_kleisli_morph<self, X, KleisliMor>{g(m.value())}
        : category::apply_kleisli_morph<self, X, KleisliMor>{std::nullopt};
    };
@@ -178,11 +179,11 @@ constexpr bool monad_rule(T x, U) // monad がモナドであることを確か�
    auto f = [](const T& x) -> M<T> { return {x}; };
    auto g = [](const T& x) -> M<U> { return {x * 3.14}; };
 
-   bool hidari_id = (M<T>::ret(x) >> f) == f(x); // 左単位元律
-   bool migi_id = (M<T>::ret(x) >> M<T>::ret) == M<T>::ret(x); // 右単位元律
-   auto a = ( M<T>::ret(x) >> f ) >> g;
-   auto b = M<T>::ret(x) >> ( [f, g](T x){
-       return (f(x) >> g); } );
+   bool hidari_id = (M<T>::ret(x) >= f) == f(x); // 左単位元律
+   bool migi_id = (M<T>::ret(x) >= M<T>::ret) == M<T>::ret(x); // 右単位元律
+   auto a = ( M<T>::ret(x) >= f ) >= g;
+   auto b = M<T>::ret(x) >= ( [f, g](T x){
+       return (f(x) >= g); } );
    bool ketugou = a == b;  // 結合律
    return hidari_id && migi_id && ketugou;
 }
@@ -191,12 +192,11 @@ int main()
 {
 
    meybe<int> c{6};
-   std::cout << (c >> [](int a){ return (a == 6)? meybe<int>{std::nullopt} : meybe{a+1}; }).has_value();
+   std::cout << (c >= [](int a){ return (a == 6)? meybe<int>{std::nullopt} : meybe{a+1}; }).has_value();
    c.fmap([](int a){ return a;});
    std::cout << (c | [](int a){ return a+1; }).value();
  
    std::cout << std::boolalpha << monad_rule<meybe>(14, 3.15);
-   
 }
 */
 

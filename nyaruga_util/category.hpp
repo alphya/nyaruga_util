@@ -142,7 +142,7 @@ namespace category {
    template <template<class> class T, typename X, typename Y>
    concept has_mu_T = (T_rank<T, X> == 0) && (T_rank<T, Y> == 0) &&
       requires (T<X> x, category::make_morph<X, T<Y>> f) { 
-         { x >> f } -> std::convertible_to<T<Y>>; 
+         { x >= f } -> std::convertible_to<T<Y>>; 
    };
    
    template <template <class> class T, typename X, typename Y>
