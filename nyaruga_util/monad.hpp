@@ -32,7 +32,7 @@ struct monad
 
 // モナド則
 /*
-// f, g : X -> TY はクライスリ圏における射とすうとき、
+// f, g : X -> TY はクライスリ圏における射とするとき、
 auto f = [](const T& x) -> M<T> { return {{},x+10}; };
 auto g = [](const T& x) -> M<U> { return {{},x*3.14}; };
 
