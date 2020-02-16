@@ -247,11 +247,15 @@ static_assert(category::functor<maybe_another, int, double>); // fmap
 
 using namespace maybe_another_;
 
+/*
+
 int main()
 {
    maybe_another<int>{10} >= [](int a){ return just{a+1};} >= [](int a){ return just{a+2};};
    maybe_another<int>{nothing} >= [](int a){ return just{a+1};} >= [](int a){ return just{a+2};};
 }
+
+*/
 
 } // namespace monad_
 
