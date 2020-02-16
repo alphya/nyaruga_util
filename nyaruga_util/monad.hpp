@@ -231,9 +231,17 @@ constexpr std::optional<just<T>> ret(T x)
    return just<T>(x);
 }
 
+// maybe_another の射関数(category::functor を満たしたいときに作ってもよい)
+template <typename X, typename Y>
+constexpr auto fmap(const category::make_morph<X, Y>& f) noexcept
+{
+   return [f](const maybe_another<X>& x){ return x.has_value() ? maybe_another<Y>{f(x.value().val)} : maybe_another<Y>{nothing}; };
+}
+
 // テストの例（書くところが思いつきませんでした）
 static_assert(category::monad<maybe_another, int, double>);
 static_assert(category::monad<maybe_another, float, std::string>);
+static_assert(category::functor<maybe_another, int, double>); // fmap
 
 }
 

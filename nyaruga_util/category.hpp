@@ -133,7 +133,9 @@ namespace category {
    template <template <class> class T, typename X, typename Y>
    concept functor = requires(make_morph<X, Y> f, T<X> tx) { { (T<X>::fmap(f))(tx) } -> std::convertible_to<T<Y>>; } ||
                      requires(make_morph<X, Y> f, T<X> tx) { { (tx.fmap(f))(tx) } -> std::convertible_to<T<Y>>; } ||
-                     requires(make_morph<X, Y> f, T<X> tx) { { (tx->fmap(f))(tx) } -> std::convertible_to<T<Y>>; };
+                     requires(make_morph<X, Y> f, T<X> tx) { { (tx->fmap(f))(tx) } -> std::convertible_to<T<Y>>; } ||
+                     requires(make_morph<X, Y> f, T<X> tx) { { fmap(f)(tx) } -> std::convertible_to<T<Y>>; } ||
+                     requires(make_morph<X, Y> f, T<X> tx) { { fmap<X, Y>(f)(tx) } -> std::convertible_to<T<Y>>; };
    
    // join : TTX -> TX
    template <typename Mor, template <class> class T, typename Domain, typename Codomain>
