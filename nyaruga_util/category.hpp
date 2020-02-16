@@ -58,7 +58,6 @@ namespace category {
                return 1 + unwrapable_times_for_T_impl<T, X, unwrap_template_idx<0, Tmp>>();
          else return 0;
       }
-
    }
    
    template <template<class> class T, typename X>
@@ -103,10 +102,12 @@ namespace category {
 
    // f : X -> Y
    template <typename Hom, typename Domain, typename Codomain>
-   concept morphism_between = requires(Hom f, Domain a) { { f(a) } -> std::convertible_to<Codomain>; };
+   concept morphism_between = requires() { { std::declval<Hom>()(std::declval<Domain>()) } -> std::convertible_to<Codomain>; } ||
+      requires(Hom f, Domain a) { { f(a) } -> std::convertible_to<Codomain>; };
    
    template <typename Hom, typename Domain>
-   concept morphism_from = requires(Hom f, Domain a) { f(a); };
+   concept morphism_from = requires() { std::declval<Hom>()(std::declval<Domain>()); } ||
+      requires(Hom f, Domain a) { f(a); };
    
    // (X, Y) to X -> Y
    template <typename X, typename Y>
@@ -126,8 +127,10 @@ namespace category {
    
    // μ : TX -> X
    template <typename Mor, typename X,  template<class> class T>
-   concept mu = morphism_from<Mor, X> && (T_rank<T, X> == 1) &&
-      requires (Mor f, X x) { { f(x) } -> std::convertible_to<unwrap_type_using_T<T, X>>; };
+   concept mu = morphism_from<Mor, X> && (T_rank<T, X> == 1) && (
+      requires () { { std::declval<Mor>()(std::declval<X>()) } -> std::convertible_to<unwrap_type_using_T<T, X>>; } ||
+      requires(Mor f, X x) { { f(x) } -> std::convertible_to<unwrap_type_using_T<T, X>>; }
+   );
 
    template <template<class> class T, object X>
    using make_mu = make_morph<T<X>, X>;
@@ -145,10 +148,13 @@ namespace category {
    
    // join : TTX -> TX
    template <typename Mor, template <class> class T, typename Domain, typename Codomain>
-   concept join = morphism_between<Mor, Domain, Codomain> && requires(Mor f, Domain x) {
+   concept join = morphism_between<Mor, Domain, Codomain> && (
+      requires() {
       typename apply_mu<T, apply_mu<T, Domain>>;
-      { f(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>;
-   };
+      { std::declval<Mor>()(std::declval<Domain>()) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; } ||
+      requires(Mor f, Domain x) {
+      typename apply_mu<T, apply_mu<T, Domain>>;
+      { f(x) } ->std::convertible_to<T<apply_mu<T, Codomain>>>; });
    
    // Tf : TX -> TY
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
@@ -171,12 +177,14 @@ namespace category {
 
    // f : X -> TY
    template <typename KleisliMor, template<class> class T, typename Domain, typename Codomain>
-   concept kleisli_morphism = morphism_between<KleisliMor, Domain, Codomain> && kleisli_domain<Domain, T> &&
-      requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
+   concept kleisli_morphism_between = morphism_between<KleisliMor, Domain, Codomain> && kleisli_domain<Domain, T> && (
+      requires() { { std::declval<KleisliMor>()(std::declval<Domain>()) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; } ||
+      requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; });
    
    template <typename KleisliMor, template<class> class T, typename Domain>
-   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && kleisli_domain<Domain, T> &&
-   requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, decltype(f(x))>>>; };
+   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && kleisli_domain<Domain, T> && (
+      requires() { { std::declval<KleisliMor>()(std::declval<Domain>()) } -> std::convertible_to<T<apply_mu<T, decltype(std::declval<KleisliMor>()(std::declval<Domain>()))>>>; } ||
+      requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, decltype(f(x))>>>; });
    
    template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_kleisli_morph = make_morph<X, T<Y>>;
@@ -190,9 +198,9 @@ namespace category {
                                        
    // f* : TX -> TY, in Haskell : (>>= f)
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
-   concept f_star = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 1) && (T_rank<T, Codomain> == 1) &&
-      requires (Mor fstar, T<apply_mu<T, Domain>> x)
-   { { fstar(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
+   concept f_star = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 1) && (T_rank<T, Codomain> == 1) && (
+   requires () { { std::declval<Mor>()(std::declval<T<apply_mu<T, Domain>>>()) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; } ||
+   requires (Mor fstar, T<apply_mu<T, Domain>> x) { { fstar(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; });
 
    template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_f_star = make_morph<T<X>, T<Y>>;
@@ -202,10 +210,11 @@ namespace category {
    using make_mu_T = std::function<T<Y>(T<X>, make_morph<X, T<Y>>)>;
    
    template <template<class> class T, typename X, typename Y>
-   concept has_mu_T = kleisli_object<X, T> && kleisli_object<Y, T> &&
+   concept has_mu_T = kleisli_object<X, T> && kleisli_object<Y, T> && (
       requires (T<X> x, category::make_morph<X, T<Y>> f) {
-         { x >= f } -> std::convertible_to<T<Y>>;
-   };
+         { std::declval<T<X>>() >= std::declval<category::make_morph<X, T<Y>>>() } -> std::convertible_to<T<Y>>; } ||
+      requires (T<X> x, category::make_morph<X, T<Y>> f) {
+         { x >= f } -> std::convertible_to<T<Y>>; });
    
    template <template <class> class T, typename X, typename Y>
    concept monad = has_mu_T<T, X, Y> && kleisli_object<X, T> && kleisli_object<Y, T> &&
@@ -224,7 +233,22 @@ namespace category {
          { ret(y) } -> std::convertible_to<T<Y>>; } ||
       requires (X x, Y y, T<X> tx, T<Y> ty) {
          { ret<X>(x) } -> std::convertible_to<T<X>>;
-         { ret<Y>(y) } -> std::convertible_to<T<Y>>; }
+         { ret<Y>(y) } -> std::convertible_to<T<Y>>; } ||
+      requires () {
+         { T<X>::ret(std::declval<X>()) } -> std::convertible_to<T<X>>;
+         { T<Y>::ret(std::declval<Y>()) } -> std::convertible_to<T<Y>>; } ||
+      requires (T<X> tx, T<Y> ty) {
+         { tx.ret(std::declval<X>()) } -> std::convertible_to<T<X>>;
+         { ty.ret(std::declval<Y>()) } -> std::convertible_to<T<Y>>; } ||
+      requires (T<X> tx, T<Y> ty) {
+         { tx->ret(std::declval<X>()) } -> std::convertible_to<T<X>>;
+         { ty->ret(std::declval<Y>()) } -> std::convertible_to<T<Y>>; } ||
+      requires (T<X> tx, T<Y> ty) {
+         { ret(std::declval<X>()) } -> std::convertible_to<T<X>>;
+         { ret(std::declval<Y>()) } -> std::convertible_to<T<Y>>; } ||
+      requires (T<X> tx, T<Y> ty) {
+         { ret<X>(std::declval<X>()) } -> std::convertible_to<T<X>>;
+         { ret<Y>(std::declval<Y>()) } -> std::convertible_to<T<Y>>; }
    );
    
    // η : X -> TX, in Haskell : return

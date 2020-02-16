@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <compare>
 #include <nyaruga_util/category.hpp>
 
 // std::optional をモナディックにしました
@@ -22,40 +23,59 @@ static inline std::nullopt_t nothing = std::nullopt;
 
 template <class T>
 class just {
+private: 
+   T m_val;
 public:
-   T val;
-   constexpr just(const T & x) noexcept : val(x) {}
-   constexpr just(T && x) noexcept : val(std::forward<T>(x)) {}
-   constexpr friend bool operator==(const just & lhs, const just & rhs) noexcept { return lhs.val == rhs.val; }
-   constexpr decltype(auto) unwrap () const noexcept { return val; }
+   constexpr just(const T & x) noexcept : m_val(x) {}
+   constexpr just(T && x) noexcept : m_val(std::forward<T>(x)) {}
+   constexpr auto& unwrap() noexcept { return m_val; }
+   constexpr auto operator <=> (const just&) const noexcept = default;
 };
 
 template <typename T>
 using maybe = std::optional<just<T>>;
 
 template <class T, class F>
-constexpr auto operator>=(const std::optional<just<T>> & x, const F & f) noexcept 
-   -> std::optional<just<category::apply_mu<maybe, decltype(f(x.value().val))>>>
+constexpr auto operator>=(const std::optional<just<T>> & x, F && f) noexcept
+   -> std::optional<just<category::apply_mu<maybe, decltype(f(x.value().unwrap()))>>>
+   requires category::kleisli_morphism_from<F, maybe, T>
 {
-   return (x.has_value()) ? f(x.value().val) : std::optional<just<category::apply_mu<maybe, decltype(f(x.value().val))>>>(std::nullopt);
+   return (x.has_value()) ? f(x.value().unwrap()) : std::optional<just<category::apply_mu<maybe, decltype(f(x.value().val))>>>(std::nullopt);
+}
+
+template <class T, class F>
+constexpr auto operator>=(std::optional<just<T>> && x, F && f) noexcept
+   -> std::optional<just<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>>
+   requires category::kleisli_morphism_from<F, maybe, T>
+{
+   return (x.has_value()) ? f(std::move(x.value().unwrap())) : std::optional<just<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>>(std::nullopt);
 }
 
 template <class T>
-constexpr std::optional<just<T>> ret(T x) noexcept
+constexpr auto ret(T&& x) noexcept -> decltype(std::optional(just(std::forward<T>(x))))
 {
-   return just<T>(x);
+   return just(std::forward<T>(x));
 }
 
 template <typename T, typename Func>
-constexpr auto operator|(const maybe<T>& x, const Func & f) noexcept
+   requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, maybe>
+constexpr auto operator|(const maybe<T>& x, Func && f) noexcept
 {
-   return x.has_value() ? maybe<category::apply_morphism<T, Func>>{ f(x.value().val) } : maybe<category::apply_morphism<T, Func>>{ nothing };
+   return x.has_value() ? maybe<category::apply_morphism<T, Func>>{ f(x.value().unwrap()) } : maybe<category::apply_morphism<T, Func>>{ nothing };
+}
+   
+template <typename T, typename Func>
+   requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, maybe>
+constexpr auto operator|(maybe<T>&& x, Func && f) noexcept
+{
+   return x.has_value() ? maybe<category::apply_morphism<T, Func>>{ f(std::move(x.value().unwrap())) } : maybe<category::apply_morphism<T, Func>>{ nothing };
 }
 
 // テストの例
 // MSCV ではなぜか失敗します...
 // static_assert(category::monad<maybe, int, double>);
 // static_assert(category::monad<maybe, float, std::string>);
+
 
 } // namespace maybe_another_
 
@@ -91,6 +111,51 @@ int main()
 
    std::cout << std::boolalpha << monad_rule<maybe>(14, 3.15) << b.value().unwrap();
 }
+
+
+// テストその２
+
+static int total_copy = 0;
+static int total_move = 0;
+static int total_construct = 0;
+
+struct copy_move_test
+{
+   template <typename T>
+   copy_move_test(const T&) {  }
+   copy_move_test() { ++total_construct; std::cout << "default "; }
+   copy_move_test(const copy_move_test&) { ++total_copy; std::cout << "copy "; }
+   copy_move_test(copy_move_test&&) { ++total_move; std::cout << "move "; }
+   bool operator == (const copy_move_test&) const = default;
+};
+
+// chain がモナド則を満たすかどうかのテスト
+template <template <class> class M, typename T, typename U>
+constexpr bool monad_rule(T x, U) // monad がモナドであることを確かめる。モナド則を満たしていることを確認する
+{
+   // f, g : X -> TY は任意
+   auto f = [](const T&) -> M<T> { std::cout << "callf:constructed "; return just{ copy_move_test(0) }; };
+   auto g = [](const T&) -> M<U> { std::cout << "ccallg:onstructed "; return just{ copy_move_test(3.14) }; };
+
+   bool hidari_id = (ret(x) >= f) == f(x); // 左単位元律
+   bool migi_id = (ret(x) >= ret<T>) == ret(x); // 右単位元律
+   auto a = (ret(x) >= f) >= g;
+   auto b = ret(x) >= ([f, g](T x) {
+      return (f(x) >= g); });
+   bool ketugou = a == b;  // 結合律
+   return hidari_id && migi_id && ketugou;
+}
+
+int main()
+{
+   maybe<copy_move_test> {6} >= [](const copy_move_test&) { return maybe<copy_move_test>{ just(copy_move_test(1)) }; };
+   maybe<copy_move_test> {6} | [](const copy_move_test&) { return copy_move_test(1); };
+
+   std::cout << std::boolalpha << monad_rule<maybe>(copy_move_test(14), copy_move_test(3.15));
+
+   std::cout << "total_construct: " << total_construct << " total_copyed: " << total_copy << " total_moved: " << total_move;
+}
+
 */
 
 
