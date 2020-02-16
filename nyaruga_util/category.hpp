@@ -38,23 +38,27 @@ namespace category {
    }
                      
    template <typename X, std::size_t N>
-   using unwrap_template_N_times = decltype(detail::unwrap_template_N_times_impl<X, N>())::type;
+   using unwrap_template_N_times = typename decltype(detail::unwrap_template_N_times_impl<X, N>())::type;
    
    template <typename X>
    constexpr std::size_t unwrapable_times_one_arg_template = detail::unwrapable_times_one_arg_template_impl<X>();
    
    namespace detail {
-      
+
+      template <typename X>
+      concept is_unwrapable = requires() { typename unwrap_template_idx<0, X>; };
+
       template <template<class> class T, typename X, typename Tmp = X>
       constexpr unsigned int unwrapable_times_for_T_impl() noexcept
       {
-         if constexpr (requires(){ typename unwrap_template_idx<0, Tmp>;})
+         if constexpr (is_unwrapable<Tmp>)
             if constexpr (std::same_as<X, T<unwrap_template_idx<0, Tmp>>>)
                return 1;
             else
                return 1 + unwrapable_times_for_T_impl<T, X, unwrap_template_idx<0, Tmp>>();
          else return 0;
       }
+
    }
    
    template <template<class> class T, typename X>
@@ -64,11 +68,14 @@ namespace category {
    using unwrap_type_using_T = unwrap_template_N_times<X, unwrapable_times_for_T<T, X>>;
                      
    namespace detail {
+
+      template <template<class> class T, typename X>
+      concept is_unwrapable_with_T = requires(){ { std::declval<T<unwrap_type_using_T<T, X>>>() } -> std::convertible_to<X>; };
       
       template <template<class> class T, typename X>
       constexpr unsigned int T_rank_impl() noexcept
       {
-         if constexpr (requires(){ { std::declval<T<unwrap_type_using_T<T, X>>>() } -> std::convertible_to<X>; })
+         if constexpr (is_unwrapable_with_T<T, X>)
             return 1 + T_rank_impl<T, unwrap_type_using_T<T, X>>();
          else return 0;
       }
