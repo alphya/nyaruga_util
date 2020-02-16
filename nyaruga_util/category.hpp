@@ -51,10 +51,8 @@ namespace category {
          if constexpr (requires(){ typename unwrap_template_idx<0, Tmp>;})
             if constexpr (std::same_as<X, T<unwrap_template_idx<0, Tmp>>>)
                return 1;
-         
             else
                return 1 + unwrapable_times_for_T_impl<T, X, unwrap_template_idx<0, Tmp>>();
-         
          else return 0;
       }
    }
@@ -193,7 +191,7 @@ namespace category {
    
    // mu_T : (μ◦T(-))(-), in Haskell : >>=
    template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
-   using make_mu_T = T<Y>(*)(T<X>, make_morph<X, T<Y>>);
+   using make_mu_T = std::function<T<Y>(T<X>, make_morph<X, T<Y>>)>;
    
    template <template<class> class T, typename X, typename Y>
    concept has_mu_T = kleisli_object<X, T> && kleisli_object<Y, T> &&
