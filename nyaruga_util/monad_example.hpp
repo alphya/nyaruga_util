@@ -19,18 +19,7 @@ namespace monad_ {
 // モナドの作る際の、コピペ用
 namespace monad::example {
 
-// 組(T, η, μ) をモナドとすると、
 
-// T は対象が型、射が型 X から 型 Y への関数となるような圏を、
-// 対象が monad<型>、射が monad<X> 型から monad<Y> 型への関数になるような圏へと移す関手
-
-// CRTP でこれを継承してエラーが出ないもので、下記のモナド則を満たすものがモナド
-// nyaruga_util/category では、(static) メンバ関数 ret : T -> monad<T>, fmap : (X -> Y) -> (monad<X> -> mondo<Y>),
-// operator >= : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
-template <template <class> class T, typename X, typename Y = X>
-struct monad {
-   monad() { static_assert(category::monad<T, X, Y>, "The class is not a monad."); }
-};
 
 // モナド則
 /*
@@ -116,7 +105,7 @@ int main()
 }
 */
 
-// maybe モナドをクラスで作ったときの例 std::optional をモナドにした ver
+// maybe モナドをクラスで作ったときの例 std::optional
 template <typename X>
 struct meybe : monad<meybe, X>, public std::optional<X> {
    // 新しいモナドを作るときは、この部分と
