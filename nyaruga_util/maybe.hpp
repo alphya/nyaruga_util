@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include <optional>
 #include <nyaruga_util/category.hpp>
 
 // std::optional をモナディックにしました
 // ↑ このようなものは現在 C++ 標準化委員会に提案されています
 
 namespace nyaruga::util {
-
-#include <optional>
 
 namespace maybe_ {
 
@@ -87,7 +86,7 @@ int main()
 {
    maybe<int>{10} >= [](int a) { return just{ a + 1 }; } >= [](int a) { return just{ a + 2 }; };
    maybe<int>{nothing} >= [](int a) { return just{ a + 1 }; } >= [](int a) { return just{ a + 2 }; };
-   maybe a = just{3};
+   maybe<int> a = just{3};
    auto b = a | [](int a) { return a + 1; } | [](int a) { return a * 3; };
 
    std::cout << std::boolalpha << monad_rule<maybe>(14, 3.15) << b.value().unwrap();

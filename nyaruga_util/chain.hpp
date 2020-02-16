@@ -22,7 +22,7 @@ struct chain {
    constexpr chain(const T & x) noexcept : val(x) {}
    constexpr chain(T && x) noexcept : val(std::forward<T>(x)) {}
    constexpr friend bool operator==(const chain & lhs, const chain & rhs) noexcept { return lhs.val == rhs.val; }
-   constexpr decltype(auto) unwrap() noexcept { return val; }
+   constexpr decltype(auto) unwrap() const noexcept { return val; }
 };
 
 template <class T, class F>
