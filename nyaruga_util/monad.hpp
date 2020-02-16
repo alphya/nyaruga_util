@@ -122,6 +122,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    // この部分と
    static auto ret(X x){ return self<X>{x}; } ; // η. Haskell のモナドの型クラスにおける return
 
+   // これは、category::functor を満たすようにするためのもので、直接は関係ない
    template <category::morphism_from<X> Mor>
    auto fmap(const Mor& f) noexcept
    {  return [f, this](const self<X>& c) noexcept
@@ -159,6 +160,7 @@ struct meybe : monad<meybe, X>, public std::optional<X>
    
    // Haskell における >>=
    template <category::kleisli_morphism_from<self, X> KleisliMor>
+      // fmap がいらないときは、ここを削除する
       requires category::functor<self, X, category::apply_mu<self, category::apply_kleisli_morph<self, X, KleisliMor>>>
    constexpr auto friend operator >= (const self<X>& m, const KleisliMor& g) noexcept
       -> category::apply_kleisli_morph<self, X, KleisliMor>
@@ -200,6 +202,41 @@ int main()
    std::cout << std::boolalpha << monad_rule<meybe>(14, 3.15);
 }
 */
+
+// maybe モナドは、>=, ret が見つかるようなものなら何でもいいようにしてあるので、
+// こんな形でも書けます
+namespace maybe_another_ {
+
+static inline std::nullopt_t nothing = std::nullopt;
+
+template <class T>
+class just {
+public:
+   T val;
+   constexpr just(const T& x) : val(x) {}
+   constexpr just(T&& x) : val(std::forward<T>(x)) {}
+};
+   
+template <typename T> using Functor = std::optional<just<T>>;
+
+template<class T, class F>
+constexpr auto operator>=(const std::optional<just<T>>& x, const F& f) -> std::optional<just<category::apply_mu<Functor, decltype(f(x.value().val))>>>
+{
+   return (x.has_value()) ? f(x.value().val) : std::optional<just<category::apply_mu<Functor, decltype(f(x.value().val))>>>(std::nullopt);
+}
+
+template <class T>
+constexpr std::optional<just<T>> ret(T x)
+{
+   return just<T>(x);
+}
+
+// テストの例（？）（書くところが思いつきませんでした）
+static_assert(category::monad<Functor, int, double>);
+
+}
+
+using namespace maybe_another_;
 
 } // namespace monad_
 
