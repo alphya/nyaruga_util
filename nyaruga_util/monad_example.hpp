@@ -253,10 +253,9 @@ constexpr auto fmap(const category::make_morph<X, Y> & f) noexcept
 using namespace maybe_another_;
 
 /*
+using namespace nyaruga::util::monad::example;
 
-using namespace nyaruga::util;
-
-// maybe_another がモナド測を満たすかどうかのテスト
+// chain がモナド測を満たすかどうかのテスト
 // 適宜自作モナドのテスト用に書き換えてください
 
 template <template <class> class M, typename T, typename U>
