@@ -186,7 +186,7 @@ constexpr bool monad_rule(T x, U) // monad がモナドであることを確か�
    bool migi_id = (M<T>::ret(x) >= M<T>::ret) == M<T>::ret(x); // 右単位元律
    auto a = ( M<T>::ret(x) >= f ) >= g;
    auto b = M<T>::ret(x) >= ( [f, g](T x){
-       return (f(x) >= g); } );
+      return (f(x) >= g); } );
    bool ketugou = a == b;  // 結合律
    return hidari_id && migi_id && ketugou;
 }
@@ -198,7 +198,7 @@ int main()
    std::cout << (c >= [](int a){ return (a == 6)? meybe<int>{std::nullopt} : meybe{a+1}; }).has_value();
    c.fmap([](int a){ return a;});
    std::cout << (c | [](int a){ return a+1; }).value();
- 
+
    std::cout << std::boolalpha << monad_rule<meybe>(14, 3.15);
 }
 */
