@@ -65,6 +65,7 @@ namespace category {
    constexpr unsigned int unwrapable_times_for_T = detail::unwrapable_times_for_T_impl<T, X>();
    
    template <template<class> class T, typename X>
+      requires(unwrapable_times_for_T<T, X> != 0)
    using unwrap_type_using_T = unwrap_template_N_times<X, unwrapable_times_for_T<T, X>>;
                      
    namespace detail {
