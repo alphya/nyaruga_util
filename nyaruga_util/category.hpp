@@ -154,47 +154,55 @@ namespace category {
    template <template<class> class T, object Domain, object Codomain>
    using make_Tf = make_morph<T<Domain>, T<Codomain>>;
 
+   template <typename KleisliObject, template<class> class T>
+   concept kleisli_object = (T_rank<T, KleisliObject> == 0);
+   
+   template <typename KleisliObject, template<class> class T>
+   concept kleisli_domain = (T_rank<T, KleisliObject> == 0);
+   
+   template <typename KleisliObject, template<class> class T>
+   concept kleisli_codomain = (T_rank<T, KleisliObject> == 1);
+
    // f : X -> TY
    template <typename KleisliMor, template<class> class T, typename Domain, typename Codomain>
-   concept kleisli_morphism = morphism_between<KleisliMor, Domain, Codomain> && (T_rank<T, Domain> == 0) &&
+   concept kleisli_morphism = morphism_between<KleisliMor, Domain, Codomain> && kleisli_domain<Domain, T> &&
       requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
    
    template <typename KleisliMor, template<class> class T, typename Domain>
-   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && (T_rank<T, Domain> == 0) &&
+   concept kleisli_morphism_from = morphism_from<KleisliMor, Domain> && kleisli_domain<Domain, T> &&
    requires(KleisliMor f, Domain x) { { f(x) } -> std::convertible_to<T<apply_mu<T, decltype(f(x))>>>; };
    
-   template <template<class> class T, object X, object Y>
+   template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_kleisli_morph = make_morph<X, T<Y>>;
    
-   template <template<class> class T, object X, kleisli_morphism_from<T, X> KleisliMor>
+   template <template<class> class T, kleisli_object<T> X, kleisli_morphism_from<T, X> KleisliMor>
    using apply_kleisli_morph = decltype(std::declval<KleisliMor>()(std::declval<X>()));
    
    // kleisli_star = (-)* : (f : X -> TY) -> (f* : TX -> TY)
-   template <template<class> class T, object X, object Y>
+   template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_kleisli_star = make_morph<make_morph<X, T<Y>>, make_morph<T<X>, T<Y>>>;
                                        
    // f* : TX -> TY, in Haskell : (>>= f)
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
-   concept f_star = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 1) &&
+   concept f_star = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 1) && (T_rank<T, Codomain> == 1) &&
       requires (Mor fstar, T<apply_mu<T, Domain>> x)
    { { fstar(x) } -> std::convertible_to<T<apply_mu<T, Codomain>>>; };
 
-   template <template<class> class T, object X, object Y>
+   template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_f_star = make_morph<T<X>, T<Y>>;
    
    // mu_T : (μ◦T(-))(-), in Haskell : >>=
-   template <template<class> class T, object X, object Y>
-      requires (T_rank<T, X> == 0) && (T_rank<T, Y> == 0)
+   template <template<class> class T, kleisli_object<T> X, kleisli_object<T> Y>
    using make_mu_T = T<Y>(*)(T<X>, make_morph<X, T<Y>>);
    
    template <template<class> class T, typename X, typename Y>
-   concept has_mu_T = (T_rank<T, X> == 0) && (T_rank<T, Y> == 0) &&
+   concept has_mu_T = kleisli_object<X, T> && kleisli_object<Y, T> &&
       requires (T<X> x, category::make_morph<X, T<Y>> f) {
          { x >= f } -> std::convertible_to<T<Y>>;
    };
    
    template <template <class> class T, typename X, typename Y>
-   concept monad = has_mu_T<T, X, Y> &&
+   concept monad = has_mu_T<T, X, Y> && kleisli_object<X, T> && kleisli_object<Y, T> &&
    (
       requires (X x, Y y) {
          { T<X>::ret(x) } -> std::convertible_to<T<X>>;
@@ -216,15 +224,13 @@ namespace category {
    // η : X -> TX, in Haskell : return
    // 名前の衝突を避けるためここに
    template <typename Mor, template<class> class T, typename Domain, typename Codomain>
-   concept ret = morphism_between<Mor, Domain, Codomain> && (T_rank<T, Domain> == 0) &&
-      requires(Mor f, Domain x) {
-         { f(x) } -> std::convertible_to<T<Codomain>>;
-         std::convertible_to<T<Domain>, Codomain>; };
+   concept ret = morphism_between<Mor, Domain, Codomain> && kleisli_domain<Domain, T> &&
+      kleisli_codomain<Codomain, T> && std::convertible_to<T<Domain>, Codomain>;
    
-   template <template<class> class T, object X>
+   template <template<class> class T, kleisli_object<T> X>
    using apply_ret = T<X>;
    
-   template <template<class> class T, object X>
+   template <template<class> class T, kleisli_object<T> X>
    using make_ret = make_morph<X, T<X>>;
    
 } // namespare category
