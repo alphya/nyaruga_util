@@ -3,8 +3,8 @@
 //   (See accompanying file ../LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef NYARUGA_UTIL_MONAD_HPP
-#define NYARUGA_UTIL_MONAD_HPP
+#ifndef NYARUGA_UTIL_MONAD_EXAMPLE_HPP
+#define NYARUGA_UTIL_MONAD_EXAMPLE_HPP
 
 #pragma once
 
@@ -293,4 +293,4 @@ using namespace monad_;
 
 } // nyaruga :: util
 
-#endif // NYARUGA_UTIL_MONAD_HPP
+#endif // NYARUGA_UTIL_MONAD_EXAMPLE_HPP
