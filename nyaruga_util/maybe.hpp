@@ -33,28 +33,40 @@ public:
 };
 
 template <typename T>
-using maybe = std::optional<just<T>>;
+struct maybe : public std::optional<just<T>> {
+   using std::optional<just<T>>::optional;
+   constexpr bool friend operator==(const maybe & m, const maybe & other) noexcept {
+      return static_cast<std::optional<just<T>>>(m) == static_cast<std::optional<just<T>>>(other);
+   };
+   constexpr auto& unwrap() { return this->value().unwrap(); }
+};
+
+template <typename T>
+maybe(T) -> maybe<T>;
+
+template <typename T>
+maybe(just<T>) -> maybe<T>;
 
 template <class T, class F>
 constexpr auto operator>=(const std::optional<just<T>> & x, F && f) noexcept
-   -> std::optional<just<category::apply_mu<maybe, decltype(f(x.value().unwrap()))>>>
+   -> maybe<category::apply_mu<maybe, decltype(f(x.value().unwrap()))>>
    requires category::kleisli_morphism_from<F, maybe, T>
 {
-   return (x.has_value()) ? f(x.value().unwrap()) : std::optional<just<category::apply_mu<maybe, decltype(f(x.value().val))>>>(std::nullopt);
+   return (x.has_value()) ? f(x.value().unwrap()) : maybe<category::apply_mu<maybe, decltype(f(x.value().val))>>(std::nullopt);
 }
 
 template <class T, class F>
-constexpr auto operator>=(std::optional<just<T>> && x, F && f) noexcept
-   -> std::optional<just<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>>
+constexpr auto operator>=(maybe<T> && x, F && f) noexcept
+   -> maybe<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>
    requires category::kleisli_morphism_from<F, maybe, T>
 {
-   return (x.has_value()) ? f(std::move(x.value().unwrap())) : std::optional<just<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>>(std::nullopt);
+   return (x.has_value()) ? f(std::move(x.value().unwrap())) : maybe<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>(std::nullopt);
 }
 
 template <class T>
-constexpr auto ret(T&& x) noexcept -> decltype(std::optional(just(std::forward<T>(x))))
+constexpr auto ret(T&& x) noexcept -> decltype(maybe(std::forward<T>(x)))
 {
-   return just(std::forward<T>(x));
+   return maybe(std::forward<T>(x));
 }
 
 template <typename T, typename Func>
