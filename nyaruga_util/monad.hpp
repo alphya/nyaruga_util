@@ -25,7 +25,7 @@ namespace monad_ {
 // nyaruga_util/category では、(static) メンバ関数 ret : T -> monad<T>, fmap : (X -> Y) -> (monad<X> -> mondo<Y>),
 // operator >= : 引数が monad<X>, f : X -> monad<Y> で戻り値が monad<Y> の 3 種類のメンバを使ってモナドとしている
 template <template <class> class T, typename X, typename Y>
-struct monad 
+struct monad
 {
    monad() { static_assert(category::monad<T, X, Y>, "The class is not a monad."); }
 };
@@ -66,7 +66,7 @@ struct chain : monad<chain, X, X>
       requires category::functor<chain, X, category::apply_mu<chain, category::apply_kleisli_morph<chain, X, KleisliMor>>>
    constexpr auto friend operator >= (const chain& m, const KleisliMor& g) 
       -> category::apply_kleisli_morph<chain, X, KleisliMor>
-   { 
+   {
       return category::apply_kleisli_morph<chain, X, KleisliMor>{g(m.x)};
    };
 };

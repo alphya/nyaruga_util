@@ -46,7 +46,7 @@ namespace category {
    namespace detail {
       
       template <template<class> class T, typename X, typename Tmp = X>
-      constexpr unsigned int unwrapable_times_for_T_impl()
+      constexpr unsigned int unwrapable_times_for_T_impl() noexcept
       {
          if constexpr (requires(){ typename unwrap_template_idx<0, Tmp>;})
             if constexpr (std::same_as<X, T<unwrap_template_idx<0, Tmp>>>)
