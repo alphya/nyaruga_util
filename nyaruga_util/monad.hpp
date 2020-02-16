@@ -217,12 +217,12 @@ public:
    constexpr just(T&& x) : val(std::forward<T>(x)) {}
 };
    
-template <typename T> using Functor = std::optional<just<T>>;
+template <typename T> using maybe_another = std::optional<just<T>>;
 
 template<class T, class F>
-constexpr auto operator>=(const std::optional<just<T>>& x, const F& f) -> std::optional<just<category::apply_mu<Functor, decltype(f(x.value().val))>>>
+constexpr auto operator>=(const std::optional<just<T>>& x, const F& f) -> std::optional<just<category::apply_mu<maybe_another, decltype(f(x.value().val))>>>
 {
-   return (x.has_value()) ? f(x.value().val) : std::optional<just<category::apply_mu<Functor, decltype(f(x.value().val))>>>(std::nullopt);
+   return (x.has_value()) ? f(x.value().val) : std::optional<just<category::apply_mu<maybe_another, decltype(f(x.value().val))>>>(std::nullopt);
 }
 
 template <class T>
@@ -231,12 +231,19 @@ constexpr std::optional<just<T>> ret(T x)
    return just<T>(x);
 }
 
-// テストの例（？）（書くところが思いつきませんでした）
-static_assert(category::monad<Functor, int, double>);
+// テストの例（書くところが思いつきませんでした）
+static_assert(category::monad<maybe_another, int, double>);
+static_assert(category::monad<maybe_another, float, std::string>);
 
 }
 
 using namespace maybe_another_;
+
+int main()
+{
+   maybe_another<int>{10} >= [](int a){ return just{a+1};} >= [](int a){ return just{a+2};};
+   maybe_another<int>{nothing} >= [](int a){ return just{a+1};} >= [](int a){ return just{a+2};};
+}
 
 } // namespace monad_
 
