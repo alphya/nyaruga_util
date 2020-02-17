@@ -116,17 +116,17 @@ int main()
     {
         auto p = check_time<std::chrono::nanoseconds>("nanosec");
 
-        /*
-        処理
-        */
+        
+        // 処理
+        
 
     }
     {
         auto p = check_time("millisec");
 
-        /*
-        処理
-        */
+        
+        // 処理
+        
 
     }
     return 0;
