@@ -18,23 +18,35 @@ int total_copy = 0;
 int total_move = 0;
 int total_construct = 0;
 
-struct copy_move_test
-{
+} // unnamed namespace
+
+namespace copy_move_test_ {
+
+struct copy_move_test {
    template <typename T>
-   copy_move_test(const T&) { ++total_construct; }
-   copy_move_test() { ++total_construct; std::cout << "default "; }
-   copy_move_test(const copy_move_test&) { ++total_copy; std::cout << "copy "; }
-   copy_move_test(copy_move_test&&) { ++total_move; std::cout << "move "; }
+   copy_move_test(const T &) { ++total_construct; }
+   copy_move_test() { ++total_construct; }
+   copy_move_test(const copy_move_test &) { ++total_copy; }
+   copy_move_test(copy_move_test &&) { ++total_move; }
+   auto & operator=(const copy_move_test &) noexcept { return *this; }
+   auto & operator=(copy_move_test &&) noexcept { return *this; }
+   bool operator==(const copy_move_test &) const = default;
+   std::string hello() { return " "; }
 };
 
-struct print { 
-   ~print() { 
-      std::cout << "total_construct: " << total_construct 
-                << " total_copyed: " << total_copy 
-                << " total_moved: " << total_move; }
-} printer; // プログラム終了時に標準出力に出力する
+} // namespace copy_move_test_
 
-} // unnamed namespace
+inline void print_copy_move_and_reset()
+{
+   std::cout << "total_construct: " << total_construct
+             << " total_copyed: " << total_copy
+             << " total_moved: " << total_move << std::endl;
+   total_construct = 0;
+   total_copy = 0;
+   total_move = 0;
+}
+
+using namespace copy_move_test_;
 
 } // nyaruga :: util
 

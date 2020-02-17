@@ -9,6 +9,7 @@
 #pragma once
 
 #include <compare>
+#include <utility>
 #include <nyaruga_util/category.hpp>
 
 // メソッドチェインができます
@@ -24,6 +25,12 @@ private:
 public:
    constexpr chain(const T & x) noexcept : m_val(x) {}
    constexpr chain(T && x) noexcept : m_val(std::forward<T>(x)) {}
+   template <std::convertible_to<T> U>
+      requires std::is_copy_assignable_v<T>
+   constexpr auto& operator = (const chain<U>& other) noexcept(std::is_nothrow_assignable_v<T>) { T tmp = other.m_val; swap(m_val, tmp); return *this; }
+   template <std::convertible_to<T> U>
+      requires std::is_move_assignable_v<T>
+   constexpr auto& operator = (chain<U>&& other) noexcept(std::is_nothrow_move_assignable_v<T>) { m_val = std::move(other.m_val); return *this; }
    constexpr auto& unwrap() noexcept { return m_val; }
    constexpr auto operator <=> (const chain&) const noexcept = default;
 };

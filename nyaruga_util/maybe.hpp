@@ -30,11 +30,11 @@ public:
    constexpr just(const T & x) noexcept : m_val(x) {}
    constexpr just(T && x) noexcept : m_val(std::forward<T>(x)) {}
    template <std::convertible_to<T> U>
-      requires std::copyable<T>
-   constexpr auto& operator = (const just<U>& other) noexcept { T tmp = other.m_val; std::swap(m_val, tmp); return *this; }
+      requires std::is_copy_assignable_v<T>
+   constexpr auto& operator = (const just<U>& other) noexcept(std::is_nothrow_assignable_v<T>) { T tmp = other.m_val; swap(m_val, tmp); return *this; }
    template <std::convertible_to<T> U>
-      requires std::movable<T>
-   constexpr auto& operator = (just<U>&& other) noexcept { m_val = std::move(other.m_val); return *this; }
+      requires std::is_move_assignable_v<T>
+   constexpr auto& operator = (just<U>&& other) noexcept(std::is_nothrow_move_assignable_v<T>) { m_val = std::move(other.m_val); return *this; }
    constexpr auto& unwrap() noexcept { return m_val; }
    constexpr auto operator <=> (const just&) const noexcept = default;
 };
@@ -148,9 +148,9 @@ struct copy_move_test
    bool operator == (const copy_move_test&) const = default;
 };
 
-// chain がモナド則を満たすかどうかのテスト
+// monad がモナド則を満たすかどうかのテスト
 template <template <class> class M, typename T, typename U>
-constexpr bool monad_rule(T x, U) // monad がモナドであることを確かめる。モナド則を満たしていることを確認する
+constexpr bool monad_rule(T x, U) 
 {
    // f, g : X -> TY は任意
    auto f = [](const T&) -> M<T> { std::cout << "callf:constructed "; return just{ copy_move_test(0) }; };
@@ -173,6 +173,78 @@ int main()
    std::cout << std::boolalpha << monad_rule<maybe>(copy_move_test(14), copy_move_test(3.15));
 
    std::cout << "total_construct: " << total_construct << " total_copyed: " << total_copy << " total_moved: " << total_move;
+}
+
+// ベンチマークテスト
+
+#include <concepts>
+#include <iostream>
+#include <nyaruga_util/check_time.hpp>
+#include <nyaruga_util/copy_move_test.hpp>
+#include <nyaruga_util/maybe.hpp>
+
+using namespace nyaruga::util;
+
+// maybe がモナド則を満たすかどうかのテスト
+template <template <class> class M, typename T, typename U>
+constexpr bool monad_rule(T&& x, U&&)
+{
+   // f, g : X -> TY は任意
+   auto f = [](T&&) -> M<T> { return { copy_move_test(0) }; };
+   auto g = [](T&&) -> M<U> { return { copy_move_test(3.14) }; };
+
+   bool hidari_id = (ret(std::forward<T>(x)) >= f) == f(std::forward<T>(x)); // 左単位元律
+   bool migi_id = (ret(std::forward<T>(x)) >= ret<T>) == ret(std::forward<T>(x)); // 右単位元律
+   auto a = (ret(std::forward<T>(x)) >= f) >= g;
+   auto b = ret(std::forward<T>(x)) >= ([f, g](T&& x) {
+      return (f(std::forward<T>(x)) >= g); });
+   bool ketugou = a == b;  // 結合律
+   return hidari_id && migi_id && ketugou;
+}
+
+int main()
+{
+   int aaa, bbb;
+   std::cin >> aaa >> bbb;
+   {
+      maybe<copy_move_test> c{aaa};
+      auto a = check_time();
+      int bb = 10000000;
+      
+      while(bb --> 0) {
+         c = std::move(maybe<copy_move_test> {aaa} 
+            >= [aaa](copy_move_test&& b) { return  aaa == 0 ? maybe<copy_move_test>{nothing} : maybe<copy_move_test>{ std::move(b) }; }
+            >= [bbb](copy_move_test&& b) { return  bbb == 0 ? maybe<copy_move_test>{nothing} : maybe<copy_move_test>{ std::move(b) }; }
+            >= [aaa, bbb](copy_move_test&& b) { return  aaa * bbb != 15515  ? maybe<copy_move_test>{ std::move(b) } : maybe<copy_move_test>{ nothing }; });
+      }
+      
+      print_copy_move_and_reset();
+      std::cout << (c.has_value() ? c.unwrap().hello() : "tmp");
+   }
+
+   {
+      std::optional<copy_move_test> c;
+      auto a = check_time();
+      int bb = 10000000;
+      
+      while(bb --> 0) {
+         std::optional<copy_move_test> a{aaa};
+         if (a.has_value())
+         {
+            auto f =  [aaa](copy_move_test&& b) { return  aaa == 0 ? std::optional<copy_move_test>{nothing} : std::optional<copy_move_test>{ std::move(b) }; };
+            auto d = std::move(f(a));
+            if (d.has_value())
+            {
+               auto g = [bbb](copy_move_test&& b) { return  bbb == 0 ? std::optional<copy_move_test>{nothing} : std::optional<copy_move_test>{ std::move(b) }; };
+               auto r = std::move(g(d));
+               if (r.has_value())
+                  c = std::move([aaa, bbb](copy_move_test&& b) { return  aaa * bbb != 15515  ? std::optional<copy_move_test>{ std::move(b) } : std::optional<copy_move_test>{ nothing }; }(std::move(r)));
+            }
+         }
+      }
+      print_copy_move_and_reset();
+      std::cout << (c.has_value() ? c.value().hello() : "tmp");
+   }
 }
 
 */
