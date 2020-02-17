@@ -48,15 +48,15 @@ template <typename T>
 maybe(just<T>) -> maybe<T>;
 
 template <class T, class F>
-constexpr auto operator>=(const std::optional<just<T>> & x, F && f) noexcept
+constexpr auto operator>=(const std::optional<just<T>> & x, F && f) noexcept(noexcept(f(x.value().unwrap())))
    -> maybe<category::apply_mu<maybe, decltype(f(x.value().unwrap()))>>
    requires category::kleisli_morphism_from<F, maybe, T>
 {
-   return (x.has_value()) ? f(x.value().unwrap()) : maybe<category::apply_mu<maybe, decltype(f(x.value().val))>>(std::nullopt);
+   return (x.has_value()) ? f(x.value().unwrap()) : maybe<category::apply_mu<maybe, decltype(f(x.value().unwrap()))>>(std::nullopt);
 }
 
 template <class T, class F>
-constexpr auto operator>=(maybe<T> && x, F && f) noexcept
+constexpr auto operator>=(maybe<T> && x, F && f) noexcept(noexcept(f(std::move(x.value().unwrap()))))
    -> maybe<category::apply_mu<maybe, decltype(f(std::move(x.value().unwrap())))>>
    requires category::kleisli_morphism_from<F, maybe, T>
 {
@@ -71,14 +71,14 @@ constexpr auto ret(T&& x) noexcept -> decltype(maybe(std::forward<T>(x)))
 
 template <typename T, typename Func>
    requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, maybe>
-constexpr auto operator|(const maybe<T>& x, Func && f) noexcept
+constexpr auto operator|(const maybe<T>& x, Func && f) noexcept(noexcept(f(x.value().unwrap())))
 {
    return x.has_value() ? maybe<category::apply_morphism<T, Func>>{ f(x.value().unwrap()) } : maybe<category::apply_morphism<T, Func>>{ nothing };
 }
    
 template <typename T, typename Func>
    requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, maybe>
-constexpr auto operator|(maybe<T>&& x, Func && f) noexcept
+constexpr auto operator|(maybe<T>&& x, Func && f) noexcept(noexcept(f(std::move(x.value().unwrap()))))
 {
    return x.has_value() ? maybe<category::apply_morphism<T, Func>>{ f(std::move(x.value().unwrap())) } : maybe<category::apply_morphism<T, Func>>{ nothing };
 }

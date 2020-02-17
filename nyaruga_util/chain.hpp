@@ -30,14 +30,14 @@ public:
 
 template <class T, class F>
    requires category::kleisli_morphism_from<F, chain, T>
-constexpr auto operator>=(const chain<T> & x, F && f) noexcept
+constexpr auto operator>=(const chain<T> & x, F && f) noexcept(noexcept(f(x.unwrap())))
 {
    return f(x.unwrap());
 }
 
 template <class T, class F>
    requires category::kleisli_morphism_from<F, chain, T>
-constexpr auto operator>=(chain<T> && x, F && f) noexcept
+constexpr auto operator>=(chain<T> && x, F && f) noexcept(noexcept(f(std::move(x.unwrap()))))
 {
    return f(std::move(x.unwrap()));
 }
@@ -51,14 +51,14 @@ constexpr auto ret(T&& x) noexcept -> decltype(chain(std::forward<T>(x)))
 
 template <class T, class F>
    requires category::morphism_from<F, T> && category::kleisli_object<category::apply_morphism<T, F>, chain>
-constexpr auto operator|(const chain<T> & x, F && f) noexcept -> chain<category::apply_morphism<T, F>>
+constexpr auto operator|(const chain<T> & x, F && f) noexcept(noexcept(f(x.unwrap()))) -> chain<category::apply_morphism<T, F>>
 {
    return f(x.unwrap());
 }
 
 template <class T, class F>
    requires category::morphism_from<F, T> && category::kleisli_object<category::apply_morphism<T, F>, chain>
-constexpr auto operator|(chain<T> && x, F && f) noexcept -> chain<category::apply_morphism<T, F>>
+constexpr auto operator|(chain<T> && x, F && f) noexcept(noexcept(f(std::move(x.unwrap())))) -> chain<category::apply_morphism<T, F>>
 {
    return f(std::move(x.unwrap()));
 }
