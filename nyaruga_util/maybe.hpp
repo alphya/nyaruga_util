@@ -213,9 +213,10 @@ int main()
       
       while(bb --> 0) {
          c = std::move(maybe<copy_move_test> {aaa} 
-            >= [aaa](copy_move_test&& b) { return  aaa == 0 ? maybe<copy_move_test>{nothing} : maybe<copy_move_test>{ std::move(b) }; }
-            >= [bbb](copy_move_test&& b) { return  bbb == 0 ? maybe<copy_move_test>{nothing} : maybe<copy_move_test>{ std::move(b) }; }
-            >= [aaa, bbb](copy_move_test&& b) { return  aaa * bbb != 15515  ? maybe<copy_move_test>{ std::move(b) } : maybe<copy_move_test>{ nothing }; });
+            >= [aaa](copy_move_test&& b) { return  aaa == 0 ? maybe<int>{nothing} : maybe<int>{ 333 }; }
+            >= [bbb](int&& b) { return  bbb == 0 ? maybe<double>{nothing} : maybe<double>{ 3.14 }; }
+            >= [aaa, bbb](double&& b) { return  aaa * bbb != 15515  ? maybe<std::string>{ "Hello" } : maybe<std::string>{ nothing }; }
+            >= [aaa, bbb](std::string&& b) { return  aaa * bbb != 15514 ? maybe<copy_move_test>{ std::move(b) } : maybe<copy_move_test>{ nothing }; });
       }
       
       print_copy_move_and_reset();
@@ -231,14 +232,20 @@ int main()
          std::optional<copy_move_test> a{aaa};
          if (a.has_value())
          {
-            auto f =  [aaa](copy_move_test&& b) { return  aaa == 0 ? std::optional<copy_move_test>{nothing} : std::optional<copy_move_test>{ std::move(b) }; };
-            auto d = std::move(f(a));
+            auto f =  [aaa](copy_move_test&& b) { return  aaa == 0 ? std::optional<int>{nothing} : std::optional<int>{ 3 }; };
+            auto d = std::move(f(std::move(a.value())));
             if (d.has_value())
             {
-               auto g = [bbb](copy_move_test&& b) { return  bbb == 0 ? std::optional<copy_move_test>{nothing} : std::optional<copy_move_test>{ std::move(b) }; };
-               auto r = std::move(g(d));
+               auto g = [bbb](int&& b) { return  bbb == 0 ? std::optional<double>{nothing} : std::optional<double>{ 3.14 }; };
+               auto r = std::move(g(std::move(d.value())));
                if (r.has_value())
-                  c = std::move([aaa, bbb](copy_move_test&& b) { return  aaa * bbb != 15515  ? std::optional<copy_move_test>{ std::move(b) } : std::optional<copy_move_test>{ nothing }; }(std::move(r)));
+               {
+                  auto gg = std::move([aaa, bbb](double&& b) { return  aaa * bbb != 15515 ? std::optional<std::string>{ "Hello" } : std::optional<std::string>{ nothing }; }(std::move(r.value())));
+                  if (gg.has_value())
+                  {
+                     c = std::move([aaa, bbb](std::string&& b) { return  aaa * bbb != 15514 ? maybe<copy_move_test>{ std::move(b) } : maybe<copy_move_test>{ nothing }; }(std::move(gg.value())));
+                  }
+               }
             }
          }
       }
