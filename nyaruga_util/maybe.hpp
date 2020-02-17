@@ -10,6 +10,7 @@
 
 #include <optional>
 #include <compare>
+#include <utility>
 #include <nyaruga_util/category.hpp>
 
 // std::optional をモナディックにしました
@@ -28,6 +29,12 @@ private:
 public:
    constexpr just(const T & x) noexcept : m_val(x) {}
    constexpr just(T && x) noexcept : m_val(std::forward<T>(x)) {}
+   template <std::convertible_to<T> U>
+      requires std::copyable<T>
+   constexpr auto& operator = (const just<U>& other) noexcept { T tmp = other.m_val; std::swap(m_val, tmp); return *this; }
+   template <std::convertible_to<T> U>
+      requires std::movable<T>
+   constexpr auto& operator = (just<U>&& other) noexcept { m_val = std::move(other.m_val); return *this; }
    constexpr auto& unwrap() noexcept { return m_val; }
    constexpr auto operator <=> (const just&) const noexcept = default;
 };
