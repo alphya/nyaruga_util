@@ -75,7 +75,7 @@ constexpr auto operator|(chain<T> && x, F && f) noexcept(noexcept(f(std::move(x.
 // static_assert(category::monad<chain, int, double>);
 // static_assert(category::monad<chain, float, std::string>);
 
-}
+} // namespace chain_
 
 using namespace chain_;
 
@@ -112,7 +112,7 @@ int main()
 
 // chain がモナド則を満たすかどうかのテスト
 template <template <class> class M, typename T, typename U>
-constexpr bool monad_rule(T x, U) // monad がモナドであることを確かめる。モナド則を満たしていることを確認する
+constexpr bool monad_rule(T x, U)
 {
    // f, g : X -> TY は任意
    auto f = [](const T&) -> M<T> { std::cout << "callf:constructed "; return { 0 }; };

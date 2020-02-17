@@ -96,7 +96,7 @@ constexpr auto operator|(maybe<T>&& x, Func && f) noexcept(noexcept(f(std::move(
 // static_assert(category::monad<maybe, float, std::string>);
 
 
-} // namespace maybe_another_
+} // namespace maybe_
 
 using namespace maybe_;
 
