@@ -21,12 +21,14 @@ namespace nyaruga::util {
 namespace maybe_ {
 
 static inline std::nullopt_t nothing = std::nullopt;
+static inline std::nullptr_t begin_chain = nullptr;
 
 template <class T>
 class just {
 private: 
    T m_val;
 public:
+   constexpr just() noexcept {}
    constexpr just(const T & x) noexcept : m_val(x) {}
    constexpr just(T && x) noexcept : m_val(std::forward<T>(x)) {}
    template <std::convertible_to<T> U>
@@ -36,10 +38,10 @@ public:
       requires std::is_move_assignable_v<T>
    constexpr auto& operator = (just<U>&& other) noexcept(std::is_nothrow_move_assignable_v<T>) { m_val = std::move(other.m_val); return *this; }
    constexpr auto& unwrap() noexcept { return m_val; }
-   constexpr auto operator <=> (const just&) const noexcept = default;
+   // constexpr auto operator <=> (const just&) const noexcept = default;
 };
 
-template <typename T>
+template <typename T = std::nullptr_t>
 struct maybe : public std::optional<just<T>> {
    using std::optional<just<T>>::optional;
    constexpr bool friend operator==(const maybe & m, const maybe & other) noexcept {

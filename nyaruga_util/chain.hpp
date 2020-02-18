@@ -18,11 +18,12 @@ namespace nyaruga::util {
 
 namespace chain_ {
 
-template <class T>
+template <class T = std::nullptr_t>
 class chain {
 private: 
    T m_val;
 public:
+   constexpr chain() noexcept {}
    constexpr chain(const T & x) noexcept : m_val(x) {}
    constexpr chain(T && x) noexcept : m_val(std::forward<T>(x)) {}
    template <std::convertible_to<T> U>
@@ -32,7 +33,7 @@ public:
       requires std::is_move_assignable_v<T>
    constexpr auto& operator = (chain<U>&& other) noexcept(std::is_nothrow_move_assignable_v<T>) { m_val = std::move(other.m_val); return *this; }
    constexpr auto& unwrap() noexcept { return m_val; }
-   constexpr auto operator <=> (const chain&) const noexcept = default;
+   // constexpr auto operator <=> (const chain&) const noexcept = default;
 };
 
 template <class T, class F>
