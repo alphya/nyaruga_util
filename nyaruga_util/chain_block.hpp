@@ -130,28 +130,28 @@ constexpr auto ret(T&& x) noexcept -> decltype(chain_block(std::forward<T>(x)))
 
 template <typename T, typename Func>
    requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, chain_block>
-constexpr auto operator|(const chain_block<T>& x, Func && f) noexcept(noexcept(f(x.unwrap())))
+constexpr auto operator>(const chain_block<T>& x, Func && f) noexcept(noexcept(f(x.unwrap())))
 {
    return !x.exit_flag() ? chain_block<category::apply_morphism<T, Func>>{ f(x.unwrap()) } : chain_block<category::apply_morphism<T, Func>>{ exit_chain };
 }
    
 template <typename T, typename Func>
    requires category::morphism_from<Func, T> && category::kleisli_object<category::apply_morphism<T, Func>, chain_block>
-constexpr auto operator|(chain_block<T>&& x, Func && f) noexcept(noexcept(f(std::move(x.unwrap()))))
+constexpr auto operator>(chain_block<T>&& x, Func && f) noexcept(noexcept(f(std::move(x.unwrap()))))
 {
    return !x.exit_flag() ? chain_block<category::apply_morphism<T, Func>>{ f(std::move(x.unwrap())) } : chain_block<category::apply_morphism<T, Func>>{ exit_chain };
 }
 
 template <typename T, typename Func>
    requires detail::is_pass_param<T> && category::kleisli_object<decltype(std::apply(std::declval<Func>(), std::declval<T>())), chain_block>
-constexpr auto operator|(const chain_block<T>& x, Func && f) noexcept(noexcept(std::apply(f, x.unwrap())))
+constexpr auto operator>(const chain_block<T>& x, Func && f) noexcept(noexcept(std::apply(f, x.unwrap())))
 {
    return !x.exit_flag() ? chain_block<decltype(std::apply(f, x.unwrap()))>{ std::apply(f, x.unwrap()) } : chain_block<decltype(std::apply(f, x.unwrap()))>{ exit_chain };
 }
    
 template <typename T, typename Func>
    requires detail::is_pass_param<T> &&category::kleisli_object<decltype(std::apply(std::declval<Func>(), std::declval<T>())), chain_block>
-constexpr auto operator|(chain_block<T>&& x, Func && f) noexcept(noexcept(std::apply(f, std::move(x.unwrap()))))
+constexpr auto operator>(chain_block<T>&& x, Func && f) noexcept(noexcept(std::apply(f, std::move(x.unwrap()))))
 {
    return !x.exit_flag() ? chain_block<decltype(std::apply(f, std::move(x.unwrap())))>{ std::apply(f, std::move(x.unwrap())) }
                        : chain_block<decltype(std::apply(f, std::move(x.unwrap())))>{ exit_chain };
@@ -159,14 +159,14 @@ constexpr auto operator|(chain_block<T>&& x, Func && f) noexcept(noexcept(std::a
 
 template <typename T, typename Func>
    requires detail::is_begin_chain<T> && category::kleisli_object<decltype(f()), chain_block> 
-constexpr auto operator|(const chain_block<T> & x, Func && f) noexcept(noexcept(f()))
+constexpr auto operator>(const chain_block<T> & x, Func && f) noexcept(noexcept(f()))
 {
    return chain_block<decltype(f())>{ f() };
 }
 
 template <typename T, typename Func>
    requires detail::is_begin_chain<T> && category::kleisli_object<decltype(f()), chain_block> 
-constexpr auto operator|(chain_block<T> && x, Func && f) noexcept(noexcept(f()))
+constexpr auto operator>(chain_block<T> && x, Func && f) noexcept(noexcept(f()))
 {
    return chain_block<decltype(f())>{ f() };
 }
@@ -191,7 +191,6 @@ class std::tuple_size<nyaruga::util::pass_param<Types...>>
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <nyaruga_util/chain.hpp>
 #include <nyaruga_util/chain_block.hpp>
 #include <regex>
 #include <set>
@@ -203,14 +202,14 @@ int main() {
    using namespace nyaruga::util;
    using namespace std;
 
-   (chain_block{begin_chain} >= // このプログラム全体
+   chain_block{begin_chain} >= // このプログラム全体
 
       []() { // カレントディレクトリの CMakeLists.txt を開く（もしあれば）
 
          auto ifs = ifstream(filesystem::current_path() /= "CMakeLists.txt");
          return ifs ? pass_param(move(ifs)) : chain_block<decltype(pass_param(move(ifs)))>(exit_chain);
 
-      } | [](ifstream&& ifs) { // CMakeLists.txt から test のディレクトリ名を抽出する
+      } > [](ifstream&& ifs) { // CMakeLists.txt から test のディレクトリ名を抽出する
       
          // std::string にファイルの内容を渡す
          string file_contents{istreambuf_iterator<char>(ifs), istreambuf_iterator<char>()};
@@ -230,7 +229,7 @@ int main() {
 
          return pass_param{ move(file_contents), move(test_dir_names) };
 
-      }) >= [](string&& file_contents, set<string>&& test_dir_names) {
+      } >= [](string&& file_contents, set<string>&& test_dir_names) {
          // 現在のサブディレクトリのうち、新しく追加されたものを CMakeLists.txt の subdirs に追加し、
          // そのディレクトリの中に CMakeLists.txt を追加する
 
@@ -282,8 +281,6 @@ int main() {
       
          return chain_block{exit_chain};
       };
-      
-   // cout << boolalpha << test_list.has_value();
 }
 
 */
