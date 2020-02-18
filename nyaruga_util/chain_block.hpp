@@ -183,4 +183,109 @@ class std::tuple_size<nyaruga::util::pass_param<Types...>>
    : public std::integral_constant<std::size_t, sizeof...(Types)> {
 };
 
+/* 使用例
+
+#include <algorithm>
+#include <boost/format.hpp>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <nyaruga_util/chain.hpp>
+#include <nyaruga_util/chain_block.hpp>
+#include <regex>
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+int main() {
+   using namespace nyaruga::util;
+   using namespace std;
+
+   (chain_block{begin_chain} >= // このプログラム全体
+
+      []() { // カレントディレクトリの CMakeLists.txt を開く（もしあれば）
+
+         auto ifs = ifstream(filesystem::current_path() /= "CMakeLists.txt");
+         return ifs ? pass_param(move(ifs)) : chain_block<decltype(pass_param(move(ifs)))>(exit_chain);
+
+      } | [](ifstream&& ifs) { // CMakeLists.txt から test のディレクトリ名を抽出する
+      
+         // std::string にファイルの内容を渡す
+         string file_contents{istreambuf_iterator<char>(ifs), istreambuf_iterator<char>()};
+
+         // subdirs(...) にマッチする
+         smatch subdirs_etc;
+         regex_search(file_contents, subdirs_etc, regex(R"(subdirs\(([\s\S]*)\))"));
+
+         // ... の部分から、テストがあるディレクトリ名を抽出する
+         string subdirs = subdirs_etc[1].str();
+         regex re = regex(R"(\S+)");
+         sregex_iterator end, it{ subdirs.begin(), subdirs.end(), re };
+
+         set<string> test_dir_names;
+         for (; it != end; ++it)
+            test_dir_names.insert((*it).str());
+
+         return pass_param{ move(file_contents), move(test_dir_names) };
+
+      }) >= [](string&& file_contents, set<string>&& test_dir_names) {
+         // 現在のサブディレクトリのうち、新しく追加されたものを CMakeLists.txt の subdirs に追加し、
+         // そのディレクトリの中に CMakeLists.txt を追加する
+
+            // 現在あるディレクトリ名
+         set<string> current_dirs = move([] {
+            set<string> dirs;
+            for (const auto& it : filesystem::directory_iterator(filesystem::current_path()))
+               if (it.is_directory()) dirs.insert(it.path().filename().string());
+            return dirs;
+            }());
+
+         // 新しくできたディレクトリ名（CMakeLists.txt の subdir にないもの）
+         set<string> new_dirs;
+         set_difference(current_dirs.begin(), current_dirs.end(),
+            test_dir_names.begin(), test_dir_names.end(),
+            inserter(new_dirs, new_dirs.end()));
+
+         // 現在のサブディレクトリのうち、新しく追加されたものを CMakeLists.txt の subdirs に追加する
+         using namespace std::string_literals;
+         string new_subdir_txt = "subdirs(\n"s +
+            [&current_dirs]{
+               string result;
+               for (const auto& it : current_dirs)
+                  result += "    " + it + "\n";
+               return result;
+         }() + ")";
+
+         string new_cmakelists_text =
+            regex_replace(file_contents, regex(R"(subdirs\([\s\S]*\))"), new_subdir_txt);
+
+         ofstream ofs(filesystem::current_path() /= "CMakeLists.txt", ios::trunc);
+         ofs << new_cmakelists_text;
+         ofs.close();
+
+         // 新しくできたディレクトリ中の .cpp ファイル名をテストの名前として抽出する
+         unordered_map<string, string> test_case_names; // <ディレクトリ名, テスト名>
+         for (const auto& dir_name : new_dirs)
+            for (const auto& it : filesystem::directory_iterator(filesystem::current_path() /= dir_name))
+               if (it.path().extension() == ".cpp") test_case_names[dir_name] = it.path().filename().replace_extension("").string();
+
+         // 新しくできたディレクトリ中に CMakeLists.txt を作成する（もしなければ）
+         ifstream ifs{ filesystem::current_path() /= "CMakeLists_template.txt" };
+         string file_templates{ istreambuf_iterator<char>(ifs), istreambuf_iterator<char>() };
+         for (const auto& dir_name : new_dirs)
+            if (not filesystem::exists((filesystem::current_path() /= dir_name) /= "CMakeLists.txt"s) 
+               && (test_case_names.find(dir_name) != test_case_names.end()))
+                  ofstream{ (filesystem::current_path() /= dir_name) /= "CMakeLists.txt"s } 
+                     << (boost::format(file_templates) % test_case_names[dir_name] % dir_name);
+      
+         return chain_block{exit_chain};
+      };
+      
+   // cout << boolalpha << test_list.has_value();
+}
+
+*/
+
 #endif // NYARUGA_UTIL_CHAIN_BLOCK_HPP
