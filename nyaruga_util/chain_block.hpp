@@ -74,6 +74,15 @@ template <class T>
    requires detail::is_exit_chain<T>
 chain_block(T)->chain_block<std::nullptr_t>;
 
+template <typename ... Params>
+constexpr auto pass_param_if(bool Cond, Params&&... params) noexcept
+{
+   if (Cond)
+      return chain_block(pass_param{ std::forward<Params>(params)... });
+   else
+      return chain_block<decltype(pass_param{ std::forward<Params>(params)... })>(exit_chain);
+}
+
 template <class T, class F>
 constexpr auto operator>=(const chain_block<T> & x, F && f) noexcept(noexcept(f(x.unwrap())))
    -> chain_block<category::apply_mu<chain_block, decltype(f(x.unwrap()))>>
@@ -206,7 +215,7 @@ int main() {
    
       // カレントディレクトリの CMakeLists.txt を開く（もしあれば）
       auto ifs = ifstream(filesystem::current_path() /= "CMakeLists.txt");
-      return ifs ? pass_param(move(ifs)) : chain_block<decltype(pass_param(move(ifs)))>(exit_chain);
+      return pass_param_if(!!ifs, move(ifs));
    
    } > [](ifstream&& ifs) { // CMakeLists.txt から test のディレクトリ名を抽出する
    
