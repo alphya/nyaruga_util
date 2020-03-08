@@ -1,7 +1,7 @@
 BasedOnStyle: LLVM
 BreakBeforeBraces: Stroustrup
 IndentWidth: 3
-Standard: Cpp11
+Standard: Auto
 UseTab: Never
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine : true

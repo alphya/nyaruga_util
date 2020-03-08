@@ -14,12 +14,12 @@
 
 namespace nyaruga::util {
 
+namespace def_ {
+
 namespace detail
 {
-   auto l = [](auto&& x) { return x; };
+   static inline auto l = [](auto&& x) { return x; };
 }
-
-namespace def_ {
 
 template <typename F = decltype(detail::l)>
 struct def
