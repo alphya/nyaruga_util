@@ -25,13 +25,20 @@ template <typename F = decltype(detail::l)>
 struct def
 {
    F call;
+   
    template <typename T>
-   auto operator()(T&& f) {
+   auto operator*(T&& f) {
       auto l = [g = std::forward<T>(f), f = this->call](auto&&... x)
       { 
          return f(g(std::forward<decltype(x)>(x)...));
       };
       return def<decltype(l)>{l};
+   }
+
+   template <typename...Args>
+   decltype(auto) operator()(Args&&...args)
+   {
+      return call(std::forward<Args>(args)...);
    }
 };
 
@@ -55,8 +62,8 @@ using boost::lambda::_1;
 
 int main()
 {
-   auto fun = def{} (_1 - 19) (_1 + 20) (_1 / 100) (_1 * 100);
-   std::cout << fun.call(100); // 201
+   auto fun = def{} * (_1 - 19) * (_1 + 20) * (_1 / 100) * (_1 * 100);
+   std::cout << fun(100); // 201
 }
 
 */
