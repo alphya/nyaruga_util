@@ -31,6 +31,13 @@
         std::cout << k << "\n";
     } 
 
+    // なお、愚直に下のようにするよりは 1.6 倍程度遅いことに注意
+    for (auto i:b) for(auto j:i_) for(auto k:s) {
+        std::cout << std::boolalpha << i << ", ";
+        std::cout << j << ", ";
+        std::cout << k << "\n";
+    }
+
 */
 
 #include <tuple>                        // make_tuple, tuple
