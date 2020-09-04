@@ -12,6 +12,8 @@
 // https://stackoverflow.com/questions/16686942/how-to-iterate-over-two-stl-like-containers-cartesian-product
 
 // ネストした for 文が書きやすくなります
+// 速度はブレ幅が大きいですが、for 文をネストした場合より 2 倍以上遅くなることはないと思います
+// パソコンの調子によって、1.5 倍くらいだったり、同じくらいだったりしました
 
 // 例
 
@@ -201,7 +203,6 @@ int main()
 
     double time = static_cast<double>(chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0);
     printf("time %lf[ms]\n", time);
-    
     
 }   
 
