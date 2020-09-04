@@ -31,9 +31,12 @@
         std::cout << k << "\n";
     } 
 
-    // なお、愚直に下のようにするよりは 1.6 倍程度遅いことに注意
-    for (auto i:b) for(auto j:i_) for(auto k:s) {
-        std::cout << std::boolalpha << i << ", ";
+    //   for (int i = 0; i != 2; ++i)
+    //   for (int j = 1; j != 3; ++j) 
+    //   for (int k = 2; k != 4; ++k) 
+   for (auto&& [i,j,k]: cartesian_product({0,2},{1,3},{2,4})) 
+    {
+        std::cout << i << ", ";
         std::cout << j << ", ";
         std::cout << k << "\n";
     }
@@ -131,23 +134,25 @@ void insert_tuples(Op&& op, std::pair<InputIterator1, InputIterator1> head, std:
         }
 }
 
-}       // namespace detail
-
 // convert a tuple of ranges to the range of tuples representing the Cartesian product
 template<class OutputIterator, class... InputIterator>
 void cartesian_product_impl(OutputIterator result, std::pair<InputIterator, InputIterator>... dimensions)
 {
-        detail::insert_tuples(
+        insert_tuples(
                  [=](InputIterator... elems) mutable { *result++ = std::make_tuple(*elems...); },
                  dimensions...
         );
 }
 
+}       // namespace detail
+
+
+
 template <typename...Args>
 auto cartesian_product(Args&&...args)
 {
     std::vector< typename std::tuple<std::remove_reference_t<decltype(*std::begin(std::declval<Args&>()))>...>  > result;
-    cartesian_product_impl(
+    detail::cartesian_product_impl(
             std::back_inserter(result),
             std::make_pair(std::begin(args), std::end(args))...
     );
@@ -156,7 +161,7 @@ auto cartesian_product(Args&&...args)
 
 } // namespace impl2 (almost original)
 
-using namespace impl2; // impl1 より倍速い
+using namespace impl2; // impl1 より倍速い場合があった 速度はパソコンの調子によって大きく左右される
 
 } // namespace nyaruga::util
 
@@ -200,6 +205,86 @@ int main()
     
 }   
 
+*/
+
+#include <initializer_list>
+
+namespace nyaruga::util {
+
+namespace detail_index {
+
+template<class Op>
+void insert_tuples(Op&& op)
+{
+        op();
+}
+
+void insert_tuples(auto&& op,auto head, auto... tail)
+{
+    for (auto i = *head.begin(); i < *(head.begin()+1); ++i) {
+        insert_tuples(
+            [&op,&i](typename decltype(tail)::value_type... elems) mutable { op(i, elems...); },
+            tail...
+        );
+    }
+}
+
+void cartesian_product_impl(auto&& result, auto&&... dimensions)
+{
+    insert_tuples(
+         [=](auto... elems) mutable { *result++ = std::make_tuple(elems...); },
+         std::forward<decltype(dimensions)>(dimensions)...
+    );
+}
+
+}       // namespace detail
+
+template<typename... T>
+auto cartesian_product(std::initializer_list<T>...args)
+{
+    std::vector<typename std::tuple<T...>> result;
+    detail_index::cartesian_product_impl(std::back_inserter(result), args...);
+    return result;
+}
+
+}
+
+/* how to use
+#include <string>
+#include <iostream>
+#include <array>
+#include <stdio.h>
+#include <chrono>
+
+using std::array;
+
+int main() 
+{
+    
+    using namespace std;
+    chrono::system_clock::time_point start, end;
+
+    start = chrono::system_clock::now();
+
+    for (int f = 0; f < 1000; ++f)
+    
+   for (auto&& [i,j,k]: cartesian_product({0,2},{1,3},{2,4})) 
+//   equal to
+//   for (int i = 0; i != 2; ++i)
+//   for (int j = 1; j != 3; ++j) 
+//   for (int k = 2; k != 4; ++k) 
+    {
+        std::cout << i << ", ";
+        std::cout << j << ", ";
+        std::cout << k << "\n";
+    }
+    
+    end = chrono::system_clock::now();
+
+    double time = static_cast<double>(chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0);
+    printf("time %lf[ms]\n", time);
+
+}  
 */
 
 #endif // NYARUGA_UTPL_CARTESIAN_PRODUCT_HPP
