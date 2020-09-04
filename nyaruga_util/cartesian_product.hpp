@@ -52,6 +52,8 @@
 
 namespace nyaruga::util {
 
+/*
+
 namespace impl1 { // コルーチン実装
 
 namespace detail {
@@ -106,6 +108,8 @@ decltype(auto) cartesian_product(Args&&... args)
     });
 };
 } //namespace impl1
+
+*/
 
 // from: https://stackoverflow.com/questions/16686942/how-to-iterate-over-two-stl-like-containers-cartesian-product
 namespace impl2 { // ほぼ stack overflow から 
