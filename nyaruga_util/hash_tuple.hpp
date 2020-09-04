@@ -16,7 +16,7 @@
 // 使い方：このファイルをインクルードする
 
 
-// Code from https://stackoverflow.com/questions/20834838/using-tuple-in-unordered-map
+// base code from https://stackoverflow.com/questions/20834838/using-tuple-in-unordered-map
 namespace std{
     namespace
     {
@@ -37,19 +37,19 @@ namespace std{
         template <class Tuple, size_t Index = std::tuple_size<Tuple>::value - 1>
         struct HashValueImpl
         {
-          static void apply(size_t& seed, Tuple const& Tuple)
+          static void apply(size_t& seed, Tuple const& tuple)
           {
-            HashValueImpl<Tuple, Index-1>::apply(seed, Tuple);
-            hash_combine(seed, std::get<Index>(Tuple));
+            HashValueImpl<Tuple, Index-1>::apply(seed, tuple);
+            hash_combine(seed, std::get<Index>(tuple));
           }
         };
 
         template <class Tuple>
         struct HashValueImpl<Tuple,0>
         {
-          static void apply(size_t& seed, Tuple const& Tuple)
+          static void apply(size_t& seed, Tuple const& tuple)
           {
-            hash_combine(seed, std::get<0>(Tuple));
+            hash_combine(seed, std::get<0>(tuple));
           }
         };
     }
