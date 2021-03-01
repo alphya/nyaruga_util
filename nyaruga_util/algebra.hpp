@@ -197,6 +197,13 @@ concept ring = std::equality_comparable<T> &&
                              multipliable<T>;
 
 template <typename T>
+concept commutative_ring =  // C++ 上で普通の環と見分ける方法なし
+                             std::equality_comparable<T> &&
+                             addable<T> &&
+                             subtractable<T> && 
+                             multipliable<T>;
+
+template <typename T>
 concept field = std::equality_comparable<T> &&
                               addable<T> && 
                               subtractable<T> && 
@@ -258,6 +265,10 @@ constexpr module<T,N>  operator*(const T& a, std::array<T,N>& b)
 // 加群
 template <ring A, size_t rank>
 using module = detail::module<A, rank>;
+
+// 多元環または代数(algebra) 係数環の可換性を確かめられないので、C++上だと加群と変わらず
+template <commutative_ring A, size_t rank>
+using algebra = detail::module<A, rank>;
 
 
 } // namespace util
