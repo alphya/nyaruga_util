@@ -180,31 +180,31 @@ concept dividable_with =
   detail::weak_dividable<T, U>;
 
 template <typename T>
-concept group = std::equality_comparable<T> &&
+concept group = // std::equality_comparable<T> && // 等しさの検証が難しい対象もあるため ex) 関数環
                                  addable<T> &&
                                  subtractable<T>;
 
 template <typename T>
 concept abelian_group =  // C++ 上で普通の群と見分ける方法なし
-                                 std::equality_comparable<T> &&
+                                 // std::equality_comparable<T> &&
                                  addable<T> &&
                                  subtractable<T>;
 
 template <typename T>
-concept ring = std::equality_comparable<T> &&
+concept ring = // std::equality_comparable<T> &&
                              addable<T> &&
                              subtractable<T> && 
                              multipliable<T>;
 
 template <typename T>
 concept commutative_ring =  // C++ 上で普通の環と見分ける方法なし
-                             std::equality_comparable<T> &&
+                             // std::equality_comparable<T> &&
                              addable<T> &&
                              subtractable<T> && 
                              multipliable<T>;
 
 template <typename T>
-concept field = std::equality_comparable<T> &&
+concept field = // std::equality_comparable<T> &&
                               addable<T> && 
                               subtractable<T> && 
                               multipliable<T> && 
@@ -264,11 +264,27 @@ constexpr module<T,N>  operator*(const T& a, std::array<T,N>& b)
 
 // 加群
 template <ring A, size_t rank>
-using module = detail::module<A, rank>;
+using module_t = detail::module<A, rank>;
+
+template <typename A, typename G>
+concept module = ring<A> && abelian_group<G> &&
+requires(const std::remove_reference_t<A>& a, const std::remove_reference_t<A>& b, 
+const std::remove_reference_t<G>& g, const std::remove_reference_t<G>&  h)
+{
+     {a*g} -> std::common_with<G>;
+     {g+h} -> std::common_with<G>;
+     {g-h} -> std::common_with<G>;
+     {a+b} -> std::common_with<A>;
+     {a*b}-> std::common_with<A>;
+     // { (a + b)(g + h) == (a+b)*g+(a+b)*h };
+};
 
 // 多元環または代数(algebra) 係数環の可換性を確かめられないので、C++上だと加群と変わらず
 template <commutative_ring A, size_t rank>
-using algebra = detail::module<A, rank>;
+using algebra_t = detail::module<A, rank>;
+
+template <typename A, typename G>
+concept algebra = module<A,G>;
 
 
 } // namespace util
@@ -284,8 +300,8 @@ int main(){
     N q3 = 4u;
     N q4 = 6u;
 
-    module m1 = {q1,q2};
-    module m2 = {q3,q4};
+    module_t m1 = {q1,q2};
+    module_t m2 = {q3,q4};
 
    std::cout <<(m1+m2)[1] << "\n";
    std::cout << (q1*m2)[0] << "\n";
