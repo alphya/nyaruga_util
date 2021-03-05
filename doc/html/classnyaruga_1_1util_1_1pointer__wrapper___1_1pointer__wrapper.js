@@ -1,0 +1,28 @@
+var classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper =
+[
+    [ "pointer", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a3abaddb857b6bd07aa8eb1c6ea540cb3", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a4dc4c0b91b1d8f5471930a4772aab169", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#adfeec00ad2a345d784e6f972ab4baeba", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#abcbe392bc13065be5dca709b1476bfa2", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a58a0fb54c7d7cc476f2abf9258d40d56", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#ad247a12c81cf9a1cb1076d93388585f4", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a54bcc46e03c1669b464d8f1f34a8e4b4", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a7b162b9f51f8f45ac327243ef2e47c97", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#ab417b60e6c2086f965212c9564464ef5", null ],
+    [ "pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a12a425eca3951d6c1549f07bfe998e8a", null ],
+    [ "~pointer_wrapper", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a8d7f9f1ed849183a88f8e2a4304a96f5", null ],
+    [ "get", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#ae5dc716f5fb5b7f4ac226ab844145734", null ],
+    [ "operator bool", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#abd56cc77c8cdfdddb68f61d33fcd8e9b", null ],
+    [ "operator*", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#aaa066a933fe0cebd7d3c4bfff9d0bbe8", null ],
+    [ "operator->", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#aaff204b1b81d2f8a181b4c2c34b5ab25", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a217e89014b403c9094a29825e7753b05", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a71738c0ed17c49300186e040aa6aff97", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a517f592efb6dca1a895a5f435a5e3075", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a7f33fdf2740a18d03e8af6891e99725b", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a5d99abf7e247ec50aa0892aef13112f2", null ],
+    [ "operator=", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a2dcd867da3ab272ea62cbf552ef4cf0e", null ],
+    [ "release", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a0ddfba206a42c80065f7add80aebbacf", null ],
+    [ "reset", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a5fdece127e121deebb06242bd51842c1", null ],
+    [ "swap", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#ad343c223da95bd14d392564c24d357cf", null ],
+    [ "swap", "classnyaruga_1_1util_1_1pointer__wrapper___1_1pointer__wrapper.html#a6cef129e76c90c2590b3de3ecd5b8286", null ]
+];

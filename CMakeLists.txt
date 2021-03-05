@@ -28,7 +28,7 @@ if(MSVC)
   endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   # Update if necessary
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -W -Wall -Wextra -Wno-unused-parameter -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -W -Wall -Wextra -Wno-unused-parameter -pedantic")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
@@ -44,10 +44,10 @@ if( NOT DEFINED Boost_USE_MULTITHREADED )
   set(Boost_USE_MULTITHREADED ON)
 endif( NOT DEFINED Boost_USE_MULTITHREADED )
 
-find_package( Boost 1.69.0 REQUIRED )
-if( NOT Boost_FOUND )
-  message( SEND_ERROR "Required package Boost was not detected." )
-endif (NOT Boost_FOUND)
+#find_package( Boost 1.75.0 REQUIRED )
+#if( NOT Boost_FOUND )
+#  message( SEND_ERROR "Required package Boost was not detected." )
+#endif (NOT Boost_FOUND)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})

@@ -1,0 +1,4 @@
+var structnyaruga_1_1util_1_1get__function__argument__type_3_01_ret_07_c_1_1_5_08_07_args_8_8_8_08_00_01_n_01_4 =
+[
+    [ "type", "structnyaruga_1_1util_1_1get__function__argument__type_3_01_ret_07_c_1_1_5_08_07_args_8_8_8_08_00_01_n_01_4.html#ade9f10e17cbe5247e65aec0f6910aa43", null ]
+];
