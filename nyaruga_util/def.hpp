@@ -1,7 +1,11 @@
-//              Copyright (c) 2020 alphya
-// Distributed under the Boost Software License, Version 1.0.
-//   (See accompanying file ../LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+
+/*!
+ * @file 
+ * @brief Defines configuration macros used throughout the library.
+ * @copyright alphya 2020-2021
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+ */
 
 #ifndef NYARUGA_UTIL_DEF_HPP
 #define NYARUGA_UTIL_DEF_HPP
@@ -12,7 +16,9 @@
 
 // 関数を bind します
 
-namespace nyaruga::util {
+namespace nyaruga {
+
+namespace util {
 
 namespace def_ {
 

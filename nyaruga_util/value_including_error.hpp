@@ -1,19 +1,24 @@
-//              Copyright (c) 2018 alphya
-// Distributed under the Boost Software License, Version 1.0.
-//   (See accompanying file ../LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+
+/*!
+ * @file 
+ * @brief Defines configuration macros used throughout the library.
+ * @copyright alphya 2018-2021
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+ */
 
 #ifndef NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 #define NYARUGA_UTIL_VALUE_INCLUDING_ERROR_HPP
 
 #pragma once
 
-
 #include <nyaruga_util/partial_diff.hpp>
 #include <nyaruga_util/diff.hpp>
 #include <boost/hana/functional/arg.hpp>
 
-namespace nyaruga::util {
+namespace nyaruga {
+
+namespace util {
 
 // 誤差を含む値
 struct value_including_error {
