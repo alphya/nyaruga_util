@@ -12,6 +12,10 @@
 
 #pragma once
 
+#include <nyaruga_util/config.hpp>
+
+#ifdef NYARUGA_UTIL_HAS_EIGEN
+
 #include <cmath>
 #include <concepts>
 #include <Eigen/Core>
@@ -124,5 +128,7 @@ int main() {
 }
 
 */
+
+#endif // #ifdef NYARUGA_UTIL_HAS_EIGEN
 
 #endif // #ifndef NYARUGA_UTIL_AUTO_DIFF_HPP

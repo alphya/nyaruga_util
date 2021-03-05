@@ -16,7 +16,10 @@
 // -------------------------
 
 // If you have not https://github.com/tcbrindle/rational.git installed, comment out here.
-#define HAS_TCBRINDLER_RATIONAL
+#define NYARUGA_UTIL_HAS_TCBRINDLER_RATIONAL
+
+// If you have not EIGEN installed, comment out here.
+#define NYARUGA_UTIL_HAS_EIGEN
 
 #if defined(NYARUGA_UTIL_DOXYGEN_INVOKED) || \
    (defined(NDEBUG) && !defined(NYARUGA_UTIL_CONFIG_DISABLE_ASSERTIONS))

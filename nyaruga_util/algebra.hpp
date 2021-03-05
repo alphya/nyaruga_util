@@ -18,12 +18,17 @@
 #include <ranges>
 #include <ratio>
 #include <complex>
-#include <tcb/rational.hpp> // https://github.com/tcbrindle/rational.git
 #include <type_traits>
 #include <array>
 #include <algorithm>
 #include <utility>
 #include <boost/hana/functional/arg.hpp>
+
+#include <nyaruga_util/config.hpp>
+
+#ifdef NYARUGA_UTIL_HAS_TCBRINDLER_RATIONAL
+#    include <tcb/rational.hpp> // https://github.com/tcbrindle/rational.git
+#endif
 
 namespace nyaruga {
 
@@ -71,8 +76,10 @@ using detail::Z;
 
 using detail::R;
 
+#ifdef NYARUGA_UTIL_HAS_TCBRINDLER_RATIONAL
 template <std::integral T = int>
 using Q = tcb::rational<T>;
+#endif
 
 template <detail::arithmetic T = double>
 using C = std::complex<T>;
@@ -292,27 +299,8 @@ using algebra_t = detail::module<A, rank>;
 template <typename A, typename G>
 concept algebra = module<A,G>;
 
-
 } // namespace util
 
 } // namespace nyaruga
-
-/* how to use 
-
-int main(){
-
-    N q1 = 3u;
-    N q2 = 3u;
-    N q3 = 4u;
-    N q4 = 6u;
-
-    module_t m1 = {q1,q2};
-    module_t m2 = {q3,q4};
-
-   std::cout <<(m1+m2)[1] << "\n";
-   std::cout << (q1*m2)[0] << "\n";
-};
-
-*/
 
 #endif // #ifndef NYARUGA_UTIL_ALGEBRA_HPP
