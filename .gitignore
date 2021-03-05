@@ -23,6 +23,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 build/
+tmp/
 
 # vscode
 .vscode
